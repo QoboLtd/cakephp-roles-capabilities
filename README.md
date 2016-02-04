@@ -1,4 +1,4 @@
-# RolesCapabilities plugin for CakePHP
+# Roles and Capabilities plugin for CakePHP
 
 ## Installation
 
