@@ -1,6 +1,6 @@
 {
-    "name": "your-name-here/RolesCapabilities",
-    "description": "RolesCapabilities plugin for CakePHP",
+    "name": "qobo/roles-capabilities",
+    "description": "Roles and Capabilities plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
         "php": ">=5.4.16",
