@@ -32,7 +32,7 @@ class RolesController extends AppController
     public function view($id = null)
     {
         $role = $this->Roles->get($id, [
-            'contain' => ['Capabilities']
+            'contain' => ['Capabilities', 'Groups']
         ]);
         $this->set('role', $role);
         $this->set('_serialize', ['role']);
@@ -56,7 +56,8 @@ class RolesController extends AppController
             }
         }
         $capabilities = $this->Roles->Capabilities->find('list', ['limit' => 200]);
-        $this->set(compact('role', 'capabilities'));
+        $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
+        $this->set(compact('role', 'capabilities', 'groups'));
         $this->set('_serialize', ['role']);
     }
 
@@ -70,7 +71,7 @@ class RolesController extends AppController
     public function edit($id = null)
     {
         $role = $this->Roles->get($id, [
-            'contain' => ['Capabilities']
+            'contain' => ['Capabilities', 'Groups']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $role = $this->Roles->patchEntity($role, $this->request->data);
@@ -82,7 +83,8 @@ class RolesController extends AppController
             }
         }
         $capabilities = $this->Roles->Capabilities->find('list', ['limit' => 200]);
-        $this->set(compact('role', 'capabilities'));
+        $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
+        $this->set(compact('role', 'capabilities', 'groups'));
         $this->set('_serialize', ['role']);
     }
 
