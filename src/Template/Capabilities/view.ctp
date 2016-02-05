@@ -5,8 +5,6 @@
         <li><?= $this->Form->postLink(__('Delete Capability'), ['action' => 'delete', $capability->id], ['confirm' => __('Are you sure you want to delete # {0}?', $capability->id)]) ?> </li>
         <li><?= $this->Html->link(__('List Capabilities'), ['action' => 'index']) ?> </li>
         <li><?= $this->Html->link(__('New Capability'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Roles'), ['controller' => 'Roles', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Role'), ['controller' => 'Roles', 'action' => 'add']) ?> </li>
     </ul>
 </nav>
 <div class="capabilities view large-9 medium-8 columns content">
