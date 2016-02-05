@@ -11,6 +11,7 @@ use RolesCapabilities\Model\Entity\Role;
  * Roles Model
  *
  * @property \Cake\ORM\Association\BelongsToMany $Capabilities
+ * @property \Cake\ORM\Association\BelongsToMany $Groups
  */
 class RolesTable extends Table
 {
@@ -36,6 +37,12 @@ class RolesTable extends Table
             'targetForeignKey' => 'capability_id',
             'joinTable' => 'capabilities_roles',
             'className' => 'RolesCapabilities.Capabilities'
+        ]);
+        $this->belongsToMany('Groups', [
+            'foreignKey' => 'role_id',
+            'targetForeignKey' => 'group_id',
+            'joinTable' => 'groups_roles',
+            'className' => 'RolesCapabilities.Groups'
         ]);
     }
 

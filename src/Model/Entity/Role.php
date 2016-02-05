@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property \RolesCapabilities\Model\Entity\Capability[] $capabilities
+ * @property \RolesCapabilities\Model\Entity\Group[] $groups
  */
 class Role extends Entity
 {
