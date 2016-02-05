@@ -8,6 +8,8 @@
             )
         ?></li>
         <li><?= $this->Html->link(__('List Roles'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Groups'), ['controller' => 'Groups', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Group'), ['controller' => 'Groups', 'action' => 'add']) ?></li>
     </ul>
 </nav>
 <div class="roles form large-9 medium-8 columns content">
@@ -17,6 +19,7 @@
         <?php
             echo $this->Form->input('name');
             echo $this->Form->input('capabilities._ids', ['options' => $capabilities]);
+            echo $this->Form->input('groups._ids', ['options' => $groups]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
