@@ -44,17 +44,26 @@ class CapabilityComponent extends Component
     }
 
     /**
-     * Method that retrieves controller capabilities
-     * @return array controller capabilities
+     * Method that checks if current user is allowed access.
+     * Returns true if current user has access, false otherwise.
+     * @param  string $capability capability name
+     * @param  string $userId     user id
+     * @return bool
      */
-    protected function _getControllerCapabilities()
+    public function hasAccess($capability, $userId = '')
     {
-        $caps = [];
-        if (method_exists($this->_controller, 'getCapabilities')) {
-            $caps = array_keys($this->_controller->getCapabilities());
+        // if not specified, get current user's id
+        if (empty($userId)) {
+            $userId = $this->_user['id'];
         }
 
-        return $caps;
+        $userCaps = $this->_getUserCapabilities();
+        if (!empty($userCaps[$capability])) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Method that retrieves specified user's capabilities
@@ -65,7 +74,7 @@ class CapabilityComponent extends Component
     {
         // if not specified, get current user's id
         if (empty($userId)) {
-            $userId = $this->Auth->user('id');
+            $userId = $this->_user['id'];
         }
 
         $userGroups = $this->_getUserGroups();
@@ -90,11 +99,11 @@ class CapabilityComponent extends Component
      * @param  string $userId user id
      * @return array
      */
-    protected function _getUserGroups($userId = null)
+    protected function _getUserGroups($userId = '')
     {
         // if not specified, get current user's id
         if (empty($userId)) {
-            $userId = $this->Auth->user('id');
+            $userId = $this->_user['id'];
         }
 
         $groups = TableRegistry::get('Groups.Groups');
