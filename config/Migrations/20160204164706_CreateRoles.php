@@ -36,6 +36,12 @@ class CreateRoles extends AbstractMigration
         $table->addPrimaryKey([
             'id',
         ]);
+        $table->addIndex([
+            'name',
+        ], [
+            'name' => 'UNIQUE_NAME',
+            'unique' => true,
+        ]);
         $table->create();
     }
 }
