@@ -11,6 +11,9 @@
         <?php
             echo $this->Form->input('name');
             echo $this->Form->input('groups._ids', ['options' => $groups]);
+            foreach ($capabilities as $capability) {
+                echo $this->Form->input($capability, ['type' => 'checkbox']);
+            }
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
