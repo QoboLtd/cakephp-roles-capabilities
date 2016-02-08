@@ -35,7 +35,7 @@ class RolesTable extends Table
             'foreignKey' => 'role_id',
             'targetForeignKey' => 'group_id',
             'joinTable' => 'groups_roles',
-            'className' => 'RolesCapabilities.Groups'
+            'className' => 'Groups.Groups'
         ]);
     }
 
