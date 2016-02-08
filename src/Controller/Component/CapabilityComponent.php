@@ -7,6 +7,28 @@ use Cake\ORM\TableRegistry;
 class CapabilityComponent extends Component
 {
     /**
+     * Method that retrieves all defined capabilities
+     * @return array capabilities
+     */
+    public function getAllCapabilities()
+    {
+        $capabilities = [];
+        // get all controllers
+        $controllers = $this->_getAllControllers();
+
+        foreach ($controllers as $controller) {
+            $classObj = new $controller;
+            if (method_exists($classObj, 'getCapabilities')) {
+                $controllerCaps = array_keys($classObj->getCapabilities());
+                $capabilities = array_merge($capabilities, $controllerCaps);
+            }
+        }
+
+
+        return $capabilities;
+    }
+
+    /**
      * Method that returns all controller names.
      * @param  bool  $includePlugins flag for including plugin controllers
      * @return array                 controller names
