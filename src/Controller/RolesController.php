@@ -56,7 +56,8 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
-        $this->set(compact('role', 'groups'));
+        $capabilities = $this->Capability->getAllCapabilities();
+        $this->set(compact('role', 'groups', 'capabilities'));
         $this->set('_serialize', ['role']);
     }
 
@@ -82,7 +83,8 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
-        $this->set(compact('role', 'groups'));
+        $capabilities = $this->Capability->getAllCapabilities();
+        $this->set(compact('role', 'groups', 'capabilities'));
         $this->set('_serialize', ['role']);
     }
 
