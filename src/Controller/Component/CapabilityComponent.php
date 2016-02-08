@@ -55,6 +55,34 @@ class CapabilityComponent extends Component
         }
 
         return $caps;
+
+    /**
+     * Method that retrieves specified user's capabilities
+     * @param  string $userId user id
+     * @return array
+     */
+    protected function _getUserCapabilities($userId = '')
+    {
+        // if not specified, get current user's id
+        if (empty($userId)) {
+            $userId = $this->Auth->user('id');
+        }
+
+        $userGroups = $this->_getUserGroups();
+
+        $userRoles = [];
+        if (!empty($userGroups)) {
+            $userRoles = $this->_getGroupsRoles($userGroups);
+        }
+
+        $userCaps = [];
+        if (!empty($userRoles)) {
+            $rolesCaps = TableRegistry::get('RolesCapabilities.CapabilitiesRoles');
+            $query = $rolesCaps->find('list')->where(['role_id IN' => array_keys($userRoles)]);
+            $userCaps = $query->toArray();
+        }
+
+        return $userCaps;
     }
 
     /**
