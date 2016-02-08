@@ -28,36 +28,6 @@
         </tr>
     </table>
     <div class="related">
-        <h4><?= __('Related Capabilities') ?></h4>
-        <?php if (!empty($role->capabilities)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th><?= __('Id') ?></th>
-                <th><?= __('Name') ?></th>
-                <th><?= __('Created') ?></th>
-                <th><?= __('Modified') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($role->capabilities as $capabilities): ?>
-            <tr>
-                <td><?= h($capabilities->id) ?></td>
-                <td><?= h($capabilities->name) ?></td>
-                <td><?= h($capabilities->created) ?></td>
-                <td><?= h($capabilities->modified) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'Capabilities', 'action' => 'view', $capabilities->id]) ?>
-
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'Capabilities', 'action' => 'edit', $capabilities->id]) ?>
-
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Capabilities', 'action' => 'delete', $capabilities->id], ['confirm' => __('Are you sure you want to delete # {0}?', $capabilities->id)]) ?>
-
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php endif; ?>
-    </div>
-    <div class="related">
         <h4><?= __('Related Groups') ?></h4>
         <?php if (!empty($role->groups)): ?>
         <table cellpadding="0" cellspacing="0">

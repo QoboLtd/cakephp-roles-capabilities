@@ -23,6 +23,7 @@ class RolesFixture extends TestFixture
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'UNIQUE_NAME' => ['type' => 'unique', 'columns' => ['name'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -38,10 +39,10 @@ class RolesFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 'd6f9b5b9-2150-471f-9696-2f7fb3586b31',
+            'id' => '7156c12a-e0bc-4d89-a6a6-cc6fa411cb9b',
             'name' => 'Lorem ipsum dolor sit amet',
-            'created' => '2016-02-05 10:01:12',
-            'modified' => '2016-02-05 10:01:12'
+            'created' => '2016-02-08 09:38:48',
+            'modified' => '2016-02-08 09:38:48'
         ],
     ];
 }

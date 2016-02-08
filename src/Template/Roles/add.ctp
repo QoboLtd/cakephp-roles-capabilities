@@ -10,7 +10,6 @@
         <legend><?= __('Add Role') ?></legend>
         <?php
             echo $this->Form->input('name');
-            echo $this->Form->input('capabilities._ids', ['options' => $capabilities]);
             echo $this->Form->input('groups._ids', ['options' => $groups]);
         ?>
     </fieldset>

@@ -10,7 +10,6 @@ use RolesCapabilities\Model\Entity\Role;
 /**
  * Roles Model
  *
- * @property \Cake\ORM\Association\BelongsToMany $Capabilities
  * @property \Cake\ORM\Association\BelongsToMany $Groups
  */
 class RolesTable extends Table
@@ -32,12 +31,6 @@ class RolesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsToMany('Capabilities', [
-            'foreignKey' => 'role_id',
-            'targetForeignKey' => 'capability_id',
-            'joinTable' => 'capabilities_roles',
-            'className' => 'RolesCapabilities.Capabilities'
-        ]);
         $this->belongsToMany('Groups', [
             'foreignKey' => 'role_id',
             'targetForeignKey' => 'group_id',
@@ -60,8 +53,22 @@ class RolesTable extends Table
 
         $validator
             ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->notEmpty('name')
+            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['name']));
+        return $rules;
     }
 }

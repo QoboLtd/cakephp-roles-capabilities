@@ -18,8 +18,6 @@ class RolesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.roles_capabilities.roles',
-        'plugin.roles_capabilities.capabilities',
-        'plugin.roles_capabilities.capabilities_roles',
         'plugin.roles_capabilities.groups',
         'plugin.roles_capabilities.groups_roles'
     ];
@@ -64,6 +62,16 @@ class RolesTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
