@@ -7,6 +7,34 @@ use Cake\ORM\TableRegistry;
 class CapabilityComponent extends Component
 {
     /**
+     * Allow flag
+     */
+    const ALLOW = true;
+
+    /**
+     * Deny flag
+     */
+    const DENY = false;
+
+    /**
+     * Current controller
+     * @var object
+     */
+    protected $_controller;
+
+    /**
+     * Initialize method
+     * @param  array  $config configuration array
+     * @return void
+     */
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+
+        $this->_controller = $this->_registry->getController();
+    }
+
+    /**
      * Method that retrieves all defined capabilities
      * @return array capabilities
      */
