@@ -25,6 +25,12 @@ class CapabilityComponent extends Component
     protected $_controller;
 
     /**
+     * Current user details
+     * @var array
+     */
+    protected $_user = [];
+
+    /**
      * Initialize method
      * @param  array  $config configuration array
      * @return void
@@ -34,6 +40,7 @@ class CapabilityComponent extends Component
         parent::initialize($config);
 
         $this->_controller = $this->_registry->getController();
+        $this->_user = $this->Auth->user();
     }
 
     /**
