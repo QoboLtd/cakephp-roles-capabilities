@@ -58,6 +58,30 @@ class CapabilityComponent extends Component
     }
 
     /**
+     * Method that retrieves specified user's groups
+     * @param  string $userId user id
+     * @return array
+     */
+    protected function _getUserGroups($userId = null)
+    {
+        // if not specified, get current user's id
+        if (empty($userId)) {
+            $userId = $this->Auth->user('id');
+        }
+        $groups = TableRegistry::get('Groups.Groups');
+
+        $query = $groups->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'name'
+        ]);
+        $query->matching('Users', function ($q) use ($userId) {
+            return $q->where(['Users.id' => $userId]);
+        });
+
+        return $query->toArray();
+    }
+
+    /**
      * Method that retrieves all defined capabilities
      * @return array capabilities
      */
