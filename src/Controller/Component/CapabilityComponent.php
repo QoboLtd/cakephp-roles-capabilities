@@ -68,6 +68,7 @@ class CapabilityComponent extends Component
         if (empty($userId)) {
             $userId = $this->Auth->user('id');
         }
+
         $groups = TableRegistry::get('Groups.Groups');
 
         $query = $groups->find('list', [
@@ -79,6 +80,31 @@ class CapabilityComponent extends Component
         });
 
         return $query->toArray();
+    }
+
+    /**
+     * Method that retrieves specified group(s) roles.
+     * @param  array  $userGroups group(s) id(s)
+     * @return array
+     */
+    protected function _getGroupsRoles(array $userGroups = [])
+    {
+        $result = [];
+
+        if (!empty($userGroups)) {
+            $roles = TableRegistry::get('RolesCapabilities.Roles');
+
+            $query = $roles->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'name'
+            ]);
+            $query->matching('Groups', function ($q) use ($userGroups) {
+                return $q->where(['Groups.id IN' => array_keys($userGroups)]);
+            });
+            $result = $query->toArray();
+        }
+
+        return $result;
     }
 
     /**
