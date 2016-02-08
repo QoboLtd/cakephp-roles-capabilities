@@ -25,9 +25,9 @@ class CreateCapabilitiesRoles extends AbstractMigration
             'limit' => 36,
             'null' => false,
         ]);
-        $table->addColumn('capability_id', 'string', [
+        $table->addColumn('capability_name', 'string', [
             'default' => null,
-            'limit' => 36,
+            'limit' => 255,
             'null' => false,
         ]);
         $table->addPrimaryKey([
