@@ -1,5 +1,5 @@
 {
-    "name": "qobo/roles-capabilities",
+    "name": "qobo/cakephp-roles-capabilities",
     "description": "Roles and Capabilities plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
