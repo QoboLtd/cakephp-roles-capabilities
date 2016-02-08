@@ -16,6 +16,8 @@ class CapabilityComponent extends Component
      */
     const DENY = false;
 
+    public $components = ['Auth'];
+
     /**
      * Current controller
      * @var object
@@ -32,6 +34,20 @@ class CapabilityComponent extends Component
         parent::initialize($config);
 
         $this->_controller = $this->_registry->getController();
+    }
+
+    /**
+     * Method that retrieves controller capabilities
+     * @return array controller capabilities
+     */
+    protected function _getControllerCapabilities()
+    {
+        $caps = [];
+        if (method_exists($this->_controller, 'getCapabilities')) {
+            $caps = array_keys($this->_controller->getCapabilities());
+        }
+
+        return $caps;
     }
 
     /**
