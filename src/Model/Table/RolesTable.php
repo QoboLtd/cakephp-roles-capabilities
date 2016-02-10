@@ -78,4 +78,26 @@ class RolesTable extends Table
         $rules->add($rules->isUnique(['name']));
         return $rules;
     }
+
+    /**
+     * Method that prepares associated
+     * Capabilities records to be created.
+     * @param  array  $capabilities Capabilities to be created
+     * @return array                Capability objects
+     */
+    public function prepareCapabilities(array $capabilities = [])
+    {
+        $result = [];
+        if (!empty($capabilities)) {
+            foreach ($capabilities as $capName => $checked) {
+                if ('1' === $checked) {
+                    $capEntity = $this->Capabilities->newEntity();
+                    $capEntity->name = $capName;
+                    $result[] = $capEntity;
+                }
+            }
+        }
+
+        return $result;
+    }
 }
