@@ -16,22 +16,26 @@
         <legend><?= __('Edit Role') ?></legend>
         <?php
             echo $this->Form->input('name');
+            echo $this->Form->input('groups._ids', ['options' => $groups]);
         ?>
+    </fieldset>
+    <fieldset>
         <div class="form-group text">
-            <label for="capabilities-names">Capabilities</label>
+            <legend><?= __('Capabilities') ?></legend>
             <?php
-                foreach ($capabilities as $k => $v) {
-                    echo $this->Form->input('capabilities[_names][' . $k .']', [
-                        'type' => 'checkbox',
-                        'label' => $v,
-                        'checked' => in_array($k, $roleCaps)
-                    ]);
+                foreach ($capabilities as $group_name => $group_caps) {
+                    echo '<label>' . $group_name . '</label>';
+                    foreach ($group_caps as $k => $v) {
+                        echo $this->Form->input('capabilities[_names][' . $k .']', [
+                            'type' => 'checkbox',
+                            'label' => $v,
+                            'div' => false,
+                            'checked' => in_array($k, $roleCaps)
+                        ]);
+                    }
                 }
             ?>
         </div>
-        <?php
-            echo $this->Form->input('groups._ids', ['options' => $groups]);
-        ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
