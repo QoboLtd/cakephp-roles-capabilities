@@ -19,8 +19,7 @@ class CapabilitiesFixture extends TestFixture
     public $fields = [
         'id' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
-        'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'role_id' => ['type' => 'string', 'length' => 36, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -38,10 +37,9 @@ class CapabilitiesFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => '6fad65e6-828e-4b82-8c91-2ad7db9e2c15',
+            'id' => 'c3327fd3-66d7-4037-91af-2baa39ccd85f',
             'name' => 'Lorem ipsum dolor sit amet',
-            'created' => '2016-02-04 17:07:26',
-            'modified' => '2016-02-04 17:07:26'
+            'role_id' => 'Lorem ipsum dolor sit amet'
         ],
     ];
 }
