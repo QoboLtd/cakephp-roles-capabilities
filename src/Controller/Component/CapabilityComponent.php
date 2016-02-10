@@ -157,8 +157,8 @@ class CapabilityComponent extends Component
         foreach ($controllers as $controller) {
             $classObj = new $controller;
             if (method_exists($classObj, 'getCapabilities')) {
-                foreach ($classObj->getCapabilities() as $k => $v) {
-                    $capabilities[$controller][$k] = $v['name'];
+                foreach ($classObj->getCapabilities() as $capability) {
+                    $capabilities[$controller][$capability->getName()] = $capability->getLabel();
                 }
             }
         }
