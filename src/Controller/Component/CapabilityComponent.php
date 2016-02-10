@@ -58,7 +58,7 @@ class CapabilityComponent extends Component
         }
 
         $userCaps = $this->_getUserCapabilities();
-        if (!empty($userCaps[$capability])) {
+        if (in_array($capability, $userCaps)) {
             return true;
         }
 
@@ -86,12 +86,12 @@ class CapabilityComponent extends Component
 
         $userCaps = [];
         if (!empty($userRoles)) {
-            $rolesCaps = TableRegistry::get('RolesCapabilities.CapabilitiesRoles');
+            $rolesCaps = TableRegistry::get('RolesCapabilities.Capabilities');
             $query = $rolesCaps->find('list')->where(['role_id IN' => array_keys($userRoles)]);
             $userCaps = $query->toArray();
         }
 
-        return $userCaps;
+        return array_values($userCaps);
     }
 
     /**
@@ -157,11 +157,11 @@ class CapabilityComponent extends Component
         foreach ($controllers as $controller) {
             $classObj = new $controller;
             if (method_exists($classObj, 'getCapabilities')) {
-                $controllerCaps = array_keys($classObj->getCapabilities());
-                $capabilities = array_merge($capabilities, $controllerCaps);
+                foreach ($classObj->getCapabilities() as $k => $v) {
+                    $capabilities[$k] = $v['name'];
+                }
             }
         }
-
 
         return $capabilities;
     }
