@@ -81,6 +81,15 @@ class RolesController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $role = $this->Roles->patchEntity($role, $this->request->data);
+            // prepare associated capability records for creation
+            if (!empty($this->request->data['capabilities']['_names'])) {
+                $role->capabilities = $this->Roles->prepareCapabilities(
+                    $this->request->data['capabilities']['_names']
+                );
+            }
+            // delete existing role capabilities
+            $this->Roles->Capabilities->deleteAll(['role_id' => $id]);
+
             if ($this->Roles->save($role)) {
                 $this->Flash->success(__('The role has been saved.'));
                 return $this->redirect(['action' => 'index']);
