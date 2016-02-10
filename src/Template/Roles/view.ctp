@@ -28,6 +28,23 @@
         </tr>
     </table>
     <div class="related">
+        <h4><?= __('Related Capabilities') ?></h4>
+        <?php if (!empty($role->capabilities)): ?>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th><?= __('Id') ?></th>
+                <th><?= __('Name') ?></th>
+            </tr>
+            <?php foreach ($role->capabilities as $capabilities): ?>
+            <tr>
+                <td><?= h($capabilities->id) ?></td>
+                <td><?= h($capabilities->name) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+    </div>
+    <div class="related">
         <h4><?= __('Related Groups') ?></h4>
         <?php if (!empty($role->groups)): ?>
         <table cellpadding="0" cellspacing="0">

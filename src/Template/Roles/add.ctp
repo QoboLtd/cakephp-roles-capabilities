@@ -10,10 +10,20 @@
         <legend><?= __('Add Role') ?></legend>
         <?php
             echo $this->Form->input('name');
+        ?>
+        <div class="form-group text">
+            <label for="capabilities-names">Capabilities</label>
+            <?php
+                foreach ($capabilities as $k => $v) {
+                    echo $this->Form->input('capabilities[_names][' . $k .']', [
+                        'type' => 'checkbox',
+                        'label' => $v
+                    ]);
+                }
+            ?>
+        </div>
+        <?php
             echo $this->Form->input('groups._ids', ['options' => $groups]);
-            foreach ($capabilities as $capability) {
-                echo $this->Form->input($capability, ['type' => 'checkbox']);
-            }
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

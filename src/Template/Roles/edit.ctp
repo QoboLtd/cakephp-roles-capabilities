@@ -16,6 +16,20 @@
         <legend><?= __('Edit Role') ?></legend>
         <?php
             echo $this->Form->input('name');
+        ?>
+        <div class="form-group text">
+            <label for="capabilities-names">Capabilities</label>
+            <?php
+                foreach ($capabilities as $k => $v) {
+                    echo $this->Form->input('capabilities[_names][' . $k .']', [
+                        'type' => 'checkbox',
+                        'label' => $v,
+                        'checked' => in_array($k, $roleCaps)
+                    ]);
+                }
+            ?>
+        </div>
+        <?php
             echo $this->Form->input('groups._ids', ['options' => $groups]);
         ?>
     </fieldset>
