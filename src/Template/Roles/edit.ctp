@@ -24,7 +24,7 @@
             <legend><?= __('Capabilities') ?></legend>
             <?php
                 foreach ($capabilities as $group_name => $group_caps) {
-                    echo '<label>' . $group_name . '</label>';
+                    echo '<label>' .  $this->cell('RolesCapabilities.Capability::groupName', [$group_name]) . '</label>';
                     foreach ($group_caps as $k => $v) {
                         echo $this->Form->input('capabilities[_names][' . $k .']', [
                             'type' => 'checkbox',
