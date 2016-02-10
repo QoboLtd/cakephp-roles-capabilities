@@ -35,12 +35,6 @@ class CapabilitiesTable extends Table
             'joinType' => 'INNER',
             'className' => 'RolesCapabilities.Roles'
         ]);
-        $this->belongsToMany('Roles', [
-            'foreignKey' => 'capability_id',
-            'targetForeignKey' => 'role_id',
-            'joinTable' => 'capabilities_roles',
-            'className' => 'RolesCapabilities.Roles'
-        ]);
     }
 
     /**
