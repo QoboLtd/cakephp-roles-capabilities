@@ -89,8 +89,10 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
+        // fetch role capabilities
+        $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
         $capabilities = $this->Capability->getAllCapabilities();
-        $this->set(compact('role', 'groups', 'capabilities'));
+        $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);
     }
 
