@@ -10,6 +10,8 @@ use RolesCapabilities\Model\Entity\Role;
 /**
  * Roles Model
  *
+ * @property \Cake\ORM\Association\HasMany $Capabilities
+ * @property \Cake\ORM\Association\BelongsToMany $Capabilities
  * @property \Cake\ORM\Association\BelongsToMany $Groups
  */
 class RolesTable extends Table
@@ -31,6 +33,11 @@ class RolesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->hasMany('Capabilities', [
+            'foreignKey' => 'role_id',
+            'className' => 'RolesCapabilities.Capabilities',
+            'dependent' => true
+        ]);
         $this->belongsToMany('Groups', [
             'foreignKey' => 'role_id',
             'targetForeignKey' => 'group_id',
