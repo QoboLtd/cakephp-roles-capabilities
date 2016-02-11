@@ -1,0 +1,24 @@
+{
+    "name": "qobo/cakephp-roles-capabilities",
+    "description": "Roles and Capabilities plugin for CakePHP",
+    "type": "cakephp-plugin",
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.0",
+        "qobo/cakephp-groups": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "RolesCapabilities\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RolesCapabilities\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    }
+}
