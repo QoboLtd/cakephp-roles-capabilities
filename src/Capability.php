@@ -30,13 +30,13 @@ class Capability
      */
     public function __construct(array $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : '';
+        $name = !empty($options['name']) ? $options['name'] : '';
         $this->setName($name);
 
-        $label = isset($options['label']) ? $options['label'] : '';
+        $label = !empty($options['label']) ? $options['label'] : '';
         $this->setLabel($label);
 
-        $description = isset($options['description']) ? $options['description'] : '';
+        $description = !empty($options['description']) ? $options['description'] : '';
         $this->setDescription($description);
     }
 
