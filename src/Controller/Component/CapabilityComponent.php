@@ -16,7 +16,7 @@ class CapabilityComponent extends Component
      */
     const DENY = false;
 
-    public $components = ['Auth'];
+    public $components = ['Auth', 'Groups.Group'];
 
     /**
      * Current controller
@@ -72,7 +72,7 @@ class CapabilityComponent extends Component
      */
     protected function _getUserCapabilities($userId)
     {
-        $userGroups = $this->_getUserGroups($userId);
+        $userGroups = $this->Group->getUserGroups($userId);
 
         $userRoles = [];
         if (!empty($userGroups)) {
@@ -87,26 +87,6 @@ class CapabilityComponent extends Component
         }
 
         return array_values($userCaps);
-    }
-
-    /**
-     * Method that retrieves specified user's groups
-     * @param  string $userId user id
-     * @return array
-     */
-    protected function _getUserGroups($userId)
-    {
-        $groups = TableRegistry::get('Groups.Groups');
-
-        $query = $groups->find('list', [
-            'keyField' => 'id',
-            'valueField' => 'name'
-        ]);
-        $query->matching('Users', function ($q) use ($userId) {
-            return $q->where(['Users.id' => $userId]);
-        });
-
-        return $query->toArray();
     }
 
     /**
