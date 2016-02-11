@@ -125,9 +125,8 @@ class CapabilityComponent extends Component
         $controllers = $this->_getAllControllers();
 
         foreach ($controllers as $controller) {
-            $classObj = new $controller;
-            if (method_exists($classObj, 'getCapabilities')) {
-                foreach ($classObj->getCapabilities() as $capability) {
+            if (is_callable([$controller, 'getCapabilities'])) {
+                foreach ($controller::getCapabilities() as $capability) {
                     $capabilities[$controller][$capability->getName()] = $capability->getLabel();
                 }
             }
