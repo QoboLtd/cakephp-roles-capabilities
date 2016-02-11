@@ -55,6 +55,9 @@ class Capability
      */
     public function setName($name)
     {
+        if (!is_string($name) || empty($name)) {
+            throw new \InvalidArgumentException();
+        }
         $this->_name = $name;
 
         return $this;
