@@ -57,7 +57,7 @@ class CapabilityComponent extends Component
             $userId = $this->_user['id'];
         }
 
-        $userCaps = $this->_getUserCapabilities();
+        $userCaps = $this->_getUserCapabilities($userId);
         if (in_array($capability, $userCaps)) {
             return true;
         }
@@ -70,14 +70,9 @@ class CapabilityComponent extends Component
      * @param  string $userId user id
      * @return array
      */
-    protected function _getUserCapabilities($userId = '')
+    protected function _getUserCapabilities($userId)
     {
-        // if not specified, get current user's id
-        if (empty($userId)) {
-            $userId = $this->_user['id'];
-        }
-
-        $userGroups = $this->_getUserGroups();
+        $userGroups = $this->_getUserGroups($userId);
 
         $userRoles = [];
         if (!empty($userGroups)) {
@@ -99,13 +94,8 @@ class CapabilityComponent extends Component
      * @param  string $userId user id
      * @return array
      */
-    protected function _getUserGroups($userId = '')
+    protected function _getUserGroups($userId)
     {
-        // if not specified, get current user's id
-        if (empty($userId)) {
-            $userId = $this->_user['id'];
-        }
-
         $groups = TableRegistry::get('Groups.Groups');
 
         $query = $groups->find('list', [
