@@ -28,9 +28,8 @@ class Capability
      * Constructor method
      * @param string $options Capability options
      */
-    public function __construct(array $options = [])
+    public function __construct($name, array $options = [])
     {
-        $name = !empty($options['name']) ? $options['name'] : '';
         $this->setName($name);
 
         $label = !empty($options['label']) ? $options['label'] : '';
