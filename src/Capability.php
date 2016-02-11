@@ -7,6 +7,15 @@ namespace RolesCapabilities;
 class Capability
 {
     /**
+     * default options
+     * @var array
+     */
+    protected $_default_options = [
+        'label' => '',
+        'description' => ''
+    ];
+
+    /**
      * Capability name
      * @var string
      */
@@ -26,17 +35,19 @@ class Capability
 
     /**
      * Constructor method
-     * @param string $options Capability options
+     * @param string $name    Capability name
+     * @param array  $options Capability options
      */
     public function __construct($name, array $options = [])
     {
         $this->setName($name);
 
-        $label = !empty($options['label']) ? $options['label'] : '';
-        $this->setLabel($label);
+        // set capability options
+        $options = array_merge($this->_default_options, $options);
 
-        $description = !empty($options['description']) ? $options['description'] : '';
-        $this->setDescription($description);
+        $this->setLabel($options['label']);
+
+        $this->setDescription($options['description']);
     }
 
     /**
