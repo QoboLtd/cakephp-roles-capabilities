@@ -15,7 +15,7 @@ composer require qobo/cakephp-roles-capabilities
 Run plugin's migration task:
 
 ```
-bin/cake migrations migrate -p Groups
+bin/cake migrations migrate -p RolesCapabilities
 ```
 
 Load the plugin in your config/bootstrap.php file:
