@@ -19,14 +19,6 @@ class CapabilitiesTableTest extends TestCase
     public $fixtures = [
         'plugin.roles_capabilities.capabilities',
         'plugin.roles_capabilities.roles',
-        'plugin.roles_capabilities.groups',
-        'plugin.roles_capabilities.phinxlog',
-        'plugin.roles_capabilities.groups_phinxlog',
-        'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.social_accounts',
-        'plugin.roles_capabilities.groups_users',
-        'plugin.roles_capabilities.groups_roles',
-        'plugin.roles_capabilities.capabilities_roles'
     ];
 
     /**
