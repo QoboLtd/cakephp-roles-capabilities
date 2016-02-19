@@ -21,7 +21,7 @@ bin/cake migrations migrate -p RolesCapabilities
 Load the plugin in your config/bootstrap.php file:
 
 ```
-Plugin::load('RolesCapabilities', ['bootstrap' => false, 'routes' => true, 'autoload' => true]);
+Plugin::load('RolesCapabilities', ['bootstrap' => false, 'routes' => true]);
 ```
 
 Load the Capability component in your src/Controller/AppController.php file, from the `initialize()` method:
@@ -54,7 +54,7 @@ class PostsController extends AppController
     {
         return [
             new Capability(static::CAP_POSTS_INDEX, [
-                'label' => 'Cap Posts Index'
+                'label' => 'Cap Posts Index',
                 'description' => 'Allow listing posts'
             ])
         ];
