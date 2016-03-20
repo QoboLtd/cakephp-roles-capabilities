@@ -1,43 +1,43 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Role'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="roles index large-9 medium-8 columns content">
-    <h3><?= __('Roles') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th><?= $this->Paginator->sort('id') ?></th>
-                <th><?= $this->Paginator->sort('name') ?></th>
-                <th><?= $this->Paginator->sort('created') ?></th>
-                <th><?= $this->Paginator->sort('modified') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($roles as $role): ?>
-            <tr>
-                <td><?= h($role->id) ?></td>
-                <td><?= h($role->name) ?></td>
-                <td><?= h($role->created) ?></td>
-                <td><?= h($role->modified) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $role->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $role->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $role->id], ['confirm' => __('Are you sure you want to delete # {0}?', $role->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-        </ul>
-        <p><?= $this->Paginator->counter() ?></p>
+<div class="row">
+    <div class="col-xs-12">
+        <p class="text-right">
+            <?= $this->Html->link(__('Add Role'), ['action' => 'add'], ['class' => 'btn btn-primary']); ?>
+        </p>
     </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><?= $this->Paginator->sort('id') ?></th>
+                    <th><?= $this->Paginator->sort('name') ?></th>
+                    <th class="actions"><?= __('Actions') ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($roles as $role): ?>
+                <tr>
+                    <td><?= h($role->id) ?></td>
+                    <td><?= h($role->name) ?></td>
+                    <td class="actions">
+                        <?= $this->Html->link('', ['action' => 'view', $role->id], ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-eye-open']) ?>
+                        <?= $this->Html->link('', ['action' => 'edit', $role->id], ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-pencil']) ?>
+                        <?= $this->Form->postLink('', ['action' => 'delete', $role->id], ['confirm' => __('Are you sure you want to delete # {0}?', $role->id), 'title' => __('Delete'), 'class' => 'btn btn-default glyphicon glyphicon-trash']) ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="paginator">
+    <ul class="pagination">
+        <?= $this->Paginator->prev('< ' . __('previous')) ?>
+        <?= $this->Paginator->numbers(['before' => '', 'after' => '']) ?>
+        <?= $this->Paginator->next(__('next') . ' >') ?>
+    </ul>
+    <p><?= $this->Paginator->counter() ?></p>
 </div>
