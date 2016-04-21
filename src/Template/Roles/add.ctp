@@ -16,16 +16,26 @@
                             <?= $this->Form->input('groups._ids', ['options' => $groups]); ?>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?= __('Capabilities') ?></h3>
+                </div>
+                <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-xs-12">
                             <div class="form-group text">
-                                <label for="capabilities-names">Capabilities</label>
                                 <?php
-                                    foreach ($capabilities as $k => $v) {
-                                        echo $this->Form->input('capabilities[_names][' . $k .']', [
-                                            'type' => 'checkbox',
-                                            'label' => $v
-                                        ]);
+                                    foreach ($capabilities as $group_name => $group_caps) {
+                                        echo '<label>' .  $this->cell('RolesCapabilities.Capability::groupName', [$group_name]) . '</label>';
+                                        foreach ($group_caps as $k => $v) {
+                                            echo $this->Form->input('capabilities[_names][' . $k .']', [
+                                                'type' => 'checkbox',
+                                                'label' => $v,
+                                                'div' => false
+                                            ]);
+                                        }
                                     }
                                 ?>
                             </div>
