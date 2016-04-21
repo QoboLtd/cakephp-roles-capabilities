@@ -90,7 +90,7 @@ class Capability
      */
     public function setLabel($label = '')
     {
-        $this->_label = '' !== trim($label) ?: ucwords(str_replace('_', ' ', $this->_name));
+        $this->_label = '' !== trim($label) ? $label : ucwords(str_replace('_', ' ', $this->_name));
 
         return $this;
     }

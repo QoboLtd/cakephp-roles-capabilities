@@ -126,8 +126,8 @@ class CapabilityComponent extends Component
 
         foreach ($controllers as $controller) {
             if (is_callable([$controller, 'getCapabilities'])) {
-                foreach ($controller::getCapabilities() as $capability) {
-                    $capabilities[$controller][$capability->getName()] = $capability->getLabel();
+                foreach ($controller::getCapabilities($controller) as $capability) {
+                    $capabilities[$controller][$capability->getName()] = $capability->getDescription();
                 }
             }
         }
