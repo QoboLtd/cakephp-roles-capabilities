@@ -1,8 +1,9 @@
 <?php
 namespace RolesCapabilities;
 
-use Cake\Event\Event;
 use Cake\Core\App;
+use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -38,7 +39,7 @@ trait CapabilityTrait
             }
         }
 
-        $controllerName = str_replace('\\', '_', $controllerName);
+        $controllerName = static::_generateCapabilityControllerName($controllerName);
 
         foreach ($actions as $action) {
             $result[] = new Capability(
@@ -65,7 +66,10 @@ trait CapabilityTrait
         $requestParams = $event->subject()->request->params;
         $plugin = is_null($requestParams['plugin']) ? 'App' : $requestParams['plugin'];
         $controllerName = App::className($plugin . '.' . $event->subject()->name . 'Controller', 'Controller');
-        $capability = 'cap__' . $controllerName . '__' . $requestParams['action'];
+        $capability = static::_generateCapabilityName(
+            static::_generateCapabilityControllerName($controllerName),
+            $requestParams['action']
+        );
         $allCapabilities = $this->getCapabilities($controllerName);
         $capExists = false;
         foreach ($allCapabilities as $cap) {
@@ -120,6 +124,13 @@ trait CapabilityTrait
     protected static function _getSkipActions($controllerName)
     {
         $result = ['getCapabilities'];
+
+        return $result;
+    }
+
+    protected static function _generateCapabilityControllerName($controllerName)
+    {
+        $result = str_replace('\\', '_', $controllerName);
 
         return $result;
     }
