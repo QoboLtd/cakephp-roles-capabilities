@@ -32,7 +32,7 @@
                             <div class="form-group text">
                                 <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$group_name]) ?></label>
                             <?php
-                                sort($group_caps);
+                                asort($group_caps);
                                 foreach ($group_caps as $k => $v) {
                                     echo $this->Form->input('capabilities[_names][' . $k .']', [
                                         'type' => 'checkbox',
