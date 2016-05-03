@@ -1,6 +1,7 @@
 <?php
 namespace RolesCapabilities\View\Cell;
 
+use Cake\Utility\Inflector;
 use Cake\View\Cell;
 
 /**
@@ -36,13 +37,22 @@ class CapabilityCell extends Cell
     {
         $parts = array_map(
             function ($n) {
-                return str_replace('Controller', '', $n);
+                return Inflector::humanize(Inflector::underscore(str_replace('Controller', '', $n)));
             },
             explode('\\', $name)
         );
+
+        /*
+        removes empty array entries
+         */
         $parts = array_filter($parts);
 
-        $name = implode(' ', $parts);
+        /*
+        get just the controller and plugin names
+         */
+        $parts = array_slice($parts, -2);
+
+        $name = implode(' :: ', $parts);
 
         $this->set('groupName', $name);
     }

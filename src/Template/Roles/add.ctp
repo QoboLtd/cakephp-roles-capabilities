@@ -24,22 +24,26 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-12">
+                        <?php
+                        ksort($capabilities);
+                        foreach ($capabilities as $group_name => $group_caps) :
+                    ?>
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="form-group text">
-                                <?php
-                                    foreach ($capabilities as $group_name => $group_caps) {
-                                        echo '<label>' .  $this->cell('RolesCapabilities.Capability::groupName', [$group_name]) . '</label>';
-                                        foreach ($group_caps as $k => $v) {
-                                            echo $this->Form->input('capabilities[_names][' . $k .']', [
-                                                'type' => 'checkbox',
-                                                'label' => $v,
-                                                'div' => false
-                                            ]);
-                                        }
-                                    }
-                                ?>
+                                <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$group_name]) ?></label>
+                            <?php
+                                asort($group_caps);
+                                foreach ($group_caps as $k => $v) {
+                                    echo $this->Form->input('capabilities[_names][' . $k .']', [
+                                        'type' => 'checkbox',
+                                        'label' => $v,
+                                        'div' => false
+                                    ]);
+                                }
+                            ?>
                             </div>
                         </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>

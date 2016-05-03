@@ -2,6 +2,7 @@
 namespace RolesCapabilities\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Core\App;
 use Cake\ORM\TableRegistry;
 
 class CapabilityComponent extends Component
@@ -41,6 +42,27 @@ class CapabilityComponent extends Component
 
         $this->_controller = $this->_registry->getController();
         $this->_user = $this->Auth->user();
+    }
+
+    /**
+     * Method that retrieves all defined capabilities
+     * @return array capabilities
+     */
+    public function getAllCapabilities()
+    {
+        $capabilities = [];
+        // get all controllers
+        $controllers = $this->_getAllControllers();
+
+        foreach ($controllers as $controller) {
+            if (is_callable([$controller, 'getCapabilities'])) {
+                foreach ($controller::getCapabilities($controller) as $capability) {
+                    $capabilities[$controller][$capability->getName()] = $capability->getDescription();
+                }
+            }
+        }
+
+        return $capabilities;
     }
 
     /**
@@ -115,27 +137,6 @@ class CapabilityComponent extends Component
     }
 
     /**
-     * Method that retrieves all defined capabilities
-     * @return array capabilities
-     */
-    public function getAllCapabilities()
-    {
-        $capabilities = [];
-        // get all controllers
-        $controllers = $this->_getAllControllers();
-
-        foreach ($controllers as $controller) {
-            if (is_callable([$controller, 'getCapabilities'])) {
-                foreach ($controller::getCapabilities($controller) as $capability) {
-                    $capabilities[$controller][$capability->getName()] = $capability->getDescription();
-                }
-            }
-        }
-
-        return $capabilities;
-    }
-
-    /**
      * Method that returns all controller names.
      * @param  bool  $includePlugins flag for including plugin controllers
      * @return array                 controller names
@@ -177,7 +178,7 @@ class CapabilityComponent extends Component
                     }
 
                     if (true === $fqcn) {
-                        $className = \Cake\Core\App::className($className, 'Controller');
+                        $className = App::className($className, 'Controller');
                     }
 
                     $controllers[] = $className;
