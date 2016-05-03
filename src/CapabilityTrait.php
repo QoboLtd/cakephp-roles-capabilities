@@ -43,7 +43,8 @@ trait CapabilityTrait
 
         foreach ($actions as $action) {
             $result[] = new Capability(
-                static::_generateCapabilityName($controllerName, $action), [
+                static::_generateCapabilityName($controllerName, $action),
+                [
                     'label' => static::_generateCapabilityLabel($controllerName, $action),
                     'description' => static::_generateCapabilityDescription($controllerName, $action)
                 ]
@@ -104,6 +105,11 @@ trait CapabilityTrait
         }
     }
 
+    /**
+     * Get list of Cake's Controller class methods.
+     *
+     * @return array
+     */
     protected static function _getCakeControllerActions()
     {
         $result = get_class_methods('Cake\Controller\Controller');
