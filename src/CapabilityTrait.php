@@ -111,6 +111,11 @@ trait CapabilityTrait
         return $result;
     }
 
+    /**
+     * Get list of skipped controllers.
+     *
+     * @return array
+     */
     protected static function _getSkipControllers()
     {
         $result = [
@@ -121,6 +126,12 @@ trait CapabilityTrait
         return $result;
     }
 
+    /**
+     * Get list of controller's skipped actions.
+     *
+     * @param  string $controllerName Controller name
+     * @return array
+     */
     protected static function _getSkipActions($controllerName)
     {
         $result = ['getCapabilities'];
@@ -128,6 +139,12 @@ trait CapabilityTrait
         return $result;
     }
 
+    /**
+     * Generate capability's controller name.
+     *
+     * @param  string $controllerName Controller name
+     * @return string
+     */
     protected static function _generateCapabilityControllerName($controllerName)
     {
         $result = str_replace('\\', '_', $controllerName);
@@ -135,6 +152,13 @@ trait CapabilityTrait
         return $result;
     }
 
+    /**
+     * Generate capability name.
+     *
+     * @param  string $controllerName Controller name
+     * @param  string $action         Action name
+     * @return string
+     */
     protected static function _generateCapabilityName($controllerName, $action)
     {
         $result = 'cap__' . $controllerName . '__' . $action;
@@ -142,6 +166,13 @@ trait CapabilityTrait
         return $result;
     }
 
+    /**
+     * Generate capability label.
+     *
+     * @param  string $controllerName Controller name
+     * @param  string $action         Action name
+     * @return string
+     */
     protected static function _generateCapabilityLabel($controllerName, $action)
     {
         $result = 'Cap ' . $controllerName . ' ' . $action;
@@ -149,6 +180,13 @@ trait CapabilityTrait
         return $result;
     }
 
+    /**
+     * Generate capability description.
+     *
+     * @param  string $controllerName Controller name
+     * @param  string $action         Action name
+     * @return string
+     */
     protected static function _generateCapabilityDescription($controllerName, $action)
     {
         $result = 'Allow ' . $action;
