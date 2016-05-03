@@ -44,6 +44,27 @@ class CapabilityComponent extends Component
     }
 
     /**
+     * Method that retrieves all defined capabilities
+     * @return array capabilities
+     */
+    public function getAllCapabilities()
+    {
+        $capabilities = [];
+        // get all controllers
+        $controllers = $this->_getAllControllers();
+
+        foreach ($controllers as $controller) {
+            if (is_callable([$controller, 'getCapabilities'])) {
+                foreach ($controller::getCapabilities($controller) as $capability) {
+                    $capabilities[$controller][$capability->getName()] = $capability->getDescription();
+                }
+            }
+        }
+
+        return $capabilities;
+    }
+
+    /**
      * Method that checks if current user is allowed access.
      * Returns true if current user has access, false otherwise.
      * @param  string $capability capability name
@@ -112,27 +133,6 @@ class CapabilityComponent extends Component
         }
 
         return $result;
-    }
-
-    /**
-     * Method that retrieves all defined capabilities
-     * @return array capabilities
-     */
-    public function getAllCapabilities()
-    {
-        $capabilities = [];
-        // get all controllers
-        $controllers = $this->_getAllControllers();
-
-        foreach ($controllers as $controller) {
-            if (is_callable([$controller, 'getCapabilities'])) {
-                foreach ($controller::getCapabilities($controller) as $capability) {
-                    $capabilities[$controller][$capability->getName()] = $capability->getDescription();
-                }
-            }
-        }
-
-        return $capabilities;
     }
 
     /**
