@@ -1,8 +1,8 @@
 <?php
 namespace RolesCapabilities\View\Cell;
 
-use Cake\View\Cell;
 use Cake\Utility\Inflector;
+use Cake\View\Cell;
 
 /**
  * Capability cell
