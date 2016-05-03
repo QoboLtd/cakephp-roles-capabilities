@@ -2,6 +2,7 @@
 namespace RolesCapabilities;
 
 use Cake\Event\Event;
+use Cake\Core\App;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -63,7 +64,7 @@ trait CapabilityTrait
     {
         $requestParams = $event->subject()->request->params;
         $plugin = is_null($requestParams['plugin']) ? 'App' : $requestParams['plugin'];
-        $controllerName = $plugin . '\\Controller\\' . $event->subject()->name . 'Controller';
+        $controllerName = App::className($plugin . '.' . $event->subject()->name . 'Controller', 'Controller');
         $capability = 'cap__' . $controllerName . '__' . $requestParams['action'];
         $allCapabilities = $this->getCapabilities($controllerName);
         $capExists = false;

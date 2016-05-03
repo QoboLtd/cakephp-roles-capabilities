@@ -2,6 +2,7 @@
 namespace RolesCapabilities\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Core\App;
 use Cake\ORM\TableRegistry;
 
 class CapabilityComponent extends Component
@@ -177,7 +178,7 @@ class CapabilityComponent extends Component
                     }
 
                     if (true === $fqcn) {
-                        $className = \Cake\Core\App::className($className, 'Controller');
+                        $className = App::className($className, 'Controller');
                     }
 
                     $controllers[] = $className;
