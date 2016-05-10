@@ -32,6 +32,13 @@ class CapabilityComponent extends Component
     protected $_user = [];
 
     /**
+     * Capabilities Table instance.
+     *
+     * @var object
+     */
+    protected $_capabilitiesTable;
+
+    /**
      * Initialize method
      * @param  array  $config configuration array
      * @return void
@@ -42,6 +49,7 @@ class CapabilityComponent extends Component
 
         $this->_controller = $this->_registry->getController();
         $this->_user = $this->Auth->user();
+        $this->_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
     }
 
     /**
@@ -79,61 +87,29 @@ class CapabilityComponent extends Component
             $userId = $this->_user['id'];
         }
 
-        $userCaps = $this->_getUserCapabilities($userId);
-        if (in_array($capability, $userCaps)) {
-            return true;
-        }
-
-        return false;
+        return $this->_capabilitiesTable->hasAccess($capability, $userId);
     }
 
     /**
      * Method that retrieves specified user's capabilities
      * @param  string $userId user id
+     * @deprecated
      * @return array
      */
     protected function _getUserCapabilities($userId)
     {
-        $userGroups = $this->Group->getUserGroups($userId);
-
-        $userRoles = [];
-        if (!empty($userGroups)) {
-            $userRoles = $this->_getGroupsRoles($userGroups);
-        }
-
-        $userCaps = [];
-        if (!empty($userRoles)) {
-            $rolesCaps = TableRegistry::get('RolesCapabilities.Capabilities');
-            $query = $rolesCaps->find('list')->where(['role_id IN' => array_keys($userRoles)]);
-            $userCaps = $query->toArray();
-        }
-
-        return array_values($userCaps);
+        return $this->_capabilitiesTable->getUserCapabilities($userId);
     }
 
     /**
      * Method that retrieves specified group(s) roles.
      * @param  array  $userGroups group(s) id(s)
+     * @deprecated
      * @return array
      */
     protected function _getGroupsRoles(array $userGroups = [])
     {
-        $result = [];
-
-        if (!empty($userGroups)) {
-            $roles = TableRegistry::get('RolesCapabilities.Roles');
-
-            $query = $roles->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'name'
-            ]);
-            $query->matching('Groups', function ($q) use ($userGroups) {
-                return $q->where(['Groups.id IN' => array_keys($userGroups)]);
-            });
-            $result = $query->toArray();
-        }
-
-        return $result;
+        return $this->_capabilitiesTable->getGroupsRoles($userGroups);
     }
 
     /**
