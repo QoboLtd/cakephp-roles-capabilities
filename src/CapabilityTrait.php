@@ -4,11 +4,31 @@ namespace RolesCapabilities;
 use Cake\Core\App;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
-use ReflectionClass;
-use ReflectionMethod;
+use Cake\ORM\TableRegistry;
 
 trait CapabilityTrait
 {
+    /**
+     * Capabilities Table instance.
+     *
+     * @var object
+     */
+    protected static $_capabilitiesTable;
+
+    /**
+     * Get instance of Capabilities Table.
+     *
+     * @return object Capabilities Table object
+     */
+    protected static function _getCapabilitiesTable()
+    {
+        if (empty(static::$_capabilitiesTable)) {
+            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        }
+
+        return static::$_capabilitiesTable;
+    }
+
     /**
      * Returns permission capabilities.
      *
@@ -17,41 +37,7 @@ trait CapabilityTrait
      */
     public static function getCapabilities($controllerName = null)
     {
-        $result = [];
-
-        if (empty($controllerName)) {
-            return $result;
-        }
-
-        $skipControllers = static::_getSkipControllers();
-        if (in_array($controllerName, $skipControllers)) {
-            return $result;
-        }
-
-        $skipActions = array_merge(static::_getSkipActions($controllerName), static::_getCakeControllerActions());
-
-        $refClass = new ReflectionClass($controllerName);
-
-        $actions = [];
-        foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if (!in_array($method->name, $skipActions)) {
-                $actions[] = $method->name;
-            }
-        }
-
-        $controllerName = static::_generateCapabilityControllerName($controllerName);
-
-        foreach ($actions as $action) {
-            $result[] = new Capability(
-                static::_generateCapabilityName($controllerName, $action),
-                [
-                    'label' => static::_generateCapabilityLabel($controllerName, $action),
-                    'description' => static::_generateCapabilityDescription($controllerName, $action)
-                ]
-            );
-        }
-
-        return $result;
+        return static::_getCapabilitiesTable()->getCapabilities($controllerName);
     }
 
     /**
@@ -112,9 +98,7 @@ trait CapabilityTrait
      */
     protected static function _getCakeControllerActions()
     {
-        $result = get_class_methods('Cake\Controller\Controller');
-
-        return $result;
+        return static::_getCapabilitiesTable()->getCakeControllerActions();
     }
 
     /**
@@ -122,14 +106,20 @@ trait CapabilityTrait
      *
      * @return array
      */
+    public static function getSkipControllers()
+    {
+        return static::_getCapabilitiesTable()->getSkipControllers();
+    }
+
+    /**
+     * Get list of skipped controllers.
+     *
+     * @deprecated
+     * @return array
+     */
     protected static function _getSkipControllers()
     {
-        $result = [
-            'CakeDC\Users\Controller\SocialAccountsController',
-            'App\Controller\PagesController'
-        ];
-
-        return $result;
+        return static::getSkipControllers();
     }
 
     /**
@@ -138,11 +128,21 @@ trait CapabilityTrait
      * @param  string $controllerName Controller name
      * @return array
      */
+    public static function getSkipActions($controllerName)
+    {
+        return static::_getCapabilitiesTable()->getSkipActions($controllerName);
+    }
+
+    /**
+     * Get list of controller's skipped actions.
+     *
+     * @param  string $controllerName Controller name
+     * @deprecated
+     * @return array
+     */
     protected static function _getSkipActions($controllerName)
     {
-        $result = ['getCapabilities'];
-
-        return $result;
+        return static::getSkipActions($controllerName);
     }
 
     /**
@@ -153,9 +153,7 @@ trait CapabilityTrait
      */
     protected static function _generateCapabilityControllerName($controllerName)
     {
-        $result = str_replace('\\', '_', $controllerName);
-
-        return $result;
+        return static::_getCapabilitiesTable()->generateCapabilityControllerName($controllerName);
     }
 
     /**
@@ -167,9 +165,7 @@ trait CapabilityTrait
      */
     protected static function _generateCapabilityName($controllerName, $action)
     {
-        $result = 'cap__' . $controllerName . '__' . $action;
-
-        return $result;
+        return static::_getCapabilitiesTable()->generateCapabilityName($controllerName, $action);
     }
 
     /**
@@ -181,9 +177,7 @@ trait CapabilityTrait
      */
     protected static function _generateCapabilityLabel($controllerName, $action)
     {
-        $result = 'Cap ' . $controllerName . ' ' . $action;
-
-        return $result;
+        return static::_getCapabilitiesTable()->generateCapabilityLabel($controllerName, $action);
     }
 
     /**
@@ -195,8 +189,6 @@ trait CapabilityTrait
      */
     protected static function _generateCapabilityDescription($controllerName, $action)
     {
-        $result = 'Allow ' . $action;
-
-        return $result;
+        return static::_getCapabilitiesTable()->generateCapabilityDescription($controllerName, $action);
     }
 }
