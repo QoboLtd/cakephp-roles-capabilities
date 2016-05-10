@@ -130,7 +130,6 @@ trait CapabilityTrait
      */
     public static function getSkipActions($controllerName)
     {
-
         return static::_getCapabilitiesTable()->getSkipActions($controllerName);
     }
 
@@ -143,7 +142,6 @@ trait CapabilityTrait
      */
     protected static function _getSkipActions($controllerName)
     {
-
         return static::getSkipActions($controllerName);
     }
 
