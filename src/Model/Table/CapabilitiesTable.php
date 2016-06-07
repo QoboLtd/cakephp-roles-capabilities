@@ -204,6 +204,33 @@ class CapabilitiesTable extends Table
     }
 
     /**
+     * Method that checks if specified role is allowed access.
+     * Returns true if role has access, false otherwise.
+     *
+     * @param  string $roleId role id
+     * @param  string $userId user id
+     * @return bool
+     */
+    public function hasRoleAccess($roleId, $userId)
+    {
+        if (is_null($roleId)) {
+            return true;
+        }
+
+        $userGroups = $this->getUserGroups($userId);
+        $userRoles = [];
+        if (!empty($userGroups)) {
+            $userRoles = $this->getGroupsRoles($userGroups);
+        }
+
+        if (in_array($roleId, array_keys($userRoles))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get list of skipped controllers.
      *
      * @return array

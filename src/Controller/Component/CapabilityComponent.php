@@ -91,6 +91,24 @@ class CapabilityComponent extends Component
     }
 
     /**
+     * Method that checks if specified role is allowed access.
+     * Returns true if role has access, false otherwise.
+     *
+     * @param  string $roleId role id
+     * @param  string $userId user id
+     * @return bool
+     */
+    public function hasRoleAccess($roleId, $userId = '')
+    {
+        // if not specified, get current user's id
+        if (empty($userId)) {
+            $userId = $this->_user['id'];
+        }
+
+        return $this->_capabilitiesTable->hasRoleAccess($roleId, $userId);
+    }
+
+    /**
      * Method that retrieves specified user's capabilities
      * @param  string $userId user id
      * @deprecated
