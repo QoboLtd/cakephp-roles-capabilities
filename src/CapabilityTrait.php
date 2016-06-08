@@ -92,6 +92,37 @@ trait CapabilityTrait
     }
 
     /**
+     * Check if specified role has access to perform action.
+     *
+     * @param  string  $role role uuid
+     * @return bool
+     * @throws Cake\Network\Exception\ForbiddenException
+     */
+    protected function _checkRoleAccess($role, $handle = true)
+    {
+        $hasAccess = false;
+
+        if ($this->Capability->hasRoleAccess($role)) {
+            $hasAccess = true;
+        }
+
+        /*
+        superuser has access everywhere
+         */
+        if ($this->Auth->user('is_superuser')) {
+            $hasAccess = true;
+        }
+
+        if (!$handle) {
+            return $hasAccess;
+        }
+
+        if (!$hasAccess) {
+            throw new ForbiddenException();
+        }
+    }
+
+    /**
      * Get list of Cake's Controller class methods.
      *
      * @return array
