@@ -217,7 +217,7 @@ class CapabilitiesTable extends Table
             return true;
         }
 
-        $userGroups = $this->getUserGroups($userId);
+        $userGroups = $this->Roles->Groups->getUserGroups($userId);
         $userRoles = [];
         if (!empty($userGroups)) {
             $userRoles = $this->getGroupsRoles($userGroups);
@@ -276,7 +276,7 @@ class CapabilitiesTable extends Table
      */
     public function getUserCapabilities($userId)
     {
-        $userGroups = $this->getUserGroups($userId);
+        $userGroups = $this->Roles->Groups->getUserGroups($userId);
 
         $userRoles = [];
         if (!empty($userGroups)) {
@@ -290,25 +290,6 @@ class CapabilitiesTable extends Table
         }
 
         return array_values($userCaps);
-    }
-
-    /**
-     * Method that retrieves specified user's groups
-     *
-     * @param  string $userId user id
-     * @return array
-     */
-    public function getUserGroups($userId)
-    {
-        $query = $this->Roles->Groups->find('list', [
-            'keyField' => 'id',
-            'valueField' => 'name'
-        ]);
-        $query->matching('Users', function ($q) use ($userId) {
-            return $q->where(['Users.id' => $userId]);
-        });
-
-        return $query->toArray();
     }
 
     /**
