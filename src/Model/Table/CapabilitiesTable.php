@@ -94,7 +94,8 @@ class CapabilitiesTable extends Table
     /**
      * Check if current user has access to perform action.
      *
-     * @param  Event  $event Event object
+     * @param  array  $subject Subject
+     * @param  array  $user User
      * @return void
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
