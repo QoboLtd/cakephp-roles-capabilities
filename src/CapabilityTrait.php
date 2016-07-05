@@ -95,6 +95,7 @@ trait CapabilityTrait
      * Check if specified role has access to perform action.
      *
      * @param  string  $role role uuid
+     * @param  bool    $handle handle
      * @return bool
      * @throws Cake\Network\Exception\ForbiddenException
      */
