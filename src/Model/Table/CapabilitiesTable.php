@@ -292,6 +292,24 @@ class CapabilitiesTable extends Table
 
         return $actions;
     }
+
+    /**
+     * Method that filter's out skipped actions from Controller's actions list.
+     *
+     * @param  string $controllerName Controller name
+     * @param  array  $actions        Controller actions
+     * @return array
+     */
+    protected function _filterSkippedActions($controllerName, array $actions)
+    {
+        $skipActions = array_merge(
+            $controllerName::getSkipActions($controllerName),
+            $this->getCakeControllerActions()
+        );
+
+        foreach ($actions as $k => $action) {
+            if (in_array($action, $skipActions)) {
+                unset($actions[$k]);
             }
         }
 
