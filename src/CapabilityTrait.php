@@ -33,11 +33,12 @@ trait CapabilityTrait
      * Returns permission capabilities.
      *
      * @param  string $controllerName Controller Name
+     * @param  array  $actions        Controller actions
      * @return array
      */
-    public static function getCapabilities($controllerName = null)
+    public static function getCapabilities($controllerName, array $actions = [])
     {
-        return static::_getCapabilitiesTable()->getCapabilities($controllerName);
+        return static::_getCapabilitiesTable()->getCapabilities($controllerName, $actions);
     }
 
     /**
