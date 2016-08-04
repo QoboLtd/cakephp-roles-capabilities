@@ -65,6 +65,16 @@ class CapabilitiesTable extends Table
     protected $_userActionCapabilities = [];
 
     /**
+     * Models that hold user information, usually used as associations to relate records to a user.
+     *
+     * @var array
+     */
+    protected $_assignationModels = [
+        'Users',
+        'CakeDC/Users.Users'
+    ];
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
