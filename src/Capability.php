@@ -34,6 +34,12 @@ class Capability
     protected $_description;
 
     /**
+     * Capability field
+     * @var string
+     */
+    protected $_field;
+
+    /**
      * Constructor method
      * @param string $name    Capability name
      * @param array  $options Capability options
@@ -48,6 +54,10 @@ class Capability
         $this->setLabel($options['label']);
 
         $this->setDescription($options['description']);
+
+        if (isset($options['field'])) {
+            $this->setField($options['field']);
+        }
     }
 
     /**
@@ -123,5 +133,28 @@ class Capability
     public function getDescription()
     {
         return $this->_description;
+    }
+
+    /**
+     * Set field
+     *
+     * @param string $field Capability field
+     * @return Capability
+     */
+    public function setField($field)
+    {
+        $this->_field = $field;
+
+        return $this;
+    }
+
+    /**
+     * Get field
+     *
+     * @return string
+     */
+    public function getField()
+    {
+        return $this->_field;
     }
 }
