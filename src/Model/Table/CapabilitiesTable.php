@@ -22,6 +22,16 @@ use RolesCapabilities\Model\Entity\Capability;
 class CapabilitiesTable extends Table
 {
     /**
+     * Full type capability identifier
+     */
+    const CAP_TYPE_FULL = 'full';
+
+    /**
+     * Owner type capability identifier
+     */
+    const CAP_TYPE_OWNER = 'owner';
+
+    /**
      * Default skip controllers
      *
      * @var array
@@ -33,6 +43,7 @@ class CapabilitiesTable extends Table
 
     /**
      * Default skip actions
+     *
      * @var array
      */
     protected $_skipActions = [
@@ -90,6 +101,26 @@ class CapabilitiesTable extends Table
     {
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
         return $rules;
+    }
+
+    /**
+     * Get full type capability identifier.
+     *
+     * @return string
+     */
+    public function getTypeFull()
+    {
+        return static::CAP_TYPE_FULL;
+    }
+
+    /**
+     * Get owner type capability identifier.
+     *
+     * @return string
+     */
+    public function getTypeOwner()
+    {
+        return static::CAP_TYPE_OWNER;
     }
 
     /**
