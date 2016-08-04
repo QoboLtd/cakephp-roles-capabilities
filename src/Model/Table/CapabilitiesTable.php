@@ -276,10 +276,22 @@ class CapabilitiesTable extends Table
 
         $refClass = new ReflectionClass($controllerName);
 
+    /**
+     * Method that retrieves and returns Controller public methods.
+     *
+     * @param  string $controllerName Controller name
+     * @return array
+     */
+    protected function _getControllerPublicMethods($controllerName)
+    {
         $actions = [];
+        $refClass = new ReflectionClass($controllerName);
         foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if (!in_array($method->name, $skipActions)) {
-                $actions[] = $method->name;
+            $actions[] = $method->name;
+        }
+
+        return $actions;
+    }
             }
         }
 
