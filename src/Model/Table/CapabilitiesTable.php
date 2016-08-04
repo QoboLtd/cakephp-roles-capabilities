@@ -324,6 +324,28 @@ class CapabilitiesTable extends Table
     }
 
     /**
+     * Method that retrieves and returns Table's assignation fields. These are fields
+     * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
+     *
+     * @param  \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    protected function _getTableAssignationFields(Table $table)
+    {
+        $fields = [];
+        foreach ($table->associations() as $association) {
+            // skip non-assignation models
+            if (!in_array($association->className(), $this->_assignationModels)) {
+                continue;
+            }
+
+            $fields[] = $association->foreignKey();
+        }
+
+        return $fields;
+    }
+
+    /**
      * Method that checks if current user is allowed access.
      * Returns true if current user has access, false otherwise.
      * @param  string $capability capability name
