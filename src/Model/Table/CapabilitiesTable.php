@@ -75,6 +75,15 @@ class CapabilitiesTable extends Table
     ];
 
     /**
+     * Non-assignation actions
+     *
+     * @var array
+     */
+    protected $_nonAssignationActions = [
+        'add'
+    ];
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
