@@ -358,16 +358,52 @@ class CapabilitiesTable extends Table
             }
         }
 
-        $controllerName = $this->generateCapabilityControllerName($controllerName);
+        return $actions;
+    }
 
+    /**
+     * Method that generates capabilities for specified controller's actions.
+     * Capabilities included are full or owner access types.
+     *
+     * @param  string $controllerName    Controller name
+     * @param  array  $actions           Controller actions
+     * @param  array  $assignationFields Table assignation fields (example: assigned_to)
+     * @return array
+     */
+    protected function _getCapabilities($controllerName, array $actions, array $assignationFields = [])
+    {
         foreach ($actions as $action) {
-            $result[] = new Cap(
+            // generate action's full (all) type capabilities
+            $result[static::CAP_TYPE_FULL][] = new Cap(
                 $this->generateCapabilityName($controllerName, $action),
                 [
-                    'label' => $this->generateCapabilityLabel($controllerName, $action),
-                    'description' => $this->generateCapabilityDescription($controllerName, $action)
+                    'label' => $this->generateCapabilityLabel($controllerName, $action  . '_all'),
+                    'description' => $this->generateCapabilityDescription(
+                        $controllerName,
+                        $action . ' to all'
+                    )
                 ]
             );
+            // skip rest of the logic if assignation fields are not found
+            // or if current action does not support assignment (Example: add / create)
+            if (empty($assignationFields) || in_array($action, $this->_nonAssignationActions)) {
+                continue;
+            }
+
+            // generate action's owner (assignation field) type capabilities
+            foreach ($assignationFields as $assignationField) {
+                $result[static::CAP_TYPE_OWNER][] = new Cap(
+                    $this->generateCapabilityName($controllerName, $action . '_' . $assignationField),
+                    [
+                        'label' => $this->generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
+                        'description' => $this->generateCapabilityDescription(
+                            $controllerName,
+                            $action . ' if owner (' . $assignationField . ')'
+                        ),
+                        'field' => $assignationField
+                    ]
+                );
+            }
         }
 
         return $result;
