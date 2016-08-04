@@ -51,6 +51,13 @@ class CapabilitiesTable extends Table
     ];
 
     /**
+     * Current user details
+     *
+     * @var array
+     */
+    protected $_currentUser = [];
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -121,6 +128,31 @@ class CapabilitiesTable extends Table
     public function getTypeOwner()
     {
         return static::CAP_TYPE_OWNER;
+    }
+
+    /**
+     * Current user info setter.
+     *
+     * @param array $user
+     */
+    public function setCurrentUser(array $user = [])
+    {
+        $this->_currentUser = $user;
+    }
+
+    /**
+     * Current user info getter.
+     *
+     * @param  string|null       $key Specific field to retrieve
+     * @return array|string|null
+     */
+    public function getCurrentUser($key = null)
+    {
+        if (!is_null($key)) {
+            return isset($this->_currentUser[$key]) ? $this->_currentUser[$key] : null;
+        }
+
+        return $this->_currentUser;
     }
 
     /**
