@@ -211,43 +211,53 @@ class CapabilitiesTable extends Table
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    public function checkAccess(array $subject, $user)
+    public function checkAccess(array $subject, array $user)
     {
+        // superuser has access everywhere
+        if ($user['is_superuser']) {
+            return;
+        }
+
         $plugin = is_null($subject['plugin']) ? 'App' : $subject['plugin'];
         $controllerName = App::className($plugin . '.' . $subject['controller'] . 'Controller', 'Controller');
-        $capability = $this->generateCapabilityName(
-            $this->generateCapabilityControllerName($controllerName),
-            $subject['action']
-        );
-        $allCapabilities = $this->getCapabilities($controllerName);
-        $capExists = false;
-        foreach ($allCapabilities as $cap) {
-            if ($cap->getName() === $capability) {
-                $capExists = true;
-                break;
-            }
-        }
+
+        $actionCapabilities = $this->getCapabilities($controllerName, [$subject['action']]);
 
         $hasAccess = false;
-        if ($capExists) {
-            if ($this->hasAccess($capability, $user['id'])) {
-                $hasAccess = true;
-            } else {
-                $hasAccess = false;
+
+        // current action has capabilities
+        if (!empty($actionCapabilities)) {
+            // if current action has full access capabilities check if user has those capabilities
+            if (isset($actionCapabilities[$this->getTypeFull()])) {
+                foreach ($actionCapabilities[$this->getTypeFull()] as $actionCapability) {
+                    if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
+                        $this->setUserActionCapability(
+                            $this->getTypeFull(),
+                            $actionCapability
+                        );
+                        $hasAccess = true;
+                        break;
+                    }
+                }
             }
-        } else {
-            /*
-            if capability does not exist user is allowed access
-             */
+            // if user has no full access capabilities and current action has
+            // owner access capabilities check if he has owner access capabilities
+            if (!$hasAccess && isset($actionCapabilities[$this->getTypeOwner()])) {
+                foreach ($actionCapabilities[$this->getTypeOwner()] as $actionCapability) {
+                    if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
+                        $this->setUserActionCapability(
+                            $this->getTypeOwner(),
+                            $actionCapability
+                        );
+                        $hasAccess = true;
+                        break;
+                    }
+                }
+            }
+        } else { // if capability does not exist for current action, user is allowed access
             $hasAccess = true;
         }
 
-        /*
-        superuser has access everywhere
-         */
-        if ($user['is_superuser']) {
-            $hasAccess = true;
-        }
         if (!$hasAccess) {
             throw new ForbiddenException();
         }
