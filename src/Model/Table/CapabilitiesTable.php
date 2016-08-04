@@ -254,16 +254,17 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Returns permission capabilities.
+     * Returns Controller permission capabilities.
      *
-     * @param  string $controllerName Controller Name
+     * @param  string $controllerName Controller name
+     * @param  array  $actions        Controller actions
      * @return array
      */
-    public function getCapabilities($controllerName = null)
+    public function getCapabilities($controllerName, array $actions = [])
     {
         $result = [];
 
-        if (empty($controllerName)) {
+        if (!is_string($controllerName)) {
             return $result;
         }
 
@@ -272,9 +273,21 @@ class CapabilitiesTable extends Table
             return $result;
         }
 
-        $skipActions = array_merge($controllerName::getSkipActions($controllerName), $this->getCakeControllerActions());
+        $actions = $this->_getActions($controllerName, $actions);
 
-        $refClass = new ReflectionClass($controllerName);
+        if (empty($actions)) {
+            return $result;
+        }
+
+        // get controller table instance
+        $controllerTable = $this->_getControllerTableInstance($controllerName);
+
+        return $this->_getCapabilities(
+            $this->generateCapabilityControllerName($controllerName),
+            $actions,
+            $this->_getTableAssignationFields($controllerTable)
+        );
+    }
 
     /**
      * Method that filters and returns Controller action(s) that can be used for generating access capabilities.
