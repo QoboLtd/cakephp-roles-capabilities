@@ -50,27 +50,29 @@ class CapabilityComponent extends Component
         $this->_controller = $this->_registry->getController();
         $this->_user = $this->Auth->user();
         $this->_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        $this->_capabilitiesTable->setCurrentUser($this->Auth->user());
     }
 
     /**
      * Method that retrieves all defined capabilities
+     *
      * @return array capabilities
      */
     public function getAllCapabilities()
     {
-        $capabilities = [];
-        // get all controllers
-        $controllers = $this->_getAllControllers();
+        $result = [];
 
-        foreach ($controllers as $controller) {
+        foreach ($this->_getAllControllers() as $controller) {
             if (is_callable([$controller, 'getCapabilities'])) {
-                foreach ($controller::getCapabilities($controller) as $capability) {
-                    $capabilities[$controller][$capability->getName()] = $capability->getDescription();
+                foreach ($controller::getCapabilities($controller) as $type => $capabilities) {
+                    foreach ($capabilities as $capability) {
+                        $result[$controller][$capability->getName()] = $capability->getDescription();
+                    }
                 }
             }
         }
 
-        return $capabilities;
+        return $result;
     }
 
     /**
