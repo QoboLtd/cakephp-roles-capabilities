@@ -51,6 +51,13 @@ class CapabilitiesTable extends Table
     ];
 
     /**
+     * Current request parameters
+     *
+     * @var array
+     */
+    protected $_currentRequest;
+
+    /**
      * Current user details
      *
      * @var array
@@ -154,6 +161,31 @@ class CapabilitiesTable extends Table
     public function getTypeOwner()
     {
         return static::CAP_TYPE_OWNER;
+    }
+
+    /**
+     * Current request parameters setter.
+     *
+     * @param array $request
+     */
+    public function setCurrentRequest(array $request)
+    {
+        $this->_currentRequest = $request;
+    }
+
+    /**
+     * Current request parameters getter.
+     *
+     * @param  string|null       $key Specific field to retrieve
+     * @return array|string|null
+     */
+    public function getCurrentRequest($key = null)
+    {
+        if (!is_null($key)) {
+            return isset($this->_currentRequest[$key]) ? $this->_currentRequest[$key] : null;
+        }
+
+        return $this->_currentRequest;
     }
 
     /**
