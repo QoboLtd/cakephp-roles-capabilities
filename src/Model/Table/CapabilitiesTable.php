@@ -6,6 +6,7 @@ use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use ReflectionClass;
 use ReflectionMethod;
@@ -185,6 +186,31 @@ class CapabilitiesTable extends Table
         }
 
         return $result;
+    }
+
+    /**
+     * Method that returns Table instance of specified controller.
+     *
+     * @param  string          $controllerName Controller name
+     * @return \Cake\ORM\Table
+     */
+    protected function _getControllerTableInstance($controllerName)
+    {
+        $parts = explode('\\', $controllerName);
+        // get last part, "/ArticlesController"
+        $tableName = array_pop($parts);
+        // remove "Controller" suffix from "/ArticlesController"
+        $tableName = str_replace('Controller', '', $tableName);
+        // remove "/Controller/" part
+        array_pop($parts);
+        // get plugin part "/MyPlugin/"
+        $plugin = array_pop($parts);
+        // prefix plugin to table name if is not "App"
+        if ('App' !== $plugin) {
+            $tableName = $plugin . '.' . $tableName;
+        }
+
+        return TableRegistry::get($tableName);
     }
 
     /**
