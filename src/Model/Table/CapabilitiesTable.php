@@ -58,6 +58,13 @@ class CapabilitiesTable extends Table
     protected $_currentUser = [];
 
     /**
+     * User action specific capabilities
+     *
+     * @var array
+     */
+    protected $_userActionCapabilities = [];
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -153,6 +160,27 @@ class CapabilitiesTable extends Table
         }
 
         return $this->_currentUser;
+    }
+
+    /**
+     * User action capability setter.
+     *
+     * @param string                        $type       Capability type
+     * @param \RolesCapabilities\Capability $capability Capability instance
+     */
+    public function setUserActionCapability($type, Cap $capability)
+    {
+        $this->_userActionCapabilities[$type][] = $capability;
+    }
+
+    /**
+     * User action capabilities getter.
+     *
+     * @return array
+     */
+    public function getUserActionCapabilities()
+    {
+        return $this->_userActionCapabilities;
     }
 
     /**
