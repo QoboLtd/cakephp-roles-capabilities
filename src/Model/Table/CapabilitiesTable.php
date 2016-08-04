@@ -277,6 +277,38 @@ class CapabilitiesTable extends Table
         $refClass = new ReflectionClass($controllerName);
 
     /**
+     * Method that filters and returns Controller action(s) that can be used for generating access capabilities.
+     *
+     * @param  string $controllerName Controller name
+     * @param  array  $actions        Action(s) to filter. If not specified all controller's public methods will be used.
+     * @return array
+     */
+    protected function _getActions($controllerName, array $actions = [])
+    {
+        $publicMethods = $this->_getControllerPublicMethods($controllerName);
+        // return if controller has no public methods
+        if (empty($publicMethods)) {
+            return [];
+        }
+
+        // if no actions defined, use controller's public methods
+        if (!empty($actions)) {
+            $actions = array_intersect($actions, $publicMethods);
+        } else { // else use controller's public methods
+            $actions = $publicMethods;
+        }
+
+        if (empty($actions)) {
+            return $actions;
+        }
+
+        // filter out skipped actions
+        $actions = $this->_filterSkippedActions($controllerName, $actions);
+
+        return $actions;
+    }
+
+    /**
      * Method that retrieves and returns Controller public methods.
      *
      * @param  string $controllerName Controller name
