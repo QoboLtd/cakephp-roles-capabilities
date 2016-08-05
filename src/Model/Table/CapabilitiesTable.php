@@ -82,11 +82,11 @@ class CapabilitiesTable extends Table
     ];
 
     /**
-     * Non-assignation actions
+     * Non-assigned actions
      *
      * @var array
      */
-    protected $_nonAssignationActions = [
+    protected $_nonAssignedActions = [
         'add'
     ];
 
@@ -444,13 +444,13 @@ class CapabilitiesTable extends Table
                     )
                 ]
             );
-            // skip rest of the logic if assignation fields are not found
+            // skip rest of the logic if assignment fields are not found
             // or if current action does not support assignment (Example: add / create)
-            if (empty($assignationFields) || in_array($action, $this->_nonAssignationActions)) {
+            if (empty($assignationFields) || in_array($action, $this->_nonAssignedActions)) {
                 continue;
             }
 
-            // generate action's owner (assignation field) type capabilities
+            // generate action's owner (assignment field) type capabilities
             foreach ($assignationFields as $assignationField) {
                 $result[static::CAP_TYPE_OWNER][] = new Cap(
                     $this->generateCapabilityName($controllerName, $action . '_' . $assignationField),
