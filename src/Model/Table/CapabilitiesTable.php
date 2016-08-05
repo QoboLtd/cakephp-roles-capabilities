@@ -271,38 +271,11 @@ class CapabilitiesTable extends Table
 
         // current action has capabilities
         if (!empty($actionCapabilities)) {
-            // if current action has full access capabilities check if user has those capabilities
-            if (isset($actionCapabilities[$this->getTypeFull()])) {
-                foreach ($actionCapabilities[$this->getTypeFull()] as $actionCapability) {
-                    if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
-                        $this->setUserActionCapability(
-                            $subject['plugin'],
-                            $subject['controller'],
-                            $subject['action'],
-                            $this->getTypeFull(),
-                            $actionCapability
-                        );
-                        $hasAccess = true;
-                        break;
-                    }
-                }
-            }
-            // if user has no full access capabilities and current action has
-            // owner access capabilities check if he has owner access capabilities
-            if (!$hasAccess && isset($actionCapabilities[$this->getTypeOwner()])) {
-                foreach ($actionCapabilities[$this->getTypeOwner()] as $actionCapability) {
-                    if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
-                        $this->setUserActionCapability(
-                            $subject['plugin'],
-                            $subject['controller'],
-                            $subject['action'],
-                            $this->getTypeOwner(),
-                            $actionCapability
-                        );
-                        $hasAccess = true;
-                        break;
-                    }
-                }
+            $hasAccess = $this->_checkTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $subject);
+
+            // if user has no full access capabilities
+            if (!$hasAccess) {
+                $hasAccess = $this->_checkTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $subject);
             }
         } else { // if capability does not exist for current action, user is allowed access
             $hasAccess = true;
@@ -311,6 +284,41 @@ class CapabilitiesTable extends Table
         if (!$hasAccess) {
             throw new ForbiddenException();
         }
+    }
+
+    /**
+     * Method that checks if user has full access on Controller's action.
+     *
+     * @param  string $type               Capability type
+     * @param  array  $actionCapabilities Action capabilities
+     * @param  array  $url                Controller url
+     * @param  array  $user               User info
+     * @return bool
+     */
+    protected function _checkTypeAccess($type, array $actionCapabilities, array $user, array $url)
+    {
+        // skip if action has no access capabilities for specified type
+        if (!isset($actionCapabilities[$type])) {
+            return false;
+        }
+
+        foreach ($actionCapabilities[$type] as $actionCapability) {
+            // user has access
+            if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
+                // store in user's action capabilities
+                $this->setUserActionCapability(
+                    $url['plugin'],
+                    $url['controller'],
+                    $url['action'],
+                    $type,
+                    $actionCapability
+                );
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
