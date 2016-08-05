@@ -26,9 +26,9 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     /**
      * Check
      *
-     * @param  \Cake\Event\Event $event Event object
-     * @param  Cake\Datasource\EntityInterface $entity Translation entity
-     * @param  ArrayObject $options entity options
+     * @param \Cake\Event\Event $event The beforeFind event that was fired.
+     * @param \Cake\ORM\Query $query Query
+     * @param \ArrayObject $options The options for the query
      * @return void
      */
     public function checkRecordAccess(Event $event, Query $query, ArrayObject $options)

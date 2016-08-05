@@ -140,6 +140,7 @@ class CapabilitiesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
+
         return $rules;
     }
 
@@ -166,7 +167,8 @@ class CapabilitiesTable extends Table
     /**
      * Current request parameters setter.
      *
-     * @param array $request
+     * @param  array $request Request parameters
+     * @return void
      */
     public function setCurrentRequest(array $request)
     {
@@ -191,7 +193,8 @@ class CapabilitiesTable extends Table
     /**
      * Current user info setter.
      *
-     * @param array|null $user
+     * @param  array|null $user User information
+     * @return void
      */
     public function setCurrentUser($user)
     {
@@ -216,11 +219,12 @@ class CapabilitiesTable extends Table
     /**
      * User action capability setter.
      *
-     * @param string                        $plugin     Plugin name
-     * @param string                        $controller Controller name
-     * @param string                        $action     Action type
-     * @param string                        $type       Capability type
-     * @param \RolesCapabilities\Capability $capability Capability instance
+     * @param  string                        $plugin     Plugin name
+     * @param  string                        $controller Controller name
+     * @param  string                        $action     Action type
+     * @param  string                        $type       Capability type
+     * @param  \RolesCapabilities\Capability $capability Capability instance
+     * @return void
      */
     public function setUserActionCapability($plugin, $controller, $action, $type, Cap $capability)
     {
@@ -433,7 +437,7 @@ class CapabilitiesTable extends Table
             $result[static::CAP_TYPE_FULL][] = new Cap(
                 $this->generateCapabilityName($controllerName, $action),
                 [
-                    'label' => $this->generateCapabilityLabel($controllerName, $action  . '_all'),
+                    'label' => $this->generateCapabilityLabel($controllerName, $action . '_all'),
                     'description' => $this->generateCapabilityDescription(
                         $controllerName,
                         $action . ' to all'
