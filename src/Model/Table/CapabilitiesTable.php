@@ -191,9 +191,9 @@ class CapabilitiesTable extends Table
     /**
      * Current user info setter.
      *
-     * @param array $user
+     * @param array|null $user
      */
-    public function setCurrentUser(array $user = [])
+    public function setCurrentUser($user)
     {
         $this->_currentUser = $user;
     }
@@ -237,14 +237,19 @@ class CapabilitiesTable extends Table
     /**
      * Check if current user has access to perform action.
      *
-     * @param  array  $subject Subject
-     * @param  array  $user User
+     * @param  array      $subject Subject
+     * @param  array|null $user User
      * @return void
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    public function checkAccess(array $subject, array $user)
+    public function checkAccess(array $subject, $user)
     {
+        // not logged in
+        if (is_null($user)) {
+            return;
+        }
+
         // superuser has access everywhere
         if ($user['is_superuser']) {
             return;
