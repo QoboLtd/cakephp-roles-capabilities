@@ -216,12 +216,15 @@ class CapabilitiesTable extends Table
     /**
      * User action capability setter.
      *
+     * @param string                        $plugin     Plugin name
+     * @param string                        $controller Controller name
+     * @param string                        $action     Action type
      * @param string                        $type       Capability type
      * @param \RolesCapabilities\Capability $capability Capability instance
      */
-    public function setUserActionCapability($type, Cap $capability)
+    public function setUserActionCapability($plugin, $controller, $action, $type, Cap $capability)
     {
-        $this->_userActionCapabilities[$type][] = $capability;
+        $this->_userActionCapabilities[$plugin][$controller][$action][$type][] = $capability;
     }
 
     /**
@@ -269,6 +272,9 @@ class CapabilitiesTable extends Table
                 foreach ($actionCapabilities[$this->getTypeFull()] as $actionCapability) {
                     if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
                         $this->setUserActionCapability(
+                            $subject['plugin'],
+                            $subject['controller'],
+                            $subject['action'],
                             $this->getTypeFull(),
                             $actionCapability
                         );
@@ -283,6 +289,9 @@ class CapabilitiesTable extends Table
                 foreach ($actionCapabilities[$this->getTypeOwner()] as $actionCapability) {
                     if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
                         $this->setUserActionCapability(
+                            $subject['plugin'],
+                            $subject['controller'],
+                            $subject['action'],
                             $this->getTypeOwner(),
                             $actionCapability
                         );
