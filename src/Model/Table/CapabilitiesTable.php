@@ -328,11 +328,11 @@ class CapabilitiesTable extends Table
      * @param  array  $actions        Controller actions
      * @return array
      */
-    public function getCapabilities($controllerName, array $actions = [])
+    public function getCapabilities($controllerName = null, array $actions = [])
     {
         $result = [];
 
-        if (!is_string($controllerName)) {
+        if (is_null($controllerName) || !is_string($controllerName)) {
             return $result;
         }
 

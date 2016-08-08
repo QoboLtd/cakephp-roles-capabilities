@@ -36,7 +36,7 @@ trait CapabilityTrait
      * @param  array  $actions        Controller actions
      * @return array
      */
-    public static function getCapabilities($controllerName, array $actions = [])
+    public static function getCapabilities($controllerName = null, array $actions = [])
     {
         return static::_getCapabilitiesTable()->getCapabilities($controllerName, $actions);
     }
