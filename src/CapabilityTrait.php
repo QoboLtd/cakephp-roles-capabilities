@@ -33,11 +33,12 @@ trait CapabilityTrait
      * Returns permission capabilities.
      *
      * @param  string $controllerName Controller Name
+     * @param  array  $actions        Controller actions
      * @return array
      */
-    public static function getCapabilities($controllerName = null)
+    public static function getCapabilities($controllerName = null, array $actions = [])
     {
-        return static::_getCapabilitiesTable()->getCapabilities($controllerName);
+        return static::_getCapabilitiesTable()->getCapabilities($controllerName, $actions);
     }
 
     /**
@@ -50,45 +51,10 @@ trait CapabilityTrait
      */
     protected function _checkAccess(Event $event)
     {
-        $requestParams = $event->subject()->request->params;
-        $plugin = is_null($requestParams['plugin']) ? 'App' : $requestParams['plugin'];
-        $controllerName = App::className($plugin . '.' . $event->subject()->name . 'Controller', 'Controller');
-        $capability = static::_generateCapabilityName(
-            static::_generateCapabilityControllerName($controllerName),
-            $requestParams['action']
+        static::_getCapabilitiesTable()->checkAccess(
+            $event->subject()->request->params,
+            $this->Auth->user()
         );
-        $allCapabilities = $this->getCapabilities($controllerName);
-        $capExists = false;
-        foreach ($allCapabilities as $cap) {
-            if ($cap->getName() === $capability) {
-                $capExists = true;
-                break;
-            }
-        }
-
-        $hasAccess = false;
-        if ($capExists) {
-            if ($this->Capability->hasAccess($capability)) {
-                $hasAccess = true;
-            } else {
-                $hasAccess = false;
-            }
-        } else {
-            /*
-            if capability does not exist user is allowed access
-             */
-            $hasAccess = true;
-        }
-
-        /*
-        superuser has access everywhere
-         */
-        if ($this->Auth->user('is_superuser')) {
-            $hasAccess = true;
-        }
-        if (!$hasAccess) {
-            throw new ForbiddenException();
-        }
     }
 
     /**
