@@ -277,8 +277,6 @@ class CapabilitiesTable extends Table
             if (!$hasAccess) {
                 $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $subject);
             }
-        } else { // if capability does not exist for current action, user is allowed access
-            $hasAccess = true;
         }
 
         if (!$hasAccess) {
