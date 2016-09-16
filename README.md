@@ -18,10 +18,22 @@ Run plugin's migration task:
 bin/cake migrations migrate -p RolesCapabilities
 ```
 
-Load the plugin in your config/bootstrap.php file:
+Run required plugin(s) migration task:
 
 ```
-Plugin::load('RolesCapabilities', ['bootstrap' => true, 'routes' => true]);
+bin/cake migrations migrate -p Groups
+```
+
+## Setup
+Load plugin
+```
+bin/cake plugin load --routes --bootstrap RolesCapabilities
+```
+
+Load required plugin(s)
+```
+bin/cake plugin load Muffin/Trash
+bin/cake plugin load --routes --bootstrap CakeDC/Users
 ```
 
 Load the Capability component in your src/Controller/AppController.php file using the `initialize()` method. Additionally use the CapabilityTrait in AppController. See details below:
