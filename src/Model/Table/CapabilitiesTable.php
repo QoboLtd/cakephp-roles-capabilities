@@ -2,6 +2,7 @@
 namespace RolesCapabilities\Model\Table;
 
 use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -99,6 +100,12 @@ class CapabilitiesTable extends Table
     public function initialize(array $config)
     {
         parent::initialize($config);
+
+        // merge controllers to be skipped from app's configuration
+        $this->_skipControllers = array_merge(
+            $this->_skipControllers,
+            Configure::read('RolesCapabilities.skip_controllers')
+        );
 
         $this->table('capabilities');
         $this->displayField('name');
