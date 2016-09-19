@@ -102,9 +102,10 @@ class CapabilitiesTable extends Table
         parent::initialize($config);
 
         // merge controllers to be skipped from app's configuration
+        $skipControllers = Configure::read('RolesCapabilities.skip_controllers');
         $this->_skipControllers = array_merge(
             $this->_skipControllers,
-            Configure::read('RolesCapabilities.skip_controllers')
+            is_null($skipControllers) ? [] : $skipControllers
         );
 
         $this->table('capabilities');
