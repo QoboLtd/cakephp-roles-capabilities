@@ -275,16 +275,16 @@ class CapabilitiesTable extends Table
 
         $actionCapabilities = $this->getCapabilities($controllerName, [$subject['action']]);
 
-        $hasAccess = false;
+        // if action capabilities is empty, means that current controller or action are skipped
+        if (empty($actionCapabilities)) {
+            return;
+        }
 
-        // current action has capabilities
-        if (!empty($actionCapabilities)) {
-            $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $subject);
+        $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $subject);
 
-            // if user has no full access capabilities
-            if (!$hasAccess) {
-                $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $subject);
-            }
+        // if user has no full access capabilities
+        if (!$hasAccess) {
+            $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $subject);
         }
 
         if (!$hasAccess) {
