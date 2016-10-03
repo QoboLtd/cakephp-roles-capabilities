@@ -18,7 +18,7 @@ class RolesController extends AppController
      */
     public function index()
     {
-        $this->set('roles', $this->paginate($this->Roles));
+        $this->set('roles', $this->paginate($this->Roles, ['contain' => 'Groups']));
         $this->set('_serialize', ['roles']);
     }
 
@@ -34,6 +34,8 @@ class RolesController extends AppController
         $role = $this->Roles->get($id, [
             'contain' => ['Groups', 'Capabilities']
         ]);
+        $capabilities = $this->Capability->getAllCapabilities();
+        $this->set('capabilities', $capabilities);
         $this->set('role', $role);
         $this->set('_serialize', ['role']);
     }
