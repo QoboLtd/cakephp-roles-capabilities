@@ -13,9 +13,15 @@
                             <?= $this->Form->input('name'); ?>
                         </div>
                         <div class="col-xs-12 col-md-6">
+                            <?= $this->Form->input('description'); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
                             <?= $this->Form->input('groups._ids', ['options' => $groups]); ?>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="panel panel-default">
