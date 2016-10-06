@@ -298,8 +298,8 @@ class CapabilitiesTable extends Table
      *
      * @param  string $type               Capability type
      * @param  array  $actionCapabilities Action capabilities
-     * @param  array  $url                Controller url
      * @param  array  $user               User info
+     * @param  array  $url                Controller url
      * @return bool
      */
     protected function _hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
