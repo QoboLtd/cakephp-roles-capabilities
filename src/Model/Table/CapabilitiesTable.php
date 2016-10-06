@@ -261,7 +261,7 @@ class CapabilitiesTable extends Table
     public function checkAccess(array $subject, $user)
     {
         // not logged in
-        if (is_null($user)) {
+        if (empty($user)) {
             return;
         }
 
