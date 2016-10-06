@@ -8,6 +8,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use ReflectionClass;
 use ReflectionMethod;
@@ -454,7 +455,7 @@ class CapabilitiesTable extends Table
                     'label' => $this->generateCapabilityLabel($controllerName, $action . '_all'),
                     'description' => $this->generateCapabilityDescription(
                         $controllerName,
-                        $action . ' to all'
+                        $this->_humanizeActionName($action)
                     )
                 ]
             );
@@ -472,12 +473,47 @@ class CapabilitiesTable extends Table
                         'label' => $this->generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
                         'description' => $this->generateCapabilityDescription(
                             $controllerName,
-                            $action . ' if owner (' . $assignationField . ')'
+                            $this->_humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
                         ),
                         'field' => $assignationField
                     ]
                 );
             }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Convert action/method name to human-friendly description
+     *
+     * Action/method names mostly follow CakePHP naming conventions
+     * and are not very human-friendly.  For example, 'list' is much
+     * less confusing than 'index'.
+     *
+     * When used in the capability description, an additional layer of
+     * confusion is introduced.  For example, 'Allow info' or 'Allow
+     * changelog'.  Adjusting these to 'Allow view info' and 'Allo
+     * view changelog' help a great deal.
+     *
+     * @todo Allow controllers to take control over these
+     *
+     * @param string $action Action/method name to humanize
+     * @return string
+     */
+    protected function _humanizeActionName($action)
+    {
+        // cameCaseMethod -> under_score -> Human Form -> lowercase
+        $result = strtolower(Inflector::humanize(Inflector::underscore($action)));
+
+        switch ($action) {
+            case 'index':
+                $result = 'list';
+                break;
+            case 'info':
+            case 'changelog':
+                $result = 'view ' . $action;
+                break;
         }
 
         return $result;
