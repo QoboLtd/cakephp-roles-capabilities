@@ -1,5 +1,12 @@
 # Roles and Capabilities plugin for CakePHP
 
+[![Build Status](https://travis-ci.org/QoboLtd/cakephp-roles-capabilities.svg?branch=master)](https://travis-ci.org/QoboLtd/cakephp-roles-capabilities)
+[![Latest Stable Version](https://poser.pugx.org/qobo/cakephp-roles-capabilities/v/stable)](https://packagist.org/packages/qobo/cakephp-roles-capabilities)
+[![Total Downloads](https://poser.pugx.org/qobo/cakephp-roles-capabilities/downloads)](https://packagist.org/packages/qobo/cakephp-roles-capabilities)
+[![Latest Unstable Version](https://poser.pugx.org/qobo/cakephp-roles-capabilities/v/unstable)](https://packagist.org/packages/qobo/cakephp-roles-capabilities)
+[![License](https://poser.pugx.org/qobo/cakephp-roles-capabilities/license)](https://packagist.org/packages/qobo/cakephp-roles-capabilities)
+[![codecov](https://codecov.io/gh/QoboLtd/cakephp-roles-capabilities/branch/master/graph/badge.svg)](https://codecov.io/gh/QoboLtd/cakephp-roles-capabilities)
+
 ## Installation
 
 You can install this plugin into your CakePHP application using [composer](http://getcomposer.org).
