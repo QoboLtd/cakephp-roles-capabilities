@@ -21,7 +21,7 @@ class CapabilityTest extends \PHPUnit_Framework_TestCase
     public function testToString()
     {
         $cap = new Capability('Foobar');
-        $result = (string) $cap;
+        $result = (string)$cap;
         $this->assertEquals('Foobar', $result, "Capability casting to string is broken");
     }
 
