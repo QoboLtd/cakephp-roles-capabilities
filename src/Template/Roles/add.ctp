@@ -1,5 +1,9 @@
 <?php
-$groupCols = array_chunk($groups->toArray(), ceil(count($groups->toArray()) / 3), true);
+$groupsNumber = count($groups->toArray());
+
+if ($groupsNumber > 0) {
+    $groupCols = array_chunk($groups->toArray(), ceil(count($groups->toArray()) / 3), true);
+}
 ?>
 <div class="row">
     <div class="col-xs-12">
@@ -23,14 +27,16 @@ $groupCols = array_chunk($groups->toArray(), ceil(count($groups->toArray()) / 3)
                         <div class="col-xs-12 col-md-6">
                             <?= $this->Form->label(__('Groups')); ?>
                             <div class="row">
-                                <?php foreach ($groupCols as $col) : ?>
-                                <div class="col-xs-12 col-md-4">
-                                    <?= $this->Form->select('groups._ids', $col, [
-                                        'multiple' => 'checkbox',
-                                        'hiddenField' => false
-                                    ]); ?>
-                                </div>
-                                <?php endforeach; ?>
+                                <?php if(!empty($groupCols)): ?>
+                                    <?php foreach ($groupCols as $col): ?>
+                                    <div class="col-xs-12 col-md-4">
+                                        <?= $this->Form->select('groups._ids', $col, [
+                                            'multiple' => 'checkbox',
+                                            'hiddenField' => false
+                                        ]); ?>
+                                    </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
