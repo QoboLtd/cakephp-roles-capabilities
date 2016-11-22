@@ -78,6 +78,16 @@ class RolesTable extends Table
     {
         $rules->add($rules->isUnique(['name']));
 
+        // don't allow editing of non-editable role(s)
+        $rules->addUpdate(function ($entity, $options) {
+            return !$entity->deny_edit;
+        }, 'systemCheck');
+
+        // don't allow deletion of non-deletable role(s)
+        $rules->addDelete(function ($entity, $options) {
+            return !$entity->deny_delete;
+        }, 'systemCheck');
+
         return $rules;
     }
 
