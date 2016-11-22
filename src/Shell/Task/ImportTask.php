@@ -31,10 +31,10 @@ class ImportTask extends Shell
                     $entity->{$k} = $v;
                 }
 
+                $group = $this->_getGroupByRoleName($entity->name);
                 if ($table->save($entity)) {
                     $msg = 'Role [' . $entity->name . '] imported';
                     // associate imported role with matching group
-                    $group = $this->_getGroupByRoleName($entity->name);
                     if ($table->Groups->link($entity, [$group])) {
                         $msg .= ' and associated with group [' . $group->name . ']';
                     }
