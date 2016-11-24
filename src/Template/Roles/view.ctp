@@ -39,7 +39,7 @@
         </ul>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="capabilities">
-                <?php if (!empty($role->capabilities)): ?>
+                <?php if (!empty($role->capabilities)) : ?>
              <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"><?= __('Capabilities') ?></h3>
@@ -52,27 +52,27 @@
                             $setCapabilities[] = $cap->name;
                         }
                         ksort($capabilities);
-                        foreach ($capabilities as $group_name => $group_caps) :
+                        foreach ($capabilities as $groupName => $groupCaps) :
                     ?>
                         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="form-group text">
-                                <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$group_name]) ?></label>
+                                <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></label>
                             <?php
-                                asort($group_caps);
-                                foreach ($group_caps as $k => $v) {
-                                    $checked = in_array($k, $setCapabilities);
-                                    echo $this->Form->input('capabilities[_names][' . $k .']', [
-                                        'type' => 'checkbox',
-                                        'checked' => $checked,
-                                        'disabled' => true,
-                                        'label' => $v,
-                                        'div' => false
-                                    ]);
-                                }
+                                asort($groupCaps);
+                            foreach ($groupCaps as $k => $v) {
+                                $checked = in_array($k, $setCapabilities);
+                                echo $this->Form->input('capabilities[_names][' . $k .']', [
+                                'type' => 'checkbox',
+                                'checked' => $checked,
+                                'disabled' => true,
+                                'label' => $v,
+                                'div' => false
+                                ]);
+                            }
                             ?>
                             </div>
                         </div>
-                        <?php endforeach; ?>
+                        <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 endforeach; ?>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
             <div role="tabpanel" class="tab-pane" id="groups">
                 <div class="table-responsive">
                     <table class="table table-hover">
-                <?php if (!empty($role->groups)): ?>
+                <?php if (!empty($role->groups)) : ?>
                         <thead>
                             <tr>
                                 <th><?= __('Name') ?></th>
@@ -90,14 +90,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($role->groups as $groups): ?>
+                            <?php foreach ($role->groups as $groups) : ?>
                             <tr>
                                 <td><?= $this->Html->link(h($groups->name), '/groups/groups/view/' . $groups->id); ?></td>
                                 <td><?= h($groups->description) ?></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
-                <?php else: ?>
+                <?php else : ?>
                     <tbody>
                         <td>
                             <p class="bg-warning">This role is not assigned to any groups.</p>

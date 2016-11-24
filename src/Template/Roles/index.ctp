@@ -18,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($roles as $role): ?>
+                    <?php foreach ($roles as $role) : ?>
                     <tr>
                         <td>
                             <?= h($role->name) ?>
@@ -26,14 +26,14 @@
                         </td>
                         <td>
                             <?php
-                                if (!empty($role->groups)) {
-                                    $groups = [];
-                                    foreach ($role->groups as $group) {
-                                        $groups[] = $this->Html->link(h($group->name), '/groups/groups/view/' . $group->id, ['class'=>'label label-primary']);
-                                    }
-                                    sort($groups);
-                                    print implode(' ', $groups);
+                            if (!empty($role->groups)) {
+                                $groups = [];
+                                foreach ($role->groups as $group) {
+                                    $groups[] = $this->Html->link(h($group->name), '/groups/groups/view/' . $group->id, ['class' => 'label label-primary']);
                                 }
+                                sort($groups);
+                                print implode(' ', $groups);
+                            }
                             ?>
                         </td>
                         <td class="actions">
