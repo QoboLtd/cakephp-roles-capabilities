@@ -52,7 +52,7 @@ $groupCols = array_chunk($groups->toArray(), ceil(count($groups->toArray()) / 3)
                     <?php
                         asort($groupCaps);
                     foreach ($groupCaps as $k => $v) {
-                        echo $this->Form->input('capabilities[_names][' . $k .']', [
+                        echo $this->Form->input('capabilities[_names][' . $k . ']', [
                         'type' => 'checkbox',
                         'label' => $v,
                         'div' => false,
@@ -62,7 +62,9 @@ $groupCols = array_chunk($groups->toArray(), ceil(count($groups->toArray()) / 3)
                         ?>
                         </div>
                         </div>
-                        <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             endforeach; ?>
+                    <?php
+                    endforeach;
+                    ?>
                     </div>
                 </div>
             </div>

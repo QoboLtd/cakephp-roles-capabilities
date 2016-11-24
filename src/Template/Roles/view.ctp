@@ -52,27 +52,28 @@
                             $setCapabilities[] = $cap->name;
                         }
                         ksort($capabilities);
-                        foreach ($capabilities as $groupName => $groupCaps) :
-                    ?>
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="form-group text">
-                                <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></label>
-                            <?php
-                                asort($groupCaps);
-                            foreach ($groupCaps as $k => $v) {
-                                $checked = in_array($k, $setCapabilities);
-                                echo $this->Form->input('capabilities[_names][' . $k .']', [
-                                'type' => 'checkbox',
-                                'checked' => $checked,
-                                'disabled' => true,
-                                'label' => $v,
-                                'div' => false
-                                ]);
-                            }
-                            ?>
+                        foreach ($capabilities as $groupName => $groupCaps) : ?>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="form-group text">
+                                    <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></label>
+                                    <?php
+                                    asort($groupCaps);
+                                    foreach ($groupCaps as $k => $v) {
+                                        $checked = in_array($k, $setCapabilities);
+                                        echo $this->Form->input('capabilities[_names][' . $k . ']', [
+                                        'type' => 'checkbox',
+                                        'checked' => $checked,
+                                        'disabled' => true,
+                                        'label' => $v,
+                                        'div' => false
+                                        ]);
+                                    }
+                                    ?>
+                                </div>
                             </div>
-                        </div>
-                        <?php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 endforeach; ?>
+                        <?php
+                        endforeach;
+                        ?>
                     </div>
                 </div>
             </div>
