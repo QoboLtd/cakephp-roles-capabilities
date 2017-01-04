@@ -1,15 +1,18 @@
-<div class="row">
-    <div class="col-xs-12">
-        <p class="text-right">
-            <?= $this->Html->link(__('Add Role'), ['action' => 'add'], ['class' => 'btn btn-primary']); ?>
-        </p>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12">
-        <div class="table-responsive">
-            <table class="table table-hover">
+<section class="content-header">
+    <h1>Roles
+        <small>
+            <?= $this->Html->link(
+                '<i class="fa fa-plus"></i>',
+                ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'add'],
+                ['escape' => false]
+            ); ?>
+        </small>
+    </h1>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-hover table-condensed table-vertical-align">
                 <thead>
                     <tr>
                         <th><?= $this->Paginator->sort('name') ?></th>
@@ -37,12 +40,29 @@
                             ?>
                         </td>
                         <td class="actions">
-                            <?= $this->Html->link('', ['action' => 'view', $role->id], ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-eye-open']) ?>
+                            <?= $this->Html->link(
+                                '<i class="fa fa-eye"></i>',
+                                ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'view', $role->id],
+                                ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                            ); ?>
                             <?php if (!$role->deny_edit) : ?>
-                                <?= $this->Html->link('', ['action' => 'edit', $role->id], ['title' => __('View'), 'class' => 'btn btn-default glyphicon glyphicon-pencil']) ?>
+                                <?= $this->Html->link(
+                                    '<i class="fa fa-pencil"></i>',
+                                    ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'edit', $role->id],
+                                    ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                ); ?>
                             <?php endif; ?>
                             <?php if (!$role->deny_delete) : ?>
-                                <?= $this->Form->postLink('', ['action' => 'delete', $role->id], ['confirm' => __('Are you sure you want to delete # {0}?', $role->id), 'title' => __('Delete'), 'class' => 'btn btn-default glyphicon glyphicon-trash']) ?>
+                                <?= $this->Form->postLink(
+                                    '<i class="fa fa-trash"></i>',
+                                    ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'delete', $role->id],
+                                    [
+                                        'confirm' => __('Are you sure you want to delete # {0}?', $role->id),
+                                        'title' => __('Delete'),
+                                        'class' => 'btn btn-default btn-sm',
+                                        'escape' => false
+                                    ]
+                                ) ?>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -50,14 +70,14 @@
                 </tbody>
             </table>
         </div>
+        <div class="box-footer">
+            <div class="paginator">
+                <ul class="pagination pagination-sm no-margin pull-right">
+                    <?= $this->Paginator->prev('&laquo;', ['escape' => false]) ?>
+                    <?= $this->Paginator->numbers() ?>
+                    <?= $this->Paginator->next('&raquo;', ['escape' => false]) ?>
+                </ul>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="paginator">
-    <ul class="pagination">
-        <?= $this->Paginator->prev('< ' . __('previous')) ?>
-        <?= $this->Paginator->numbers(['before' => '', 'after' => '']) ?>
-        <?= $this->Paginator->next(__('next') . ' >') ?>
-    </ul>
-    <p><?= $this->Paginator->counter() ?></p>
-</div>
+</section>
