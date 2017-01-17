@@ -18,7 +18,7 @@ class RolesController extends AppController
      */
     public function index()
     {
-        $this->set('roles', $this->paginate($this->Roles, ['contain' => 'Groups']));
+        $this->set('roles', $this->paginate($this->Roles, ['contain' => 'Groups', 'maxLimit' => 500, 'limit' => 500]));
         $this->set('_serialize', ['roles']);
     }
 
