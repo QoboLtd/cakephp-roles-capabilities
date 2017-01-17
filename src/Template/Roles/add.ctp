@@ -39,10 +39,7 @@
             <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="form-group text">
-                        <label><?= $this->cell(
-                            'RolesCapabilities.Capability::groupName',
-                            [$groupName]
-                        ) ?></label>
+                        <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></label>
                         <?php
                         asort($groupCaps);
                         foreach ($groupCaps as $k => $v) {
