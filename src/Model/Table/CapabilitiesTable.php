@@ -253,13 +253,13 @@ class CapabilitiesTable extends Table
     /**
      * Check if current user has access to perform action.
      *
-     * @param  array      $subject Subject
-     * @param  array|null $user User
+     * @param array $url Url
+     * @param array|null $user User
      * @return void
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    public function checkAccess(array $subject, $user)
+    public function checkAccess(array $url, $user)
     {
         // not logged in
         if (empty($user)) {
@@ -271,12 +271,12 @@ class CapabilitiesTable extends Table
             return;
         }
 
-        $plugin = is_null($subject['plugin']) ? 'App' : $subject['plugin'];
-        $controllerName = App::className($plugin . '.' . $subject['controller'] . 'Controller', 'Controller');
+        $plugin = is_null($url['plugin']) ? 'App' : $url['plugin'];
+        $controllerName = App::className($plugin . '.' . $url['controller'] . 'Controller', 'Controller');
 
         $actionCapabilities = [];
-        if (!empty($subject['action'])) {
-            $actionCapabilities = $this->getCapabilities($controllerName, [$subject['action']]);
+        if (!empty($url['action'])) {
+            $actionCapabilities = $this->getCapabilities($controllerName, [$url['action']]);
         }
 
         // if action capabilities is empty, means that current controller or action are skipped
@@ -284,11 +284,11 @@ class CapabilitiesTable extends Table
             return;
         }
 
-        $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $subject);
+        $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $url);
 
         // if user has no full access capabilities
         if (!$hasAccess) {
-            $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $subject);
+            $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $url);
         }
 
         if (!$hasAccess) {
