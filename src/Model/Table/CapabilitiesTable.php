@@ -274,7 +274,10 @@ class CapabilitiesTable extends Table
         $plugin = is_null($subject['plugin']) ? 'App' : $subject['plugin'];
         $controllerName = App::className($plugin . '.' . $subject['controller'] . 'Controller', 'Controller');
 
-        $actionCapabilities = $this->getCapabilities($controllerName, [$subject['action']]);
+        $actionCapabilities = [];
+        if (!empty($subject['action'])) {
+            $actionCapabilities = $this->getCapabilities($controllerName, [$subject['action']]);
+        }
 
         // if action capabilities is empty, means that current controller or action are skipped
         if (empty($actionCapabilities)) {
