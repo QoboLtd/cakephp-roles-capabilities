@@ -226,6 +226,29 @@ class CapabilitiesTable extends Table
     }
 
     /**
+     * Returns Controller's class name namespaced.
+     *
+     * @param array $url array of URL parameters.
+     * @return string
+     */
+    public function getControllerFullName(array $url)
+    {
+        $result = null;
+
+        if (empty($url['controller'])) {
+            return $result;
+        }
+
+        $class = $url['controller'];
+        if (!empty($url['plugin'])) {
+            $class = $url['plugin'] . '.' . $class;
+        }
+        $result = App::className($class . 'Controller', 'Controller');
+
+        return $result;
+    }
+
+    /**
      * User action capability setter.
      *
      * @param  string                        $plugin     Plugin name
@@ -271,8 +294,7 @@ class CapabilitiesTable extends Table
             return;
         }
 
-        $plugin = is_null($url['plugin']) ? 'App' : $url['plugin'];
-        $controllerName = App::className($plugin . '.' . $url['controller'] . 'Controller', 'Controller');
+        $controllerName = $this->getControllerFullName($url);
 
         $actionCapabilities = [];
         if (!empty($url['action'])) {
