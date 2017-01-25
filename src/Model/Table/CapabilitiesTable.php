@@ -368,7 +368,11 @@ class CapabilitiesTable extends Table
             return $result;
         }
 
-        $skipControllers = $controllerName::getSkipControllers();
+        $skipControllers = [];
+        if (is_callable([$controllerName, 'getSkipControllers'])) {
+            $skipControllers = $controllerName::getSkipControllers();
+        }
+
         if (in_array($controllerName, $skipControllers)) {
             return $result;
         }
@@ -447,8 +451,13 @@ class CapabilitiesTable extends Table
      */
     protected function _filterSkippedActions($controllerName, array $actions)
     {
+        $skipActions = [];
+        if (is_callable([$controllerName, 'getSkipActions'])) {
+            $skipActions = $controllerName::getSkipActions($controllerName);
+        }
+
         $skipActions = array_merge(
-            $controllerName::getSkipActions($controllerName),
+            $skipActions,
             $this->getCakeControllerActions()
         );
 
