@@ -10,6 +10,13 @@ use Cake\ORM\TableRegistry;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
+    /**
+     * List of tables that should be skipped during
+     * record access check, to avoid infinite recursion.
+     *
+     * @var array
+     */
+    protected $_skipTables = ['roles', 'capabilities', 'users', 'groups', 'groups_roles', 'groups_users'];
 
     /**
      * Implemented Events
