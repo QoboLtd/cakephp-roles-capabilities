@@ -267,7 +267,7 @@ class CapabilitiesTable extends Table
         }
 
         // superuser has access everywhere
-        if ($user['is_superuser']) {
+        if (!empty($user['is_superuser']) && $user['is_superuser']) {
             return;
         }
 
