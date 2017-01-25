@@ -40,38 +40,44 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      */
     public function checkRecordAccess(Event $event, Query $query, ArrayObject $options)
     {
-        $table = TableRegistry::get('RolesCapabilities.Capabilities');
-
-        // current request parameters
-        $request = $table->getCurrentRequest();
-
-        // skip if current model does not match request's model
-        if (array_diff(
-            pluginSplit($event->subject()->registryAlias()),
-            [$request['plugin'], $request['controller']]
-        )) {
+        if (in_array($event->subject()->table(), $this->_skipTables)) {
             return;
         }
 
-        // get capability owner type identifier
-        $type = $table->getTypeOwner();
+        $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
 
-        // get user's action capabilities
-        $userActionCapabilities = $table->getUserActionCapabilities();
+        $user = $aclTable->getCurrentUser();
 
-        // skip if no user's action capabilities found or no user's action
-        // owner specific capabilities found for current request's action
-        if (empty($userActionCapabilities)) {
+        // skip any checks for superusers
+        if (!empty($user['is_superuser']) && $user['is_superuser']) {
             return;
         }
 
-        if (!isset($userActionCapabilities[$request['plugin']][$request['controller']][$request['action']][$type])) {
+        $userCapabilities = $aclTable->getUserCapabilities($user['id']);
+
+        $tableName = get_class($event->subject());
+        // Convert: MyPlugin\Model\Table\ArticlesTable
+        // To: MyPlugin.Articles
+        $tableName = App::shortName($tableName, 'Model/Table', 'Table');
+
+        $controllerName = $aclTable->getControllerFullName(
+            array_combine(['plugin', 'controller'], pluginSplit($tableName))
+        );
+
+        if (!$controllerName) {
             return;
         }
 
-        // set query where clause based on user's owner capabilities assignment fields
-        foreach ($userActionCapabilities[$request['plugin']][$request['controller']][$request['action']][$type] as $userActionCapability) {
-            $query->where([$userActionCapability->getField() => $table->getCurrentUser('id')]);
+        $type = $aclTable->getTypeOwner();
+        // @todo currently we are always assume index action, this probably needs to change in the future
+        $actionCapabilities = $aclTable->getCapabilities($controllerName, ['index']);
+
+        if (!isset($actionCapabilities[$type])) {
+            return;
+        }
+
+        foreach ($actionCapabilities[$type] as $capability) {
+            $query->where([$capability->getField() => $user['id']]);
         }
     }
 }
