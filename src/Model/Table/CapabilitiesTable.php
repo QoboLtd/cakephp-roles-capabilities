@@ -67,6 +67,27 @@ class CapabilitiesTable extends Table
     protected $_currentUser = [];
 
     /**
+     * All user capabilities
+     *
+     * @var array
+     */
+    protected $_userCapabilities = [];
+
+    /**
+     * Controller action(s) capabilities
+     *
+     * @var array
+     */
+    protected $_controllerActionCapabilites = [];
+
+    /**
+     * Group(s) roles
+     *
+     * @var array
+     */
+    protected $_groupsRoles = [];
+
+    /**
      * User action specific capabilities
      *
      * @var array
@@ -481,6 +502,12 @@ class CapabilitiesTable extends Table
      */
     protected function _getCapabilities($controllerName, array $actions, array $assignationFields = [])
     {
+        $key = implode('.', $actions);
+        if (!empty($this->_controllerActionCapabilites[$controllerName][$key])) {
+            return $this->_controllerActionCapabilites[$controllerName][$key];
+        }
+
+        $result = [];
         foreach ($actions as $action) {
             // generate action's full (all) type capabilities
             $result[static::CAP_TYPE_FULL][] = new Cap(
@@ -515,7 +542,9 @@ class CapabilitiesTable extends Table
             }
         }
 
-        return $result;
+        $this->_controllerActionCapabilites[$controllerName][$key] = $result;
+
+        return $this->_controllerActionCapabilites[$controllerName][$key];
     }
 
     /**
@@ -690,29 +719,43 @@ class CapabilitiesTable extends Table
      */
     public function getUserCapabilities($userId)
     {
+        if (!empty($this->_userCapabilities)) {
+            return $this->_userCapabilities;
+        }
+
         $userGroups = $this->Roles->Groups->getUserGroups($userId);
-
-        $userRoles = [];
-        if (!empty($userGroups)) {
-            $userRoles = $this->getGroupsRoles($userGroups);
+        if (empty($userGroups)) {
+            return $this->_userCapabilities;
         }
 
-        $userCaps = [];
-        if (!empty($userRoles)) {
-            $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
-            $userCaps = $query->toArray();
+        $userRoles = $this->getGroupsRoles($userGroups);
+        if (empty($userRoles)) {
+            return $this->_userCapabilities;
         }
 
-        return array_values($userCaps);
+        $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
+        $entities = $query->all();
+        if (!$entities->isEmpty()) {
+            $this->_userCapabilities = array_values($entities->toArray());
+        }
+
+        return $this->_userCapabilities;
     }
 
     /**
      * Method that retrieves specified group(s) roles.
+     *
      * @param  array  $userGroups group(s) id(s)
      * @return array
      */
     public function getGroupsRoles(array $userGroups = [])
     {
+        $key = implode('.', $userGroups);
+
+        if (!empty($this->_groupsRoles[$key])) {
+            return $this->_groupsRoles[$key];
+        }
+
         $result = [];
 
         if (!empty($userGroups)) {
@@ -726,7 +769,9 @@ class CapabilitiesTable extends Table
             $result = $query->toArray();
         }
 
-        return $result;
+        $this->_groupsRoles[$key] = $result;
+
+        return $this->_groupsRoles[$key];
     }
 
     /**
