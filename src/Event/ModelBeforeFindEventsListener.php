@@ -19,19 +19,26 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'Model.beforeFind' => 'checkRecordAccess',
+            'Model.beforeFind' => 'filterByUserPermissions',
         ];
     }
 
     /**
-     * Check
+     * Filter query results by applying where clause conditions
+     * based on current user capabilities.
+     *
+     * If current user has limited access to index or view records
+     * only assigned to him, then the appropriate condition will
+     * be applied to the sql where clause.
+     *
+     *
      *
      * @param \Cake\Event\Event $event The beforeFind event that was fired.
      * @param \Cake\ORM\Query $query Query
      * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function checkRecordAccess(Event $event, Query $query, ArrayObject $options)
+    public function filterByUserPermissions(Event $event, Query $query, ArrayObject $options)
     {
         $skipTables = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables');
         if (in_array($event->subject()->table(), $skipTables)) {
