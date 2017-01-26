@@ -3,6 +3,7 @@ namespace RolesCapabilities\Event;
 
 use ArrayObject;
 use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
@@ -10,14 +11,6 @@ use Cake\ORM\TableRegistry;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
-    /**
-     * List of tables that should be skipped during
-     * record access check, to avoid infinite recursion.
-     *
-     * @var array
-     */
-    protected $_skipTables = ['roles', 'capabilities', 'users', 'groups', 'groups_roles', 'groups_users'];
-
     /**
      * Implemented Events
      *
@@ -40,7 +33,8 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      */
     public function checkRecordAccess(Event $event, Query $query, ArrayObject $options)
     {
-        if (in_array($event->subject()->table(), $this->_skipTables)) {
+        $skipTables = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables');
+        if (in_array($event->subject()->table(), $skipTables)) {
             return;
         }
 
