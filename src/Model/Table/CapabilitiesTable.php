@@ -723,7 +723,7 @@ class CapabilitiesTable extends Table
             return $this->_userCapabilities;
         }
 
-        $userGroups = $this->Roles->Groups->getUserGroups($userId);
+        $userGroups = $this->Roles->Groups->getUserGroups($userId, ['accessCheck' => false]);
         if (empty($userGroups)) {
             return $this->_userCapabilities;
         }
@@ -764,7 +764,7 @@ class CapabilitiesTable extends Table
                 'valueField' => 'name'
             ]);
             $query->matching('Groups', function ($q) use ($userGroups) {
-                return $q->where(['Groups.id IN' => array_keys($userGroups)]);
+                return $q->where(['Groups.id IN' => array_keys($userGroups)])->applyOptions(['accessCheck' => false]);
             });
             $result = $query->toArray();
         }
