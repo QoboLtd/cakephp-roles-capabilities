@@ -67,6 +67,27 @@ class CapabilitiesTable extends Table
     protected $_currentUser = [];
 
     /**
+     * All user capabilities
+     *
+     * @var array
+     */
+    protected $_userCapabilities = [];
+
+    /**
+     * Controller action(s) capabilities
+     *
+     * @var array
+     */
+    protected $_controllerActionCapabilites = [];
+
+    /**
+     * Group(s) roles
+     *
+     * @var array
+     */
+    protected $_groupsRoles = [];
+
+    /**
      * User action specific capabilities
      *
      * @var array
@@ -226,6 +247,29 @@ class CapabilitiesTable extends Table
     }
 
     /**
+     * Returns Controller's class name namespaced.
+     *
+     * @param array $url array of URL parameters.
+     * @return string
+     */
+    public function getControllerFullName(array $url)
+    {
+        $result = null;
+
+        if (empty($url['controller'])) {
+            return $result;
+        }
+
+        $class = $url['controller'];
+        if (!empty($url['plugin'])) {
+            $class = $url['plugin'] . '.' . $class;
+        }
+        $result = App::className($class . 'Controller', 'Controller');
+
+        return $result;
+    }
+
+    /**
      * User action capability setter.
      *
      * @param  string                        $plugin     Plugin name
@@ -253,13 +297,13 @@ class CapabilitiesTable extends Table
     /**
      * Check if current user has access to perform action.
      *
-     * @param  array      $subject Subject
-     * @param  array|null $user User
+     * @param array $url Url
+     * @param array|null $user User
      * @return void
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    public function checkAccess(array $subject, $user)
+    public function checkAccess(array $url, $user)
     {
         // not logged in
         if (empty($user)) {
@@ -267,25 +311,27 @@ class CapabilitiesTable extends Table
         }
 
         // superuser has access everywhere
-        if ($user['is_superuser']) {
+        if (!empty($user['is_superuser']) && $user['is_superuser']) {
             return;
         }
 
-        $plugin = is_null($subject['plugin']) ? 'App' : $subject['plugin'];
-        $controllerName = App::className($plugin . '.' . $subject['controller'] . 'Controller', 'Controller');
+        $controllerName = $this->getControllerFullName($url);
 
-        $actionCapabilities = $this->getCapabilities($controllerName, [$subject['action']]);
+        $actionCapabilities = [];
+        if (!empty($url['action'])) {
+            $actionCapabilities = $this->getCapabilities($controllerName, [$url['action']]);
+        }
 
         // if action capabilities is empty, means that current controller or action are skipped
         if (empty($actionCapabilities)) {
             return;
         }
 
-        $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $subject);
+        $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $url);
 
         // if user has no full access capabilities
         if (!$hasAccess) {
-            $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $subject);
+            $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $url);
         }
 
         if (!$hasAccess) {
@@ -343,7 +389,11 @@ class CapabilitiesTable extends Table
             return $result;
         }
 
-        $skipControllers = $controllerName::getSkipControllers();
+        $skipControllers = [];
+        if (is_callable([$controllerName, 'getSkipControllers'])) {
+            $skipControllers = $controllerName::getSkipControllers();
+        }
+
         if (in_array($controllerName, $skipControllers)) {
             return $result;
         }
@@ -422,8 +472,13 @@ class CapabilitiesTable extends Table
      */
     protected function _filterSkippedActions($controllerName, array $actions)
     {
+        $skipActions = [];
+        if (is_callable([$controllerName, 'getSkipActions'])) {
+            $skipActions = $controllerName::getSkipActions($controllerName);
+        }
+
         $skipActions = array_merge(
-            $controllerName::getSkipActions($controllerName),
+            $skipActions,
             $this->getCakeControllerActions()
         );
 
@@ -447,6 +502,12 @@ class CapabilitiesTable extends Table
      */
     protected function _getCapabilities($controllerName, array $actions, array $assignationFields = [])
     {
+        $key = implode('.', $actions);
+        if (!empty($this->_controllerActionCapabilites[$controllerName][$key])) {
+            return $this->_controllerActionCapabilites[$controllerName][$key];
+        }
+
+        $result = [];
         foreach ($actions as $action) {
             // generate action's full (all) type capabilities
             $result[static::CAP_TYPE_FULL][] = new Cap(
@@ -481,7 +542,9 @@ class CapabilitiesTable extends Table
             }
         }
 
-        return $result;
+        $this->_controllerActionCapabilites[$controllerName][$key] = $result;
+
+        return $this->_controllerActionCapabilites[$controllerName][$key];
     }
 
     /**
@@ -656,29 +719,43 @@ class CapabilitiesTable extends Table
      */
     public function getUserCapabilities($userId)
     {
-        $userGroups = $this->Roles->Groups->getUserGroups($userId);
-
-        $userRoles = [];
-        if (!empty($userGroups)) {
-            $userRoles = $this->getGroupsRoles($userGroups);
+        if (!empty($this->_userCapabilities)) {
+            return $this->_userCapabilities;
         }
 
-        $userCaps = [];
-        if (!empty($userRoles)) {
-            $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
-            $userCaps = $query->toArray();
+        $userGroups = $this->Roles->Groups->getUserGroups($userId, ['accessCheck' => false]);
+        if (empty($userGroups)) {
+            return $this->_userCapabilities;
         }
 
-        return array_values($userCaps);
+        $userRoles = $this->getGroupsRoles($userGroups);
+        if (empty($userRoles)) {
+            return $this->_userCapabilities;
+        }
+
+        $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
+        $entities = $query->all();
+        if (!$entities->isEmpty()) {
+            $this->_userCapabilities = array_values($entities->toArray());
+        }
+
+        return $this->_userCapabilities;
     }
 
     /**
      * Method that retrieves specified group(s) roles.
+     *
      * @param  array  $userGroups group(s) id(s)
      * @return array
      */
     public function getGroupsRoles(array $userGroups = [])
     {
+        $key = implode('.', $userGroups);
+
+        if (!empty($this->_groupsRoles[$key])) {
+            return $this->_groupsRoles[$key];
+        }
+
         $result = [];
 
         if (!empty($userGroups)) {
@@ -687,12 +764,14 @@ class CapabilitiesTable extends Table
                 'valueField' => 'name'
             ]);
             $query->matching('Groups', function ($q) use ($userGroups) {
-                return $q->where(['Groups.id IN' => array_keys($userGroups)]);
+                return $q->where(['Groups.id IN' => array_keys($userGroups)])->applyOptions(['accessCheck' => false]);
             });
             $result = $query->toArray();
         }
 
-        return $result;
+        $this->_groupsRoles[$key] = $result;
+
+        return $this->_groupsRoles[$key];
     }
 
     /**

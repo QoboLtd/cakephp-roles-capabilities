@@ -3,14 +3,15 @@ namespace RolesCapabilities\Event;
 
 use ArrayObject;
 use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
-
     /**
      * Implemented Events
      *
@@ -19,52 +20,124 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'Model.beforeFind' => 'checkRecordAccess',
+            'Model.beforeFind' => 'filterByUserCapabilities',
         ];
     }
 
     /**
-     * Check
+     * Query filtering method based on current user capabilities.
+     *
+     * Filtering can be skipped on per query basis by passing the
+     * 'accessCheck' option and set it to false.
+     *
+     * Additionally filtering can be skipped on per table basis by
+     * defining the table name in the plugin's configuration under
+     * variable 'RolesCapabilities.ownerCheck.skipTables'.
      *
      * @param \Cake\Event\Event $event The beforeFind event that was fired.
      * @param \Cake\ORM\Query $query Query
      * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function checkRecordAccess(Event $event, Query $query, ArrayObject $options)
+    public function filterByUserCapabilities(Event $event, Query $query, ArrayObject $options)
     {
-        $table = TableRegistry::get('RolesCapabilities.Capabilities');
-
-        // current request parameters
-        $request = $table->getCurrentRequest();
-
-        // skip if current model does not match request's model
-        if (array_diff(
-            pluginSplit($event->subject()->registryAlias()),
-            [$request['plugin'], $request['controller']]
-        )) {
+        if (isset($options['accessCheck']) && !$options['accessCheck']) {
             return;
         }
 
-        // get capability owner type identifier
-        $type = $table->getTypeOwner();
+        // current table
+        $table = $event->subject();
 
-        // get user's action capabilities
-        $userActionCapabilities = $table->getUserActionCapabilities();
-
-        // skip if no user's action capabilities found or no user's action
-        // owner specific capabilities found for current request's action
-        if (empty($userActionCapabilities)) {
+        $skipTables = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables');
+        // skip if current table is in the list of skipped tables
+        if (in_array($table->table(), $skipTables)) {
             return;
         }
 
-        if (!isset($userActionCapabilities[$request['plugin']][$request['controller']][$request['action']][$type])) {
+        // get acl table
+        $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
+
+        // get current user
+        $user = $aclTable->getCurrentUser();
+        // skip if user not set or if is a superuser
+        if (empty($user) || (!empty($user['is_superuser']) && $user['is_superuser'])) {
             return;
         }
 
-        // set query where clause based on user's owner capabilities assignment fields
-        foreach ($userActionCapabilities[$request['plugin']][$request['controller']][$request['action']][$type] as $userActionCapability) {
-            $query->where([$userActionCapability->getField() => $table->getCurrentUser('id')]);
+        // convert: 'MyPlugin\Model\Table\ArticlesTable' to: 'MyPlugin.Articles'
+        $tableName = App::shortName(get_class($table), 'Model/Table', 'Table');
+
+        // convert: 'MyPlugin.Articles' to: ['plugin' => 'MyPlugin', 'controller' => 'Articles']
+        $url = array_combine(['plugin', 'controller'], pluginSplit($tableName));
+
+        $controllerName = $aclTable->getControllerFullName($url);
+        // skip if controller class name was not found
+        if (!$controllerName) {
+            return;
         }
+
+        $this->_filterQuery($query, $table, $user, $controllerName);
+    }
+
+    /**
+     *
+     * Filter query results by applying where clause conditions
+     * based on current user capabilities.
+     *
+     * If current user has limited access to index or view records
+     * only assigned to him, then the appropriate condition will
+     * be applied to the sql where clause.
+     *
+     * @param \Cake\ORM\Query $query Query
+     * @param \Cake\ORM\Table $table Table instance
+     * @param array $user User info
+     * @param string $controllerName Namespaced controller name
+     * @return void
+     */
+    protected function _filterQuery(Query $query, Table $table, array $user, $controllerName)
+    {
+        // get acl table
+        $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
+
+        // get current user capabilities
+        $userCapabilities = $aclTable->getUserCapabilities($user['id']);
+
+        // @todo currently we are always assume index action, this probably needs to change in the future
+        $actionCapabilities = $aclTable->getCapabilities($controllerName, ['index']);
+
+        // check if user has owner capability for current action,
+        // if it does modify the query accordingly and return.
+        $ownerType = $aclTable->getTypeOwner();
+        // check user capabilities against action's owner capabilities
+        if (isset($actionCapabilities[$ownerType])) {
+            $hasOwnerType = false;
+            foreach ($actionCapabilities[$ownerType] as $capability) {
+                if (!in_array($capability->getName(), $userCapabilities)) {
+                    continue;
+                }
+                // if user has owner capability for current action add appropriate conditions to where clause
+                $query->where([$capability->getField() => $user['id']]);
+                $hasOwnerType = true;
+            }
+
+            if ($hasOwnerType) {
+                return;
+            }
+        }
+
+        $fullType = $aclTable->getTypeFull();
+        // check user capabilities against action's full capabilities
+        if (isset($actionCapabilities[$fullType])) {
+            foreach ($actionCapabilities[$fullType] as $capability) {
+                // if current action's full capability is matched in user's capabilities just return
+                if (in_array($capability->getName(), $userCapabilities)) {
+                    return;
+                }
+            }
+        }
+
+        // if user has neither owner nor full capability on current action then filter out all records
+        $primaryKey = $table->primaryKey();
+        $query->where([$table->aliasField($primaryKey) => null]);
     }
 }
