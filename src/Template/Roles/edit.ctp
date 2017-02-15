@@ -33,14 +33,13 @@
     <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
-			
         </div>
 
-		<?php $count = 0; $max = 3; ?>
+		<?php $count = 0; $max_boxes = 3; ?>
         <div class="box-body">
            	<div class="row">
             <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
-				<?php if ($count > $max) : ?>
+				<?php if ($count > $max_boxes) : ?>
 					</div>
 					<div class="row">
 					<?php $count = 0; ?>
