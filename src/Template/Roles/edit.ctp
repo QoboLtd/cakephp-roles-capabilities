@@ -33,7 +33,16 @@
     <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
+            <div class="box-tools pull-right">
+                <?= $this->Form->input('select_all', [
+                    'id' => 'select_all',
+                    'type' => 'checkbox',
+                    'div' => false,
+                    'label' => __('Select All')
+                ]); ?>
+            </div>
         </div>
+
         <?php
             $count = 0;
             $maxNum = 3;
@@ -81,3 +90,5 @@
 
     <?= $this->Form->end() ?>
 </section>
+<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBotton']); ?>
+
