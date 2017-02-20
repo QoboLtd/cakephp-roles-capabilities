@@ -6,7 +6,6 @@
 (function ($) {
     // Find all checkboxes in the specific group and check/uncheck them
     $('.select_all').click(function () {
-        console.log('Checking ... ' + this.name);
         var checkboxes = $(this).closest("form").find(":checkbox[name*=" + this.name + "]");
         if ($(this).is(':checked')) {
             checkboxes.prop('checked', true);
@@ -17,7 +16,6 @@
 
     // Find all collapsable boxes and collapse/expand them
     $('#collapse_all').click(function () {
-        console.log("Expand/collapse all ... ");
         var expand = $(this).is(":checked") ? true : false;
         $('.permission-box').each(function () {
             if (expand) {
