@@ -34,11 +34,11 @@
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
             <div class="box-tools pull-right">
-                <?= $this->Form->input('select_all', [
-                    'id' => 'select_all',
+                <?= $this->Form->input('collapse_all', [
+                    'id' => 'collapse_all',
                     'type' => 'checkbox',
                     'div' => false,
-                    'label' => __('Select All')
+                    'label' => __('Expand/Collapse All')
                 ]); ?>
             </div>
         </div>
@@ -56,7 +56,7 @@
                     <?php $count = 0; ?>
                 <?php endif; ?>
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="box box-default collapsed-box">
+                    <div class="box box-default permission-box collapsed-box">
                         <div class="box-header with-border">
                             <h3 class="box-title"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></h3>
                             <div class="box-tools pull-right">
@@ -65,6 +65,15 @@
                         </div>
                         <div class="box-body">
                             <?php
+                            $selectAllName = 'cap__' . preg_replace('/\\\/', '_', $groupName);
+                            echo $this->Form->input($selectAllName, [
+                                'id' => $selectAllName,
+                                'type' => 'checkbox',
+                                'class' => 'select_all',
+                                'div' => false,
+                                'label' => __('Select All'),
+                            ]);
+                            echo $this->Html->tag('hr');
                             asort($groupCaps);
                             foreach ($groupCaps as $k => $v) {
                                 echo $this->Form->input('capabilities[_names][' . $k . ']', [
