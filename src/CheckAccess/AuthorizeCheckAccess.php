@@ -9,7 +9,7 @@ namespace RolesCapabilities\CheckAccess;
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class AuthorizeCheckAccess extends BaseCheckAccess
+class AuthorizeCheckAccess implements CheckAccessInterface
 {
     /**
      *  checkAccess impllementation for authorization

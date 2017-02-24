@@ -9,7 +9,7 @@ namespace RolesCapabilities\CheckAccess;
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class SuperUserCheckAccess extends BaseCheckAccess
+class SuperUserCheckAccess implements CheckAccessInterface
 {
     /**
      *  checkAccess for super user

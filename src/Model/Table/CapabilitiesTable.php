@@ -14,6 +14,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
 use RolesCapabilities\Model\Entity\Capability;
+use RolesCapabilities\CheckAccess\CheckAccessFactory;
 
 /**
  * Capabilities Model
@@ -305,15 +306,9 @@ class CapabilitiesTable extends Table
      */
     public function checkAccess(array $url, $user)
     {
-        // not logged in
-        if (empty($user)) {
-            return;
-        }
-
-        // superuser has access everywhere
-        if (!empty($user['is_superuser']) && $user['is_superuser']) {
-            return;
-        }
+       
+        $checkAccessFactory = new CheckAccessFactory($url, $user);
+        $checkAccessFactory->checkAccess();
 
         $controllerName = $this->getControllerFullName($url);
 
