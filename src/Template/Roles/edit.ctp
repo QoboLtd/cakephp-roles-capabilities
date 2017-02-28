@@ -1,3 +1,23 @@
+<?php
+echo $this->Html->css(
+    [
+        'AdminLTE./plugins/select2/select2.min',
+        'RolesCapabilities.select2-bootstrap.min'
+    ],
+    [
+        'block' => 'css'
+    ]
+);
+echo $this->Html->script('AdminLTE./plugins/select2/select2.full.min', ['block' => 'scriptBotton']);
+echo $this->Html->scriptBlock(
+    '$(".select2").select2({
+        theme: "bootstrap",
+        placeholder: "Select an option",
+        allowClear: true
+    });',
+    ['block' => 'scriptBotton']
+);
+?>
 <section class="content-header">
     <h1><?= __('Edit {0}', ['Role']) ?></h1>
 </section>
@@ -14,18 +34,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-md-6">
                     <?= $this->Form->label(__('Groups')); ?>
-                    <div class="row">
-                        <?php foreach ($groups as $k => $v) : ?>
-                        <div class="col-xs-4 col-md-2">
-                            <?= $this->Form->select('groups._ids', [$k => $v], [
-                                'multiple' => 'checkbox',
-                                'hiddenField' => false
-                            ]); ?>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <?= $this->Form->select('groups._ids', $groups, [
+                        'class' => 'select2',
+                        'multiple' => true
+                    ]); ?>
                 </div>
             </div>
         </div>
@@ -42,7 +56,6 @@
                 ]); ?>
             </div>
         </div>
-
         <?php
             $count = 0;
             $maxNum = 3;
@@ -90,13 +103,11 @@
                 <?php $count++; ?>
             <?php endforeach; ?>
             </div>
-
         </div>
         <div class="box-footer">
             <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
-
     <?= $this->Form->end() ?>
 </section>
 <?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBotton']); ?>
