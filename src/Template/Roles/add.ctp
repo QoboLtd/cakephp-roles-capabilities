@@ -47,25 +47,59 @@ echo $this->Html->scriptBlock(
     <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
+            <div class="box-tools pull-right">
+                <?= $this->Form->input('collapse_all', [
+                    'id' => 'collapse_all',
+                    'type' => 'checkbox',
+                    'div' => false,
+                    'label' => __('Expand/Collapse All')
+                ]); ?>
+            </div>
         </div>
+        <?php
+            $count = 0;
+            $maxNum = 3;
+        ?>
         <div class="box-body">
             <div class="row">
             <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
+                <?php if ($count > $maxNum) : ?>
+                    </div>
+                    <div class="row">
+                    <?php $count = 0; ?>
+                <?php endif; ?>
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="form-group text">
-                        <label><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></label>
-                        <?php
-                        asort($groupCaps);
-                        foreach ($groupCaps as $k => $v) {
-                            echo $this->Form->input('capabilities[_names][' . $k . ']', [
+                    <div class="box box-default permission-box collapsed-box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></h3>
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <?php
+                            $selectAllName = 'cap__' . preg_replace('/\\\/', '_', $groupName);
+                            echo $this->Form->input($selectAllName, [
+                                'id' => $selectAllName,
                                 'type' => 'checkbox',
-                                'label' => $v,
-                                'div' => false
+                                'class' => 'select_all',
+                                'div' => false,
+                                'label' => __('Select All'),
                             ]);
-                        }
-                        ?>
+                            echo $this->Html->tag('hr');
+                            asort($groupCaps);
+                            foreach ($groupCaps as $k => $v) {
+                                echo $this->Form->input('capabilities[_names][' . $k . ']', [
+                                    'type' => 'checkbox',
+                                    'label' => $v,
+                                    'div' => false
+                                ]);
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
+                <?php $count++; ?>
             <?php endforeach; ?>
             </div>
         </div>
@@ -74,4 +108,5 @@ echo $this->Html->scriptBlock(
         </div>
     </div>
     <?= $this->Form->end() ?>
-</div>
+</section>
+<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBotton']); ?>
