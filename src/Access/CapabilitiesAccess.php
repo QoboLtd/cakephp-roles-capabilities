@@ -1,6 +1,6 @@
 <?php
 
-namespace RolesCapabilities\CheckAccess;
+namespace RolesCapabilities\Access;
 
 use Cake\Core\App;
 use Cake\ORM\TableRegistry;
@@ -9,7 +9,12 @@ use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
 
-class CapabilitiesCheckAccess implements CheckAccessInterface
+/**
+ *  CapabilitiesAccess class checks if user has access to specific entity
+ *
+ * @author Michael Stepanov <m.stepanov@qobo.biz>
+ */
+class CapabilitiesAccess implements AccessInterface
 {
     /**
      * Capabilities Table instance.
@@ -18,7 +23,6 @@ class CapabilitiesCheckAccess implements CheckAccessInterface
      */
     protected static $_capabilitiesTable;
 
-
     /**
      *  CheckAccess Capabilities
      *
@@ -26,7 +30,7 @@ class CapabilitiesCheckAccess implements CheckAccessInterface
      * @param array $user   user's session data
      * @return bool         true or false
      */
-    public function checkAccess($url, $user)
+    public function hasAccess($url, $user)
     {
         $controllerName = static::_getCapabilitiesTable()->getControllerFullName($url);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace RolesCapabilities\CheckAccess;
+namespace RolesCapabilities\Access;
 
 use Cake\Network\Exception\ForbiddenException;
 
@@ -11,19 +11,19 @@ use Cake\Network\Exception\ForbiddenException;
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class CheckAccessFactory
+class AccessFactory
 {
     /**
      *  Check Access classes suffix
      *
      */
-    const CHECKER_SUFFIX = 'CheckAccess';
+    const CHECKER_SUFFIX = 'Access';
 
     /**
      *  Check Access Interface name
      *
      */
-    const CHECK_ACCESS_INTERFACE = 'CheckAccessInterface';
+    const CHECK_ACCESS_INTERFACE = 'AccessInterface';
 
     /**
      *  List of rules for checkAccess() function

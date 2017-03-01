@@ -1,23 +1,23 @@
 <?php
 
-namespace RolesCapabilities\CheckAccess;
+namespace RolesCapabilities\Access;
 
 /**
- *  CheckAccessInterface
+ *  AccessInterface
  *
- *  CheckAccessInterface defines methods all check access
+ *  AccessInterface defines methods all check access
  *  classes should implement
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-interface CheckAccessInterface
+interface AccessInterface
 {
     /**
-     *  checkAccess
+     *  hasAccess
      *
      * @param array $url   controller, action, parameteres
      * @param array $user  user info
      * @return true if access is granted and false in case of not
      */
-    public function checkAccess($url, $user);
+    public function hasAccess($url, $user);
 }

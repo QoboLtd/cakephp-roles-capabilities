@@ -1,25 +1,25 @@
 <?php
 
-namespace RolesCapabilities\CheckAccess;
+namespace RolesCapabilities\Access;
 
 /**
- *  AuthorizeCheckAccess Class
+ *  AuthorizeAccess Class
  *
  *  Check if user is authorized or not
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class AuthorizeCheckAccess implements CheckAccessInterface
+class AuthorizeAccess implements AccessInterface
 {
     /**
-     *  checkAccess impllementation for authorization
+     *  hasAccess impllementation for authorization
      *  checks
      *
      * @param array $url   URL user tries to access for
      * @param array $user  user's session data
      * @return true in case of authorized user and false if not
      */
-    public function checkAccess($url, $user)
+    public function hasAccess($url, $user)
     {
         $result = false;
         if (empty($user)) {
