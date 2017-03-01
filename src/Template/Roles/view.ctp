@@ -53,10 +53,14 @@
                             ?>
                             <?php foreach ($capabilities as $groupName => $groupCaps) : ?>
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="form-group text">
-                                    <label>
-                                        <?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?>
-                                    </label>
+                                <div class="box box-default permission-box collapsed-box">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></h3>
+                                        <div class="box-tools pull-right">
+                                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
                                     <?php
                                     asort($groupCaps);
                                     foreach ($groupCaps as $k => $v) {
@@ -70,6 +74,7 @@
                                         ]);
                                     }
                                     ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php endforeach; ?>
