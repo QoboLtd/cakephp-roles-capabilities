@@ -4,10 +4,10 @@ namespace RolesCapabilities\CheckAccess;
 
 use Cake\Core\App;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
-use Cake\Utility\Inflector;
 
 class CapabilitiesCheckAccess implements CheckAccessInterface
 {
@@ -24,25 +24,24 @@ class CapabilitiesCheckAccess implements CheckAccessInterface
      *
      * @param array $url    request URL
      * @param array $user   user's session data
-     * @return boolean      true or false
+     * @return bool         true or false
      */
-     public function checkAccess($url, $user)
-     {
-        
+    public function checkAccess($url, $user)
+    {
         $controllerName = static::_getCapabilitiesTable()->getControllerFullName($url);
 
         $actionCapabilities = [];
         if (!empty($url['action'])) {
             $actionCapabilities = static::_getCapabilitiesTable()->getCapabilities($controllerName, [$url['action']]);
         }
-        
+
         // if action capabilities is empty, means that current controller or action are skipped
         if (empty($actionCapabilities)) {
             return true;
         }
 
         $hasAccess = static::_getCapabilitiesTable()->hasTypeAccess(static::_getCapabilitiesTable()->getTypeFull(), $actionCapabilities, $user, $url);
-        
+
         // if user has no full access capabilities
         if (!$hasAccess) {
             $hasAccess = static::_getCapabilitiesTable()->hasTypeAccess(static::_getCapabilitiesTable()->getTypeOwner(), $actionCapabilities, $user, $url);
@@ -52,9 +51,10 @@ class CapabilitiesCheckAccess implements CheckAccessInterface
         } else {
             return true;
         }
+
         return false;
-     }
-    
+    }
+
     /**
      * Get instance of Capabilities Table.
      *

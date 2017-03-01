@@ -20,21 +20,21 @@ class CheckAccessFactory
     const CHECKER_SUFFIX = 'CheckAccess';
 
     /**
-     *  Check Access Interface name  
+     *  Check Access Interface name
      *
      */
-    const CHECK_ACCESS_INTERFACE = 'CheckAccessInterface'; 
-    
+    const CHECK_ACCESS_INTERFACE = 'CheckAccessInterface';
+
     /**
-     *  List of rules for checkAccess() function  
+     *  List of rules for checkAccess() function
      *
      * @var array
      */
     protected $_checkRules = [
         'Authorize', 'SuperUser', 'Capabilities'
     ];
-   
-    
+
+
     /**
      *  checkAccess
      *
@@ -44,7 +44,7 @@ class CheckAccessFactory
      * @param array $user   user's session data
      * @return void
      */
-    public function checkAccess($url=[], $user=[])
+    public function checkAccess($url = [], $user = [])
     {
         foreach ($this->_checkRules as $rule) {
             $result = $this->_getCheckRuleObject($rule)->checkAccess($url, $user);
@@ -53,15 +53,15 @@ class CheckAccessFactory
                 return;
             }
         }
-        
+
         throw new ForbiddenException();
     }
-    
+
     /**
      *  Return rule object based on its name
      *
      * @param string $ruleName name of rule
-     * @return object rule object or throw exception 
+     * @return object rule object or throw exception
      */
     protected function _getCheckRuleObject($ruleName)
     {
@@ -71,5 +71,5 @@ class CheckAccessFactory
         if (class_exists($ruleClass) && in_array($interface, class_implements($ruleClass))) {
             return new $ruleClass();
         }
-    }    
+    }
 }

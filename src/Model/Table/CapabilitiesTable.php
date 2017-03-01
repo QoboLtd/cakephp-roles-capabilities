@@ -13,8 +13,8 @@ use Cake\Validation\Validator;
 use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
-use RolesCapabilities\Model\Entity\Capability;
 use RolesCapabilities\CheckAccess\CheckAccessFactory;
+use RolesCapabilities\Model\Entity\Capability;
 
 /**
  * Capabilities Model
@@ -307,6 +307,7 @@ class CapabilitiesTable extends Table
     public function checkAccess(array $url, $user)
     {
         $checkAccessFactory = new CheckAccessFactory();
+
         return $checkAccessFactory->checkAccess($url, $user);
     }
 
