@@ -12,8 +12,8 @@ use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use ReflectionClass;
 use ReflectionMethod;
+use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Capability as Cap;
-use RolesCapabilities\CheckAccess\CheckAccessFactory;
 use RolesCapabilities\Model\Entity\Capability;
 
 /**
@@ -306,9 +306,9 @@ class CapabilitiesTable extends Table
      */
     public function checkAccess(array $url, $user)
     {
-        $checkAccessFactory = new CheckAccessFactory();
+        $accessFactory = new AccessFactory();
 
-        return $checkAccessFactory->checkAccess($url, $user);
+        return $accessFactory->hasAccess($url, $user);
     }
 
     /**

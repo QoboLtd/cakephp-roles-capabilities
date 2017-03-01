@@ -44,10 +44,10 @@ class AccessFactory
      * @param array $user   user's session data
      * @return void
      */
-    public function checkAccess($url = [], $user = [])
+    public function hasAccess($url = [], $user = [])
     {
         foreach ($this->_checkRules as $rule) {
-            $result = $this->_getCheckRuleObject($rule)->checkAccess($url, $user);
+            $result = $this->_getCheckRuleObject($rule)->hasAccess($url, $user);
 
             if ($result) {
                 return;
