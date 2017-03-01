@@ -306,32 +306,8 @@ class CapabilitiesTable extends Table
      */
     public function checkAccess(array $url, $user)
     {
-       
-        $checkAccessFactory = new CheckAccessFactory($url, $user);
-        $checkAccessFactory->checkAccess();
-
-        $controllerName = $this->getControllerFullName($url);
-
-        $actionCapabilities = [];
-        if (!empty($url['action'])) {
-            $actionCapabilities = $this->getCapabilities($controllerName, [$url['action']]);
-        }
-
-        // if action capabilities is empty, means that current controller or action are skipped
-        if (empty($actionCapabilities)) {
-            return;
-        }
-
-        $hasAccess = $this->_hasTypeAccess($this->getTypeFull(), $actionCapabilities, $user, $url);
-
-        // if user has no full access capabilities
-        if (!$hasAccess) {
-            $hasAccess = $this->_hasTypeAccess($this->getTypeOwner(), $actionCapabilities, $user, $url);
-        }
-
-        if (!$hasAccess) {
-            throw new ForbiddenException();
-        }
+        $checkAccessFactory = new CheckAccessFactory();
+        return $checkAccessFactory->checkAccess($url, $user);
     }
 
     /**
@@ -343,7 +319,7 @@ class CapabilitiesTable extends Table
      * @param  array  $url                Controller url
      * @return bool
      */
-    protected function _hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
+    public function hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
     {
         // skip if action has no access capabilities for specified type
         if (!isset($actionCapabilities[$type])) {
