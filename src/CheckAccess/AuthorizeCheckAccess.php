@@ -22,7 +22,7 @@ class AuthorizeCheckAccess implements CheckAccessInterface
     public function checkAccess($url, $user)
     {
         $result = false;
-        if (!empty($user)) {
+        if (empty($user)) {
             $result = true;
         }
 

@@ -2,12 +2,6 @@
 
 namespace RolesCapabilities\CheckAccess;
 
-use Cake\Core\App;
-use Cake\ORM\TableRegistry;
-use ReflectionClass;
-use ReflectionMethod;
-use RolesCapabilities\Capability as Cap;
-use Cake\Utility\Inflector;
 use Cake\Network\Exception\ForbiddenException;
 
 /**
@@ -36,17 +30,11 @@ class CheckAccessFactory
      *
      * @var array
      */
-    protected $_listOfRules = [
-        'Authorize', 'SuperUser',
+    protected $_checkRules = [
+        'Authorize', 'SuperUser', 'Capabilities'
     ];
    
-    /**
-     * Capabilities Table instance.
-     *
-     * @var object
-     */
-    protected static $_capabilitiesTable;
-
+    
     /**
      *  checkAccess
      *
@@ -58,46 +46,15 @@ class CheckAccessFactory
      */
     public function checkAccess($url=[], $user=[])
     {
-        if (empty($user)) {
-            return false;
+        foreach ($this->_checkRules as $rule) {
+            $result = $this->_getCheckRuleObject($rule)->checkAccess($url, $user);
+
+            if ($result) {
+                return;
+            }
         }
         
-        if (!empty($user['is_superuser']) && $user['is_superuser']) {
-            return true;
-        }
-    
-        $controllerName = static::_getCapabilitiesTable()->getControllerFullName($url);
-
-        $actionCapabilities = [];
-        if (!empty($url['action'])) {
-            $actionCapabilities = static::_getCapabilitiesTable()->getCapabilities($controllerName, [$url['action']]);
-        }
-        
-        // if action capabilities is empty, means that current controller or action are skipped
-        if (empty($actionCapabilities)) {
-            return false;
-        }
-
-        $hasAccess = static::_getCapabilitiesTable()->hasTypeAccess(static::_getCapabilitiesTable()->getTypeFull(), $actionCapabilities, $user, $url);
-
-        // if user has no full access capabilities
-        if (!$hasAccess) {
-            $hasAccess = static::_getCapabilitiesTable()->hasTypeAccess(static::_getCapabilitiesTable()->getTypeOwner(), $actionCapabilities, $user, $url);
-        }
-
-        if (!$hasAccess) {
-            throw new ForbiddenException();
-        }
-
-        /*
-        $result = false;
-
-        foreach ($this->_listOfRules as $rule) {
-            $this->_getCheckRuleObject($rule)->checkAccess($url, $user);
-        }
-
-        return $result;
-        */
+        throw new ForbiddenException();
     }
     
     /**
@@ -114,19 +71,5 @@ class CheckAccessFactory
         if (class_exists($ruleClass) && in_array($interface, class_implements($ruleClass))) {
             return new $ruleClass();
         }
-    }
-
-    /**
-     * Get instance of Capabilities Table.
-     *
-     * @return object Capabilities Table object
-     */
-    protected static function _getCapabilitiesTable()
-    {
-        if (empty(static::$_capabilitiesTable)) {
-            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        }
-
-        return static::$_capabilitiesTable;
-    }
+    }    
 }
