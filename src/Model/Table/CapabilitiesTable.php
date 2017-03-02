@@ -321,7 +321,7 @@ class CapabilitiesTable extends Table
 
         $skipActions = array_merge(
             $skipActions,
-            $this->getCakeControllerActions()
+            Utils::getCakeControllerActions()
         );
 
         foreach ($actions as $k => $action) {
@@ -525,19 +525,7 @@ class CapabilitiesTable extends Table
 
         return $result;
     }
-
-    /**
-     * Get list of Cake's Controller class methods.
-     *
-     * @return array
-     */
-    public function getCakeControllerActions()
-    {
-        $result = get_class_methods('Cake\Controller\Controller');
-
-        return $result;
-    }
-
+    
     /**
      * Method that retrieves specified user's capabilities
      * @param  string $userId user id

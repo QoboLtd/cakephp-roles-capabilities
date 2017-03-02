@@ -82,5 +82,17 @@ class Utils
 
         return $actions;
     }
+    
+    /**
+     * Get list of Cake's Controller class methods.
+     *
+     * @return array
+     */
+    public static function getCakeControllerActions()
+    {
+        $result = get_class_methods('Cake\Controller\Controller');
+
+        return $result;
+    }
 
 }
