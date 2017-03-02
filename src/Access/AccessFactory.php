@@ -33,7 +33,18 @@ class AccessFactory
     protected $_checkRules = [
         'Authorize', 'SuperUser', 'Capabilities'
     ];
-
+    
+    /**
+     *  Constructor
+     *
+     *
+     */
+    public function __construct(array $rules = [])
+    {
+        if (!empty($rules)) {
+            $this->_checkRules = $rules;
+        }
+    }
 
     /**
      *  checkAccess
@@ -55,6 +66,16 @@ class AccessFactory
         }
 
         throw new ForbiddenException();
+    }
+    
+    /**
+     *  Return a list of rules to check access
+     *
+     * @return array    list of rules
+     */
+    public function getChecRules()
+    {
+        return $this->_checkRules;
     }
 
     /**
