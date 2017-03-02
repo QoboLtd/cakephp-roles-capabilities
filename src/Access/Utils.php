@@ -11,6 +11,15 @@ use Cake\Core\App;
  */
 class Utils 
 {
+    /**
+     * Full type capability identifier
+     */
+    const CAP_TYPE_FULL = 'full';
+
+    /**
+     * Owner type capability identifier
+     */
+    const CAP_TYPE_OWNER = 'owner';
 
     /**
      * Returns Controller's class name namespaced.
@@ -33,5 +42,25 @@ class Utils
         $result = App::className($class . 'Controller', 'Controller');
 
         return $result;
+    }
+
+    /**
+     * Get full type capability identifier.
+     *
+     * @return string
+     */
+    public static function getTypeFull()
+    {
+        return static::CAP_TYPE_FULL;
+    }
+
+    /**
+     * Get owner type capability identifier.
+     *
+     * @return string
+     */
+    public static function getTypeOwner()
+    {
+        return static::CAP_TYPE_OWNER;
     }
 }

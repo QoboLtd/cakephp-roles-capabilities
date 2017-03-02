@@ -45,11 +45,11 @@ class CapabilitiesAccess implements AccessInterface
             return true;
         }
 
-        $hasAccess = $this->hasTypeAccess(static::_getCapabilitiesTable()->getTypeFull(), $actionCapabilities, $user, $url);
+        $hasAccess = $this->hasTypeAccess(Utils::getTypeFull(), $actionCapabilities, $user, $url);
 
         // if user has no full access capabilities
         if (!$hasAccess) {
-            $hasAccess = $this->hasTypeAccess(static::_getCapabilitiesTable()->getTypeOwner(), $actionCapabilities, $user, $url);
+            $hasAccess = $this->hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $url);
             if ($hasAccess) {
                 return true;
             }

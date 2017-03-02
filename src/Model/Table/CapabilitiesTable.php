@@ -13,6 +13,7 @@ use Cake\Validation\Validator;
 use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Access\AccessFactory;
+use RolesCapabilities\Access\Utils;
 use RolesCapabilities\Capability as Cap;
 use RolesCapabilities\Model\Entity\Capability;
 
@@ -24,16 +25,6 @@ use RolesCapabilities\Model\Entity\Capability;
  */
 class CapabilitiesTable extends Table
 {
-    /**
-     * Full type capability identifier
-     */
-    const CAP_TYPE_FULL = 'full';
-
-    /**
-     * Owner type capability identifier
-     */
-    const CAP_TYPE_OWNER = 'owner';
-
     /**
      * Default skip controllers
      *
@@ -176,26 +167,6 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Get full type capability identifier.
-     *
-     * @return string
-     */
-    public function getTypeFull()
-    {
-        return static::CAP_TYPE_FULL;
-    }
-
-    /**
-     * Get owner type capability identifier.
-     *
-     * @return string
-     */
-    public function getTypeOwner()
-    {
-        return static::CAP_TYPE_OWNER;
-    }
-
-    /**
      * Current request parameters setter.
      *
      * @param  array $request Request parameters
@@ -246,30 +217,6 @@ class CapabilitiesTable extends Table
 
         return $this->_currentUser;
     }
-
-    /**
-     * Returns Controller's class name namespaced.
-     *
-     * @param array $url array of URL parameters.
-     * @return string
-     */
-    public function getControllerFullName(array $url)
-    {
-        $result = null;
-
-        if (empty($url['controller'])) {
-            return $result;
-        }
-
-        $class = $url['controller'];
-        if (!empty($url['plugin'])) {
-            $class = $url['plugin'] . '.' . $class;
-        }
-        $result = App::className($class . 'Controller', 'Controller');
-
-        return $result;
-    }
-
     
     /**
      * Check if current user has access to perform action.
@@ -424,7 +371,7 @@ class CapabilitiesTable extends Table
         $result = [];
         foreach ($actions as $action) {
             // generate action's full (all) type capabilities
-            $result[static::CAP_TYPE_FULL][] = new Cap(
+            $result[Utils::CAP_TYPE_FULL][] = new Cap(
                 $this->generateCapabilityName($controllerName, $action),
                 [
                     'label' => $this->generateCapabilityLabel($controllerName, $action . '_all'),
@@ -442,7 +389,7 @@ class CapabilitiesTable extends Table
 
             // generate action's owner (assignment field) type capabilities
             foreach ($assignationFields as $assignationField) {
-                $result[static::CAP_TYPE_OWNER][] = new Cap(
+                $result[Utils::CAP_TYPE_OWNER][] = new Cap(
                     $this->generateCapabilityName($controllerName, $action . '_' . $assignationField),
                     [
                         'label' => $this->generateCapabilityLabel($controllerName, $action . '_' . $assignationField),

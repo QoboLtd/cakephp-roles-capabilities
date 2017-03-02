@@ -9,6 +9,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Access\Utils;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
@@ -70,7 +71,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         // convert: 'MyPlugin.Articles' to: ['plugin' => 'MyPlugin', 'controller' => 'Articles']
         $url = array_combine(['plugin', 'controller'], pluginSplit($tableName));
 
-        $controllerName = $aclTable->getControllerFullName($url);
+        $controllerName = Utils::getControllerFullName($url);
         // skip if controller class name was not found
         if (!$controllerName) {
             return;
@@ -107,7 +108,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
 
         // check if user has owner capability for current action,
         // if it does modify the query accordingly and return.
-        $ownerType = $aclTable->getTypeOwner();
+        $ownerType = Utils::getTypeOwner();
         // check user capabilities against action's owner capabilities
         if (isset($actionCapabilities[$ownerType])) {
             $hasOwnerType = false;
@@ -125,7 +126,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             }
         }
 
-        $fullType = $aclTable->getTypeFull();
+        $fullType = Utils::getTypeFull();
         // check user capabilities against action's full capabilities
         if (isset($actionCapabilities[$fullType])) {
             foreach ($actionCapabilities[$fullType] as $capability) {
