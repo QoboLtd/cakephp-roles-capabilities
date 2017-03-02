@@ -25,6 +25,13 @@ class CapabilitiesAccess implements AccessInterface
     protected static $_capabilitiesTable;
 
     /**
+     * User action specific capabilities
+     *
+     * @var array
+     */
+    protected $_userActionCapabilities = [];
+
+    /**
      *  CheckAccess Capabilities
      *
      * @param array $url    request URL

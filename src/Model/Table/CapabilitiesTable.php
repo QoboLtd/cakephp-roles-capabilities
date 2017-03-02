@@ -78,13 +78,6 @@ class CapabilitiesTable extends Table
     protected $_groupsRoles = [];
 
     /**
-     * User action specific capabilities
-     *
-     * @var array
-     */
-    protected $_userActionCapabilities = [];
-
-    /**
      * Models that hold user information, usually used as associations to relate records to a user.
      *
      * @var array
