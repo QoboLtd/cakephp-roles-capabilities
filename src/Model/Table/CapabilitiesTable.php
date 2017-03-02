@@ -300,39 +300,11 @@ class CapabilitiesTable extends Table
         }
 
         // filter out skipped actions
-        $actions = $this->_filterSkippedActions($controllerName, $actions);
+        $actions = Utils::filterSkippedActions($controllerName, $actions);
 
         return $actions;
-    }
+    }    
     
-    /**
-     * Method that filter's out skipped actions from Controller's actions list.
-     *
-     * @param  string $controllerName Controller name
-     * @param  array  $actions        Controller actions
-     * @return array
-     */
-    protected function _filterSkippedActions($controllerName, array $actions)
-    {
-        $skipActions = [];
-        if (is_callable([$controllerName, 'getSkipActions'])) {
-            $skipActions = $controllerName::getSkipActions($controllerName);
-        }
-
-        $skipActions = array_merge(
-            $skipActions,
-            Utils::getCakeControllerActions()
-        );
-
-        foreach ($actions as $k => $action) {
-            if (in_array($action, $skipActions)) {
-                unset($actions[$k]);
-            }
-        }
-
-        return $actions;
-    }
-
     /**
      * Method that generates capabilities for specified controller's actions.
      * Capabilities included are full or owner access types.
