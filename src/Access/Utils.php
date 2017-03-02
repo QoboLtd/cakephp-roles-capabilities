@@ -3,10 +3,11 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\App;
-use ReflectionClass;
-use ReflectionMethod;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
+use ReflectionClass;
+use ReflectionMethod;
 
 /**
  *  Utils class with common methos for Capabilities
@@ -236,4 +237,40 @@ class Utils
 
         return $result;
     }
+
+    /**
+     * Convert action/method name to human-friendly description
+     *
+     * Action/method names mostly follow CakePHP naming conventions
+     * and are not very human-friendly.  For example, 'list' is much
+     * less confusing than 'index'.
+     *
+     * When used in the capability description, an additional layer of
+     * confusion is introduced.  For example, 'Allow info' or 'Allow
+     * changelog'.  Adjusting these to 'Allow view info' and 'Allo
+     * view changelog' help a great deal.
+     *
+     * @todo Allow controllers to take control over these
+     *
+     * @param string $action Action/method name to humanize
+     * @return string
+     */
+    public static function humanizeActionName($action)
+    {
+        // cameCaseMethod -> under_score -> Human Form -> lowercase
+        $result = strtolower(Inflector::humanize(Inflector::underscore($action)));
+
+        switch ($action) {
+            case 'index':
+                $result = 'list';
+                break;
+            case 'info':
+            case 'changelog':
+                $result = 'view ' . $action;
+                break;
+        }
+
+        return $result;
+    }
+
 }

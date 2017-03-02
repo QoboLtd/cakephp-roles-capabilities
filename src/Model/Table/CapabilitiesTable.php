@@ -300,7 +300,7 @@ class CapabilitiesTable extends Table
                     'label' => Utils::generateCapabilityLabel($controllerName, $action . '_all'),
                     'description' => Utils::generateCapabilityDescription(
                         $controllerName,
-                        $this->_humanizeActionName($action)
+                        Utils::humanizeActionName($action)
                     )
                 ]
             );
@@ -318,7 +318,7 @@ class CapabilitiesTable extends Table
                         'label' => Utils::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
                         'description' => Utils::generateCapabilityDescription(
                             $controllerName,
-                            $this->_humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
+                            Utils::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
                         ),
                         'field' => $assignationField
                     ]
@@ -331,41 +331,7 @@ class CapabilitiesTable extends Table
         return $this->_controllerActionCapabilites[$controllerName][$key];
     }
 
-    /**
-     * Convert action/method name to human-friendly description
-     *
-     * Action/method names mostly follow CakePHP naming conventions
-     * and are not very human-friendly.  For example, 'list' is much
-     * less confusing than 'index'.
-     *
-     * When used in the capability description, an additional layer of
-     * confusion is introduced.  For example, 'Allow info' or 'Allow
-     * changelog'.  Adjusting these to 'Allow view info' and 'Allo
-     * view changelog' help a great deal.
-     *
-     * @todo Allow controllers to take control over these
-     *
-     * @param string $action Action/method name to humanize
-     * @return string
-     */
-    protected function _humanizeActionName($action)
-    {
-        // cameCaseMethod -> under_score -> Human Form -> lowercase
-        $result = strtolower(Inflector::humanize(Inflector::underscore($action)));
-
-        switch ($action) {
-            case 'index':
-                $result = 'list';
-                break;
-            case 'info':
-            case 'changelog':
-                $result = 'view ' . $action;
-                break;
-        }
-
-        return $result;
-    }
-
+    
     
     /**
      * Method that retrieves and returns Table's assignation fields. These are fields
