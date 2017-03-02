@@ -267,7 +267,7 @@ class CapabilitiesTable extends Table
         $controllerTable = Utils::getControllerTableInstance($controllerName);
 
         return $this->_getCapabilities(
-            $this->generateCapabilityControllerName($controllerName),
+            Utils::generateCapabilityControllerName($controllerName),
             $actions,
             $this->_getTableAssignationFields($controllerTable)
         );
@@ -295,10 +295,10 @@ class CapabilitiesTable extends Table
         foreach ($actions as $action) {
             // generate action's full (all) type capabilities
             $result[Utils::CAP_TYPE_FULL][] = new Cap(
-                $this->generateCapabilityName($controllerName, $action),
+                Utils::generateCapabilityName($controllerName, $action),
                 [
-                    'label' => $this->generateCapabilityLabel($controllerName, $action . '_all'),
-                    'description' => $this->generateCapabilityDescription(
+                    'label' => Utils::generateCapabilityLabel($controllerName, $action . '_all'),
+                    'description' => Utils::generateCapabilityDescription(
                         $controllerName,
                         $this->_humanizeActionName($action)
                     )
@@ -313,10 +313,10 @@ class CapabilitiesTable extends Table
             // generate action's owner (assignment field) type capabilities
             foreach ($assignationFields as $assignationField) {
                 $result[Utils::CAP_TYPE_OWNER][] = new Cap(
-                    $this->generateCapabilityName($controllerName, $action . '_' . $assignationField),
+                    Utils::generateCapabilityName($controllerName, $action . '_' . $assignationField),
                     [
-                        'label' => $this->generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
-                        'description' => $this->generateCapabilityDescription(
+                        'label' => Utils::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
+                        'description' => Utils::generateCapabilityDescription(
                             $controllerName,
                             $this->_humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
                         ),
@@ -504,60 +504,5 @@ class CapabilitiesTable extends Table
         $this->_groupsRoles[$key] = $result;
 
         return $this->_groupsRoles[$key];
-    }
-
-    /**
-     * Generate capability's controller name.
-     *
-     * @param  string $controllerName Controller name
-     * @return string
-     */
-    public function generateCapabilityControllerName($controllerName)
-    {
-        $result = str_replace('\\', '_', $controllerName);
-
-        return $result;
-    }
-
-    /**
-     * Generate capability name.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    public function generateCapabilityName($controllerName, $action)
-    {
-        $result = 'cap__' . $controllerName . '__' . $action;
-
-        return $result;
-    }
-
-    /**
-     * Generate capability label.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    public function generateCapabilityLabel($controllerName, $action)
-    {
-        $result = 'Cap ' . $controllerName . ' ' . $action;
-
-        return $result;
-    }
-
-    /**
-     * Generate capability description.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    public function generateCapabilityDescription($controllerName, $action)
-    {
-        $result = 'Allow ' . $action;
-
-        return $result;
     }
 }

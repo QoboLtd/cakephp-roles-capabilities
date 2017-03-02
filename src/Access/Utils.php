@@ -181,5 +181,59 @@ class Utils
 
         return TableRegistry::get($tableName);
     }
+    
+    /**
+     * Generate capability's controller name.
+     *
+     * @param  string $controllerName Controller name
+     * @return string
+     */
+    public static function generateCapabilityControllerName($controllerName)
+    {
+        $result = str_replace('\\', '_', $controllerName);
 
+        return $result;
+    }
+
+    /**
+     * Generate capability name.
+     *
+     * @param  string $controllerName Controller name
+     * @param  string $action         Action name
+     * @return string
+     */
+    public static function generateCapabilityName($controllerName, $action)
+    {
+        $result = 'cap__' . $controllerName . '__' . $action;
+
+        return $result;
+    }
+
+    /**
+     * Generate capability label.
+     *
+     * @param  string $controllerName Controller name
+     * @param  string $action         Action name
+     * @return string
+     */
+    public static function generateCapabilityLabel($controllerName, $action)
+    {
+        $result = 'Cap ' . $controllerName . ' ' . $action;
+
+        return $result;
+    }
+
+    /**
+     * Generate capability description.
+     *
+     * @param  string $controllerName Controller name
+     * @param  string $action         Action name
+     * @return string
+     */
+    public static function generateCapabilityDescription($controllerName, $action)
+    {
+        $result = 'Allow ' . $action;
+
+        return $result;
+    }
 }
