@@ -61,7 +61,7 @@ class AccessFactory
             $result = $this->_getCheckRuleObject($rule)->hasAccess($url, $user);
 
             if ($result) {
-                return;
+                return true;
             }
         }
 
