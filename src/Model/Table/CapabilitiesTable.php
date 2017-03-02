@@ -10,8 +10,6 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
-use ReflectionClass;
-use ReflectionMethod;
 use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Access\Utils;
 use RolesCapabilities\Capability as Cap;
@@ -284,7 +282,7 @@ class CapabilitiesTable extends Table
      */
     protected function _getActions($controllerName, array $actions = [])
     {
-        $publicMethods = $this->_getControllerPublicMethods($controllerName);
+        $publicMethods = Utils::getControllerPublicMethods($controllerName);
         // return if controller has no public methods
         if (empty($publicMethods)) {
             return [];
@@ -306,24 +304,7 @@ class CapabilitiesTable extends Table
 
         return $actions;
     }
-
-    /**
-     * Method that retrieves and returns Controller public methods.
-     *
-     * @param  string $controllerName Controller name
-     * @return array
-     */
-    protected function _getControllerPublicMethods($controllerName)
-    {
-        $actions = [];
-        $refClass = new ReflectionClass($controllerName);
-        foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            $actions[] = $method->name;
-        }
-
-        return $actions;
-    }
-
+    
     /**
      * Method that filter's out skipped actions from Controller's actions list.
      *

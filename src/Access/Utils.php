@@ -3,6 +3,8 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\App;
+use ReflectionClass;
+use ReflectionMethod;
 
 /**
  *  Utils class with common methos for Capabilities
@@ -63,4 +65,22 @@ class Utils
     {
         return static::CAP_TYPE_OWNER;
     }
+
+    /**
+     * Method that retrieves and returns Controller public methods.
+     *
+     * @param  string $controllerName Controller name
+     * @return array
+     */
+    public static function getControllerPublicMethods($controllerName)
+    {
+        $actions = [];
+        $refClass = new ReflectionClass($controllerName);
+        foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            $actions[] = $method->name;
+        }
+
+        return $actions;
+    }
+
 }
