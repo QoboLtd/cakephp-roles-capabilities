@@ -33,7 +33,7 @@ class AccessFactory
     protected $_checkRules = [
         'Authorize', 'SuperUser', 'Capabilities'
     ];
-    
+
     /**
      *  Constructor
      *
@@ -67,7 +67,7 @@ class AccessFactory
 
         throw new ForbiddenException();
     }
-    
+
     /**
      *  Return a list of rules to check access
      *
