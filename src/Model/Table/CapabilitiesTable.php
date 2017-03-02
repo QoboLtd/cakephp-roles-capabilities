@@ -264,7 +264,7 @@ class CapabilitiesTable extends Table
         }
 
         // get controller table instance
-        $controllerTable = $this->_getControllerTableInstance($controllerName);
+        $controllerTable = Utils::getControllerTableInstance($controllerName);
 
         return $this->_getCapabilities(
             $this->generateCapabilityControllerName($controllerName),
@@ -366,31 +366,7 @@ class CapabilitiesTable extends Table
         return $result;
     }
 
-    /**
-     * Method that returns Table instance of specified controller.
-     *
-     * @param  string          $controllerName Controller name
-     * @return \Cake\ORM\Table
-     */
-    protected function _getControllerTableInstance($controllerName)
-    {
-        $parts = explode('\\', $controllerName);
-        // get last part, "/ArticlesController"
-        $tableName = array_pop($parts);
-        // remove "Controller" suffix from "/ArticlesController"
-        $tableName = str_replace('Controller', '', $tableName);
-        // remove "/Controller/" part
-        array_pop($parts);
-        // get plugin part "/MyPlugin/"
-        $plugin = array_pop($parts);
-        // prefix plugin to table name if is not "App"
-        if ('App' !== $plugin) {
-            $tableName = $plugin . '.' . $tableName;
-        }
-
-        return TableRegistry::get($tableName);
-    }
-
+    
     /**
      * Method that retrieves and returns Table's assignation fields. These are fields
      * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
