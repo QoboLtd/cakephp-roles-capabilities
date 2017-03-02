@@ -8,6 +8,7 @@ return [
                 'roles',
                 'capabilities',
                 'users',
+                'groups',
                 'groups_roles',
                 'groups_users'
             ]
