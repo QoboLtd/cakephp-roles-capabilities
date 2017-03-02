@@ -11,6 +11,7 @@ use Cake\Core\App;
  */
 class Utils 
 {
+
     /**
      * Returns Controller's class name namespaced.
      *
@@ -33,5 +34,4 @@ class Utils
 
         return $result;
     }
-
 }

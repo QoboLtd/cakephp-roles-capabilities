@@ -270,31 +270,7 @@ class CapabilitiesTable extends Table
         return $result;
     }
 
-    /**
-     * User action capability setter.
-     *
-     * @param  string                        $plugin     Plugin name
-     * @param  string                        $controller Controller name
-     * @param  string                        $action     Action type
-     * @param  string                        $type       Capability type
-     * @param  \RolesCapabilities\Capability $capability Capability instance
-     * @return void
-     */
-    public function setUserActionCapability($plugin, $controller, $action, $type, Cap $capability)
-    {
-        $this->_userActionCapabilities[$plugin][$controller][$action][$type][] = $capability;
-    }
-
-    /**
-     * User action capabilities getter.
-     *
-     * @return array
-     */
-    public function getUserActionCapabilities()
-    {
-        return $this->_userActionCapabilities;
-    }
-
+    
     /**
      * Check if current user has access to perform action.
      *
@@ -311,41 +287,7 @@ class CapabilitiesTable extends Table
         return $accessFactory->hasAccess($url, $user);
     }
 
-    /**
-     * Method that checks if user has full access on Controller's action.
-     *
-     * @param  string $type               Capability type
-     * @param  array  $actionCapabilities Action capabilities
-     * @param  array  $user               User info
-     * @param  array  $url                Controller url
-     * @return bool
-     */
-    public function hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
-    {
-        // skip if action has no access capabilities for specified type
-        if (!isset($actionCapabilities[$type])) {
-            return false;
-        }
-
-        foreach ($actionCapabilities[$type] as $actionCapability) {
-            // user has access
-            if ($this->hasAccess($actionCapability->getName(), $user['id'])) {
-                // store in user's action capabilities
-                $this->setUserActionCapability(
-                    $url['plugin'],
-                    $url['controller'],
-                    $url['action'],
-                    $type,
-                    $actionCapability
-                );
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    
     /**
      * Returns Controller permission capabilities.
      *
@@ -601,23 +543,7 @@ class CapabilitiesTable extends Table
         return $fields;
     }
 
-    /**
-     * Method that checks if current user is allowed access.
-     * Returns true if current user has access, false otherwise.
-     * @param  string $capability capability name
-     * @param  string $userId     user id
-     * @return bool
-     */
-    public function hasAccess($capability, $userId)
-    {
-        $userCaps = $this->getUserCapabilities($userId);
-        if (in_array($capability, $userCaps)) {
-            return true;
-        }
-
-        return false;
-    }
-
+    
     /**
      * Method that checks if specified role is allowed access.
      * Returns true if role has access, false otherwise.
