@@ -217,7 +217,7 @@ class CapabilitiesTable extends Table
 
         return $this->_currentUser;
     }
-    
+
     /**
      * Check if current user has access to perform action.
      *
@@ -234,7 +234,7 @@ class CapabilitiesTable extends Table
         return $accessFactory->hasAccess($url, $user);
     }
 
-    
+
     /**
      * Returns Controller permission capabilities.
      *
@@ -490,7 +490,7 @@ class CapabilitiesTable extends Table
         return $fields;
     }
 
-    
+
     /**
      * Method that checks if specified role is allowed access.
      * Returns true if role has access, false otherwise.

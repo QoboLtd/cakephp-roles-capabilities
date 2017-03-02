@@ -59,7 +59,7 @@ class CapabilitiesAccess implements AccessInterface
 
         return false;
     }
-    
+
     /**
      * Method that checks if user has full access on Controller's action.
      *
@@ -94,7 +94,7 @@ class CapabilitiesAccess implements AccessInterface
 
         return false;
     }
-    
+
     /**
      * Method that checks if current user is allowed access.
      * Returns true if current user has access, false otherwise.

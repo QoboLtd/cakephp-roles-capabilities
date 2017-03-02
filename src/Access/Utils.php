@@ -9,7 +9,7 @@ use Cake\Core\App;
  *
  *
  */
-class Utils 
+class Utils
 {
     /**
      * Full type capability identifier
