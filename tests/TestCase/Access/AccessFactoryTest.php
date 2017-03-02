@@ -27,13 +27,6 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $af = new AccessFactory();
         $result = $af->hasAccess($url, $user);
         $this->assertTrue($result);
-        
-        $user = [
-            'id' => '00000000-0000-0000-0000-000000000001',
-        ];        
-        $result = $af->hasAccess($url, $user);
-        //$this->assertNotTrue($result);
-
     }
 
     public function testHasAccessSuperUser()
