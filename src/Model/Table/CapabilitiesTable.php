@@ -273,8 +273,8 @@ class CapabilitiesTable extends Table
         );
     }
 
-       
-    
+
+
     /**
      * Method that generates capabilities for specified controller's actions.
      * Capabilities included are full or owner access types.
@@ -331,8 +331,8 @@ class CapabilitiesTable extends Table
         return $this->_controllerActionCapabilites[$controllerName][$key];
     }
 
-    
-    
+
+
     /**
      * Method that retrieves and returns Table's assignation fields. These are fields
      * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
@@ -409,7 +409,7 @@ class CapabilitiesTable extends Table
 
         return $result;
     }
-    
+
     /**
      * Method that retrieves specified user's capabilities
      * @param  string $userId user id

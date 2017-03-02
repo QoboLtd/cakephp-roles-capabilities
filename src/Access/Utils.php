@@ -85,7 +85,7 @@ class Utils
 
         return $actions;
     }
-    
+
     /**
      * Get list of Cake's Controller class methods.
      *
@@ -97,7 +97,7 @@ class Utils
 
         return $result;
     }
-    
+
     /**
      * Method that filter's out skipped actions from Controller's actions list.
      *
@@ -125,7 +125,7 @@ class Utils
 
         return $actions;
     }
-    
+
     /**
      * Method that filters and returns Controller action(s) that can be used for generating access capabilities.
      *
@@ -157,7 +157,7 @@ class Utils
 
         return $actions;
     }
-    
+
     /**
      * Method that returns Table instance of specified controller.
      *
@@ -182,7 +182,7 @@ class Utils
 
         return TableRegistry::get($tableName);
     }
-    
+
     /**
      * Generate capability's controller name.
      *
@@ -272,5 +272,4 @@ class Utils
 
         return $result;
     }
-
 }

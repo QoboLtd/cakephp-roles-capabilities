@@ -17,11 +17,11 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testHasAccessAuthorize()
     {
-        $user = []; 
+        $user = [];
         $url = [
-           'plugin'     => 'Blah',
+           'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action'     => 'view' 
+           'action' => 'view'
         ];
 
         $af = new AccessFactory();
@@ -35,13 +35,13 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
             'id' => '00000000-0000-0000-0000-000000000001',
             'is_superuser' => true,
         ];
-        
+
         $url = [
-           'plugin'     => 'Blah',
+           'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action'     => 'view' 
+           'action' => 'view'
         ];
-        
+
         $af = new AccessFactory();
         $result = $af->hasAccess($url, $user);
         $this->assertTrue($result);
