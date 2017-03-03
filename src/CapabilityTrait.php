@@ -5,6 +5,7 @@ use Cake\Core\App;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Access\CapabilitiesAccess;
 
 trait CapabilityTrait
 {
@@ -38,7 +39,8 @@ trait CapabilityTrait
      */
     public static function getCapabilities($controllerName = null, array $actions = [])
     {
-        return static::_getCapabilitiesTable()->getCapabilities($controllerName, $actions);
+        $capabilitiesAccess = new CapabilitiesAccess();
+        return $capabilitiesAccess->getCapabilities($controllerName, $actions);
     }
 
     /**
