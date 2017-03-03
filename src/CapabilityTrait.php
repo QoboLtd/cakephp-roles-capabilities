@@ -5,6 +5,7 @@ use Cake\Core\App;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Access\CapabilitiesAccess;
 
 trait CapabilityTrait
@@ -53,7 +54,8 @@ trait CapabilityTrait
      */
     protected function _checkAccess(Event $event)
     {
-        static::_getCapabilitiesTable()->checkAccess(
+        $accessFactory = new AccessFactory();
+        $accessFactory->hasAccess(
             $event->subject()->request->params,
             $this->Auth->user()
         );
