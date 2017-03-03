@@ -41,6 +41,7 @@ trait CapabilityTrait
     public static function getCapabilities($controllerName = null, array $actions = [])
     {
         $capabilitiesAccess = new CapabilitiesAccess();
+
         return $capabilitiesAccess->getCapabilities($controllerName, $actions);
     }
 
