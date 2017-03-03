@@ -9,6 +9,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Access\CapabilitiesAccess;
 use RolesCapabilities\Access\Utils;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
@@ -97,14 +98,13 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      */
     protected function _filterQuery(Query $query, Table $table, array $user, $controllerName)
     {
-        // get acl table
         $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
-
+        $capAccess = new CapabilitiesAccess();
         // get current user capabilities
         $userCapabilities = $aclTable->getUserCapabilities($user['id']);
 
         // @todo currently we are always assume index action, this probably needs to change in the future
-        $actionCapabilities = $aclTable->getCapabilities($controllerName, ['index']);
+        $actionCapabilities = $capAccess->getCapabilities($controllerName, ['index']);
 
         // check if user has owner capability for current action,
         // if it does modify the query accordingly and return.

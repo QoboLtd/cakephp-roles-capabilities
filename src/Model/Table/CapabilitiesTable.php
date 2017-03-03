@@ -64,13 +64,6 @@ class CapabilitiesTable extends Table
     protected $_userCapabilities = [];
 
     /**
-     * Controller action(s) capabilities
-     *
-     * @var array
-     */
-    protected $_controllerActionCapabilites = [];
-
-    /**
      * Group(s) roles
      *
      * @var array
@@ -87,15 +80,7 @@ class CapabilitiesTable extends Table
         'CakeDC/Users.Users'
     ];
 
-    /**
-     * Non-assigned actions
-     *
-     * @var array
-     */
-    protected $_nonAssignedActions = [
-        'add'
-    ];
-
+   
     /**
      * Initialize method
      *
@@ -225,107 +210,6 @@ class CapabilitiesTable extends Table
         return $accessFactory->hasAccess($url, $user);
     }
 
-
-    /**
-     * Returns Controller permission capabilities.
-     *
-     * @param  string $controllerName Controller name
-     * @param  array  $actions        Controller actions
-     * @return array
-     */
-    public function getCapabilities($controllerName = null, array $actions = [])
-    {
-        $result = [];
-
-        if (is_null($controllerName) || !is_string($controllerName)) {
-            return $result;
-        }
-
-        $skipControllers = [];
-        if (is_callable([$controllerName, 'getSkipControllers'])) {
-            $skipControllers = $controllerName::getSkipControllers();
-        }
-
-        if (in_array($controllerName, $skipControllers)) {
-            return $result;
-        }
-
-        $actions = Utils::getActions($controllerName, $actions);
-
-        if (empty($actions)) {
-            return $result;
-        }
-
-        // get controller table instance
-        $controllerTable = Utils::getControllerTableInstance($controllerName);
-
-        return $this->_getCapabilities(
-            Utils::generateCapabilityControllerName($controllerName),
-            $actions,
-            $this->_getTableAssignationFields($controllerTable)
-        );
-    }
-
-
-
-    /**
-     * Method that generates capabilities for specified controller's actions.
-     * Capabilities included are full or owner access types.
-     *
-     * @param  string $controllerName    Controller name
-     * @param  array  $actions           Controller actions
-     * @param  array  $assignationFields Table assignation fields (example: assigned_to)
-     * @return array
-     */
-    protected function _getCapabilities($controllerName, array $actions, array $assignationFields = [])
-    {
-        $key = implode('.', $actions);
-        if (!empty($this->_controllerActionCapabilites[$controllerName][$key])) {
-            return $this->_controllerActionCapabilites[$controllerName][$key];
-        }
-
-        $result = [];
-        foreach ($actions as $action) {
-            // generate action's full (all) type capabilities
-            $result[Utils::CAP_TYPE_FULL][] = new Cap(
-                Utils::generateCapabilityName($controllerName, $action),
-                [
-                    'label' => Utils::generateCapabilityLabel($controllerName, $action . '_all'),
-                    'description' => Utils::generateCapabilityDescription(
-                        $controllerName,
-                        Utils::humanizeActionName($action)
-                    )
-                ]
-            );
-            // skip rest of the logic if assignment fields are not found
-            // or if current action does not support assignment (Example: add / create)
-            if (empty($assignationFields) || in_array($action, $this->_nonAssignedActions)) {
-                continue;
-            }
-
-            // generate action's owner (assignment field) type capabilities
-            foreach ($assignationFields as $assignationField) {
-                $result[Utils::CAP_TYPE_OWNER][] = new Cap(
-                    Utils::generateCapabilityName($controllerName, $action . '_' . $assignationField),
-                    [
-                        'label' => Utils::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
-                        'description' => Utils::generateCapabilityDescription(
-                            $controllerName,
-                            Utils::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
-                        ),
-                        'field' => $assignationField
-                    ]
-                );
-            }
-        }
-
-        $this->_controllerActionCapabilites[$controllerName][$key] = $result;
-
-        return $this->_controllerActionCapabilites[$controllerName][$key];
-    }
-
-
-
     /**
      * Method that retrieves and returns Table's assignation fields. These are fields
      * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
@@ -333,7 +217,7 @@ class CapabilitiesTable extends Table
      * @param  \Cake\ORM\Table $table Table instance
      * @return array
      */
-    protected function _getTableAssignationFields(Table $table)
+    public function getTableAssignationFields(Table $table)
     {
         $fields = [];
         foreach ($table->associations() as $association) {
@@ -346,8 +230,7 @@ class CapabilitiesTable extends Table
         }
 
         return $fields;
-    }
-
+    }  
 
     /**
      * Method that checks if specified role is allowed access.
