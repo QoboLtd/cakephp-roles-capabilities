@@ -30,15 +30,15 @@ class CapabilitiesAccess implements AccessInterface
      * @var array
      */
     protected $_userActionCapabilities = [];
-    
+
     /**
      * Controller action(s) capabilities
      *
      * @var array
      */
     protected $_controllerActionCapabilites = [];
-    
-     /**
+
+    /**
      * Non-assigned actions
      *
      * @var array
@@ -46,6 +46,13 @@ class CapabilitiesAccess implements AccessInterface
     protected $_nonAssignedActions = [
         'add'
     ];
+
+    /**
+     * All user capabilities
+     *
+     * @var array
+     */
+    protected $_userCapabilities = [];
 
     /**
      *  CheckAccess Capabilities
@@ -82,7 +89,7 @@ class CapabilitiesAccess implements AccessInterface
 
         return false;
     }
-    
+
     /**
      * Returns Controller permission capabilities.
      *
@@ -121,6 +128,35 @@ class CapabilitiesAccess implements AccessInterface
             $actions,
             static::_getCapabilitiesTable()->getTableAssignationFields($controllerTable)
         );
+    }
+
+    /**
+     * Method that retrieves specified user's capabilities
+     * @param  string $userId user id
+     * @return array
+     */
+    public function getUserCapabilities($userId)
+    {
+        if (!empty($this->_userCapabilities)) {
+            return $this->_userCapabilities;
+        }
+
+        $userGroups = static::_getCapabilitiesTable()->getUserGroups($userId);
+        if (empty($userGroups)) {
+            return $this->_userCapabilities;
+        }
+
+        $userRoles = static::_getCapabilitiesTable()->getGroupsRoles($userGroups);
+        if (empty($userRoles)) {
+            return $this->_userCapabilities;
+        }
+
+        $entities = static::_getCapabilitiesTable()->getUserRolesEntities($userRoles);
+        if (!empty($entities)) {
+            $this->_userCapabilities = $entities;
+        }
+
+        return $this->_userCapabilities;
     }
 
     /**
@@ -167,7 +203,7 @@ class CapabilitiesAccess implements AccessInterface
      */
     public function hasAccessInCapabilities($capability, $userId)
     {
-        $userCaps = static::_getCapabilitiesTable()->getUserCapabilities($userId);
+        $userCaps = $this->getUserCapabilities($userId);
         if (in_array($capability, $userCaps)) {
             return true;
         }
@@ -269,5 +305,4 @@ class CapabilitiesAccess implements AccessInterface
 
         return $this->_controllerActionCapabilites[$controllerName][$key];
     }
-
 }

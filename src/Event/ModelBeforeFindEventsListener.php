@@ -98,10 +98,9 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      */
     protected function _filterQuery(Query $query, Table $table, array $user, $controllerName)
     {
-        $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
         $capAccess = new CapabilitiesAccess();
         // get current user capabilities
-        $userCapabilities = $aclTable->getUserCapabilities($user['id']);
+        $userCapabilities = $capAccess->getUserCapabilities($user['id']);
 
         // @todo currently we are always assume index action, this probably needs to change in the future
         $actionCapabilities = $capAccess->getCapabilities($controllerName, ['index']);

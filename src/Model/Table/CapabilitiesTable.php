@@ -56,12 +56,6 @@ class CapabilitiesTable extends Table
      */
     protected $_currentUser = [];
 
-    /**
-     * All user capabilities
-     *
-     * @var array
-     */
-    protected $_userCapabilities = [];
 
     /**
      * Group(s) roles
@@ -80,7 +74,6 @@ class CapabilitiesTable extends Table
         'CakeDC/Users.Users'
     ];
 
-   
     /**
      * Initialize method
      *
@@ -230,7 +223,7 @@ class CapabilitiesTable extends Table
         }
 
         return $fields;
-    }  
+    }
 
     /**
      * Method that checks if specified role is allowed access.
@@ -287,36 +280,6 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Method that retrieves specified user's capabilities
-     * @param  string $userId user id
-     * @return array
-     */
-    public function getUserCapabilities($userId)
-    {
-        if (!empty($this->_userCapabilities)) {
-            return $this->_userCapabilities;
-        }
-
-        $userGroups = $this->Roles->Groups->getUserGroups($userId, ['accessCheck' => false]);
-        if (empty($userGroups)) {
-            return $this->_userCapabilities;
-        }
-
-        $userRoles = $this->getGroupsRoles($userGroups);
-        if (empty($userRoles)) {
-            return $this->_userCapabilities;
-        }
-
-        $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
-        $entities = $query->all();
-        if (!$entities->isEmpty()) {
-            $this->_userCapabilities = array_values($entities->toArray());
-        }
-
-        return $this->_userCapabilities;
-    }
-
-    /**
      * Method that retrieves specified group(s) roles.
      *
      * @param  array  $userGroups group(s) id(s)
@@ -346,5 +309,36 @@ class CapabilitiesTable extends Table
         $this->_groupsRoles[$key] = $result;
 
         return $this->_groupsRoles[$key];
+    }
+
+    /**
+     *  getUserRolesEntities()
+     *
+     * @param array $userRoles  roles assigned to specified user
+     * @return array            list of user's roles entities
+     */
+    public function getUserRolesEntities($userRoles)
+    {
+        $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
+        $entities = $query->all();
+        if (!$entities->isEmpty()) {
+            return array_values($entities->toArray());
+        }
+
+        return [];
+    }
+
+    /**
+     *  getUserGroups()
+     *
+     * @param string $userId    ID of checked user
+     * @param bool $accessCheck flag indicated to check permissions or not
+     * @return array            user's groups
+     */
+    public function getUserGroups($userId, $accessCheck = false)
+    {
+        $userGroups = $this->Roles->Groups->getUserGroups($userId, ['accessCheck' => $accessCheck]);
+
+        return $userGroups;
     }
 }
