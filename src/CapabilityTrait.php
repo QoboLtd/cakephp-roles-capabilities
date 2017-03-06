@@ -120,16 +120,4 @@ trait CapabilityTrait
     {
         return static::_getCapabilitiesTable()->generateCapabilityControllerName($controllerName);
     }
-
-    /**
-     * Generate capability description.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    protected static function _generateCapabilityDescription($controllerName, $action)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityDescription($controllerName, $action);
-    }
 }
