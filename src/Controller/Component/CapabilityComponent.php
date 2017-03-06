@@ -101,17 +101,6 @@ class CapabilityComponent extends Component
     }
 
     /**
-     * Method that retrieves specified user's capabilities
-     * @param  string $userId user id
-     * @deprecated
-     * @return array
-     */
-    protected function _getUserCapabilities($userId)
-    {
-        return $this->_capabilitiesTable->getUserCapabilities($userId);
-    }
-
-    /**
      * Method that retrieves specified group(s) roles.
      * @param  array  $userGroups group(s) id(s)
      * @deprecated
