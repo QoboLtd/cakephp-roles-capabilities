@@ -109,15 +109,4 @@ trait CapabilityTrait
     {
         return static::_getCapabilitiesTable()->getSkipActions($controllerName);
     }
-
-    /**
-     * Generate capability's controller name.
-     *
-     * @param  string $controllerName Controller name
-     * @return string
-     */
-    protected static function _generateCapabilityControllerName($controllerName)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityControllerName($controllerName);
-    }
 }
