@@ -101,17 +101,6 @@ class CapabilityComponent extends Component
     }
 
     /**
-     * Method that retrieves specified group(s) roles.
-     * @param  array  $userGroups group(s) id(s)
-     * @deprecated
-     * @return array
-     */
-    protected function _getGroupsRoles(array $userGroups = [])
-    {
-        return $this->_capabilitiesTable->getGroupsRoles($userGroups);
-    }
-
-    /**
      * @see RolesCapabilities\Utility\Capability::getControllers()
      * @param  bool  $includePlugins flag for including plugin controllers.
      * @deprecated
