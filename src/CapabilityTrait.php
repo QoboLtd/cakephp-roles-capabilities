@@ -122,18 +122,6 @@ trait CapabilityTrait
     }
 
     /**
-     * Generate capability label.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    protected static function _generateCapabilityLabel($controllerName, $action)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityLabel($controllerName, $action);
-    }
-
-    /**
      * Generate capability description.
      *
      * @param  string $controllerName Controller name
