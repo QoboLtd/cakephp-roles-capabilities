@@ -90,16 +90,6 @@ trait CapabilityTrait
     }
 
     /**
-     * Get list of Cake's Controller class methods.
-     *
-     * @return array
-     */
-    protected static function _getCakeControllerActions()
-    {
-        return static::_getCapabilitiesTable()->getCakeControllerActions();
-    }
-
-    /**
      * Get list of skipped controllers.
      *
      * @return array
