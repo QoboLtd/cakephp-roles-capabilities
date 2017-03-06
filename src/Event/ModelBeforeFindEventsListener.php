@@ -105,7 +105,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         // @todo currently we are always assume index action, this probably needs to change in the future
         $actionCapabilities = $capAccess->getCapabilities($controllerName, ['index']);
 
-        $fullType = $aclTable->getTypeFull();
+        $fullType = Utils::getTypeFull();
         // check user capabilities against action's full capabilities
         if (isset($actionCapabilities[$fullType])) {
             foreach ($actionCapabilities[$fullType] as $capability) {

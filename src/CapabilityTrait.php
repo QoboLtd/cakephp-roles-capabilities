@@ -53,12 +53,12 @@ trait CapabilityTrait
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    protected function _checkAccess(Event $event)
+    protected function _checkAccess(Event $event, $user)
     {
         $accessFactory = new AccessFactory();
         $accessFactory->hasAccess(
             $event->subject()->request->params,
-            $this->Auth->user()
+            $user
         );
     }
 
