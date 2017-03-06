@@ -100,17 +100,6 @@ trait CapabilityTrait
     }
 
     /**
-     * Get list of skipped controllers.
-     *
-     * @deprecated
-     * @return array
-     */
-    protected static function _getSkipControllers()
-    {
-        return static::getSkipControllers();
-    }
-
-    /**
      * Get list of controller's skipped actions.
      *
      * @param  string $controllerName Controller name
