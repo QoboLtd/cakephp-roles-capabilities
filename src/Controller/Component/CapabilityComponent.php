@@ -101,17 +101,6 @@ class CapabilityComponent extends Component
     }
 
     /**
-     * @see RolesCapabilities\Utility\Capability::getControllers()
-     * @param  bool  $includePlugins flag for including plugin controllers.
-     * @deprecated
-     * @return array
-     */
-    protected function _getAllControllers($includePlugins = true)
-    {
-        return Capability::getControllers();
-    }
-
-    /**
      * @see RolesCapabilities\Utility\Capability::getDirControllers()
      * @param  string $path   directory path
      * @param  string $plugin plugin name
