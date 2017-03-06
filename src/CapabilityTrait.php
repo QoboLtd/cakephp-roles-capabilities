@@ -95,16 +95,6 @@ trait CapabilityTrait
     }
 
     /**
-     * Get list of Cake's Controller class methods.
-     *
-     * @return array
-     */
-    protected static function _getCakeControllerActions()
-    {
-        return static::_getCapabilitiesTable()->getCakeControllerActions();
-    }
-
-    /**
      * Get list of skipped controllers.
      *
      * @return array
@@ -112,17 +102,6 @@ trait CapabilityTrait
     public static function getSkipControllers()
     {
         return static::_getCapabilitiesTable()->getSkipControllers();
-    }
-
-    /**
-     * Get list of skipped controllers.
-     *
-     * @deprecated
-     * @return array
-     */
-    protected static function _getSkipControllers()
-    {
-        return static::getSkipControllers();
     }
 
     /**
@@ -134,64 +113,5 @@ trait CapabilityTrait
     public static function getSkipActions($controllerName)
     {
         return static::_getCapabilitiesTable()->getSkipActions($controllerName);
-    }
-
-    /**
-     * Get list of controller's skipped actions.
-     *
-     * @param  string $controllerName Controller name
-     * @deprecated
-     * @return array
-     */
-    protected static function _getSkipActions($controllerName)
-    {
-        return static::getSkipActions($controllerName);
-    }
-
-    /**
-     * Generate capability's controller name.
-     *
-     * @param  string $controllerName Controller name
-     * @return string
-     */
-    protected static function _generateCapabilityControllerName($controllerName)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityControllerName($controllerName);
-    }
-
-    /**
-     * Generate capability name.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    protected static function _generateCapabilityName($controllerName, $action)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityName($controllerName, $action);
-    }
-
-    /**
-     * Generate capability label.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    protected static function _generateCapabilityLabel($controllerName, $action)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityLabel($controllerName, $action);
-    }
-
-    /**
-     * Generate capability description.
-     *
-     * @param  string $controllerName Controller name
-     * @param  string $action         Action name
-     * @return string
-     */
-    protected static function _generateCapabilityDescription($controllerName, $action)
-    {
-        return static::_getCapabilitiesTable()->generateCapabilityDescription($controllerName, $action);
     }
 }

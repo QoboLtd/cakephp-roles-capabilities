@@ -1,6 +1,6 @@
 <section class="content-header">
     <h1><?= $this->Html->link(
-        __('Users'),
+        __('Roles'),
         ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'index']
     ) . ' &raquo; ' . h($role->name) ?></h1>
 </section>
