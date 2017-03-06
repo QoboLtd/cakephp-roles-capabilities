@@ -111,18 +111,6 @@ trait CapabilityTrait
     }
 
     /**
-     * Get list of controller's skipped actions.
-     *
-     * @param  string $controllerName Controller name
-     * @deprecated
-     * @return array
-     */
-    protected static function _getSkipActions($controllerName)
-    {
-        return static::getSkipActions($controllerName);
-    }
-
-    /**
      * Generate capability's controller name.
      *
      * @param  string $controllerName Controller name
