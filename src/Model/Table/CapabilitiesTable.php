@@ -188,22 +188,6 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Check if current user has access to perform action.
-     *
-     * @param array $url Url
-     * @param array|null $user User
-     * @return void
-     * @throws Cake\Network\Exception\ForbiddenException
-     * @todo                 this needs re-thinking
-     */
-    public function checkAccess(array $url, $user)
-    {
-        $accessFactory = new AccessFactory();
-
-        return $accessFactory->hasAccess($url, $user);
-    }
-
-    /**
      * Method that retrieves and returns Table's assignation fields. These are fields
      * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
      *
