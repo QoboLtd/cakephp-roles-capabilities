@@ -1,6 +1,6 @@
 <?php
 
-namespace RolesCapabilities\Test\TestCase;
+namespace RolesCapabilities\Test\TestCase\Access;
 
 use RolesCapabilities\Access\AccessFactory;
 
