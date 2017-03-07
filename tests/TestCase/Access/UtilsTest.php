@@ -122,4 +122,9 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $result = Utils::generateCapabilityDescription($controller, $action);
         $this->assertEquals($expected, $result);
     }
+
+    public function getControllerPublicMethodsTest($controller)
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
 }
