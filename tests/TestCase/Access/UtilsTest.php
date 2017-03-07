@@ -6,7 +6,7 @@ use RolesCapabilities\Access\Utils;
 
 class UtilsTest extends \PHPUnit_Framework_TestCase
 {
-     public function testGetTypeFull()
+    public function testGetTypeFull()
     {
         // This returns a static constant.  But if the value of that constant
         // changes accidentally, the reprecussions may include an incorrectly
@@ -25,7 +25,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $result = Utils::getTypeOwner();
         $this->assertEquals('owner', $result, "Owner type capability is not 'owner'");
     }
-   
+
     public function testGetCakeControllerActions()
     {
         /* Actions in the CakePHP's Controller class can vary,
@@ -50,7 +50,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             $this->assertContains($method, $result, "Cake\Controller\Controller is missing $method");
         }
     }
-    
+
     /**
      * @dataProvider getCapabilityControllers
      */
@@ -68,7 +68,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             ['Foobar', 'Foobar'],
         ];
     }
-    
+
     public function getCapabilityNames()
     {
         return [
@@ -77,7 +77,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             ['SomeController', 'do_something', 'cap__SomeController__do_something'],
         ];
     }
-    
+
     /**
      * @dataProvider getCapabilityNames
      */
@@ -122,6 +122,4 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $result = Utils::generateCapabilityDescription($controller, $action);
         $this->assertEquals($expected, $result);
     }
-
-
 }

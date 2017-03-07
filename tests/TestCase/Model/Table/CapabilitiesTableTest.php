@@ -75,7 +75,7 @@ class CapabilitiesTableTest extends TestCase
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
-    
+
     public function testSetCurrentRequest()
     {
         $data = [

@@ -23,6 +23,5 @@ class CapabilitiesAccessTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($result['plugin_x']['controller_x']['action_x']), "Setting user action capabilities for action is broken");
         $this->assertTrue(isset($result['plugin_x']['controller_x']['action_x']['type_x']), "Setting user action capabilities for type is broken");
         $this->assertEquals(2, count($result['plugin_x']['controller_x']['action_x']['type_x']), "Setting user action capabilities is broken by count");
-
     }
 }
