@@ -10,26 +10,6 @@ use RolesCapabilities\Access\CapabilitiesAccess;
 
 trait CapabilityTrait
 {
-    /**
-     * Capabilities Table instance.
-     *
-     * @var object
-     */
-    protected static $_capabilitiesTable;
-
-    /**
-     * Get instance of Capabilities Table.
-     *
-     * @return object Capabilities Table object
-     */
-    protected static function _getCapabilitiesTable()
-    {
-        if (empty(static::$_capabilitiesTable)) {
-            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        }
-
-        return static::$_capabilitiesTable;
-    }
 
     /**
      * Returns permission capabilities.
@@ -48,18 +28,15 @@ trait CapabilityTrait
     /**
      * Check if current user has access to perform action.
      *
-     * @param  Event  $event Event object
+     * @param  Event  $url Event object
      * @return void
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    protected function _checkAccess(Event $event, $user)
+    protected function _checkAccess($url, $user)
     {
         $accessFactory = new AccessFactory();
-        $accessFactory->hasAccess(
-            $event->subject()->request->params,
-            $user
-        );
+        $accessFactory->hasAccess($url, $user);
     }
 
     /**
@@ -92,26 +69,5 @@ trait CapabilityTrait
         if (!$hasAccess) {
             throw new ForbiddenException();
         }
-    }
-
-    /**
-     * Get list of skipped controllers.
-     *
-     * @return array
-     */
-    public static function getSkipControllers()
-    {
-        return static::_getCapabilitiesTable()->getSkipControllers();
-    }
-
-    /**
-     * Get list of controller's skipped actions.
-     *
-     * @param  string $controllerName Controller name
-     * @return array
-     */
-    public static function getSkipActions($controllerName)
-    {
-        return static::_getCapabilitiesTable()->getSkipActions($controllerName);
     }
 }
