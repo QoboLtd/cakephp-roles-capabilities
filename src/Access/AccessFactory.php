@@ -31,7 +31,7 @@ class AccessFactory
      * @var array
      */
     protected $_checkRules = [
-        'Authorize', 'SuperUser', 'Capabilities'
+        'Authenticated', 'SuperUser', 'Capabilities'
     ];
 
     /**

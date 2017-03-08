@@ -3,16 +3,16 @@
 namespace RolesCapabilities\Access;
 
 /**
- *  AuthorizeAccess Class
+ *  AuthenticatedAccess Class
  *
- *  Check if user is authorized or not
+ *  Check if user is logged in or not
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class AuthorizeAccess implements AccessInterface
+class AuthenticatedAccess implements AccessInterface
 {
     /**
-     *  hasAccess impllementation for authorization
+     *  hasAccess impllementation for authentication
      *  checks
      *
      * @param array $url   URL user tries to access for
@@ -22,7 +22,7 @@ class AuthorizeAccess implements AccessInterface
     public function hasAccess($url, $user)
     {
         $result = false;
-        if (empty($user)) {
+        if (!empty($user)) {
             $result = true;
         }
 
