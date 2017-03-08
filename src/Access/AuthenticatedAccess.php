@@ -30,9 +30,9 @@ class AuthenticatedAccess extends NoAuthAccess
             return $result;
         }
         if (!empty($user)) {
-            $result = true;
+            return true;
         }
 
-        return $result;
+        return false;
     }
 }

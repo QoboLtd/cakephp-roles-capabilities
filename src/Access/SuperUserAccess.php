@@ -24,10 +24,11 @@ class SuperUserAccess extends AuthenticatedAccess
         if (!$result) {
             return $result;
         }
+        
         if (!empty($user['is_superuser']) && $user['is_superuser']) {
-            $result = true;
+            return true;
         }
 
-        return $result;
+        return false;
     }
 }

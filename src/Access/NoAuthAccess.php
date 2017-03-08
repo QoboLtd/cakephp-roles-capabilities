@@ -126,12 +126,8 @@ class NoAuthAccess extends AccessBaseClass
             $skipActions = $controllerName::getSkipActions($controllerName);
         }
 
-        $skipActions = array_merge(
-            $skipActions,
-            Utils::getCakeControllerActions()
-        );
-
         if (in_array($action, $skipActions)) {
+            debug(__METHOD__ . ": found $action in " . print_r($skipActions, true));
             return true;
         }
 

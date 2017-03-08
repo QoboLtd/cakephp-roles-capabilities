@@ -15,6 +15,23 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertArraySubset($af->getCheckRules(), $rules);
     }
 
+    public function testSkipAction()
+    {
+        $user = [
+            'id' => '00000000-0000-0000-0000-000000000001',
+        ];
+        $url = [
+           'plugin' => 'Blah',
+           'controller' => 'Foo',
+           'action' => 'view'
+        ];
+
+        $af = new AccessFactory();
+        $result = $af->hasAccess($url, $user);
+        $this->assertTrue($result);
+
+    }
+    
     public function testIsAuthenticated()
     {
         $user = [

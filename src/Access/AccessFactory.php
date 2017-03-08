@@ -59,7 +59,7 @@ class AccessFactory
     {
         foreach ($this->getCheckRules() as $rule) {
             $result = $this->_getCheckRuleObject($rule)->hasAccess($url, $user);
-
+            error_log("checking $rule: $result\n", 3, '/tmp/qobo.log');
             if ($result) {
                 return true;
             }
