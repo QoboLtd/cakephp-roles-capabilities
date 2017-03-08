@@ -56,7 +56,6 @@ class CapabilitiesTable extends Table
      */
     protected $_currentUser = [];
 
-
     /**
      * Group(s) roles
      *
