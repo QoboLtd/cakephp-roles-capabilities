@@ -36,6 +36,7 @@ trait CapabilityTrait
     protected function _checkAccess($url, $user)
     {
         $accessFactory = new AccessFactory();
+
         return $accessFactory->hasAccess($url, $user);
     }
 
