@@ -29,9 +29,8 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $af = new AccessFactory();
         $result = $af->hasAccess($url, $user);
         $this->assertTrue($result);
-
     }
-    
+
     public function testIsAuthenticated()
     {
         $user = [
