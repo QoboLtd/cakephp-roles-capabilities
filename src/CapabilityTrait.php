@@ -28,15 +28,15 @@ trait CapabilityTrait
     /**
      * Check if current user has access to perform action.
      *
-     * @param  Event  $url Event object
-     * @return void
+     * @param  Event    $url Event object
+     * @return bool     result of hasAccess method
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
     protected function _checkAccess($url, $user)
     {
         $accessFactory = new AccessFactory();
-        $accessFactory->hasAccess($url, $user);
+        return $accessFactory->hasAccess($url, $user);
     }
 
     /**
