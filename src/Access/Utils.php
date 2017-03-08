@@ -8,6 +8,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use ReflectionClass;
 use ReflectionMethod;
+use RolesCapabilities\Capability as Cap;
 
 /**
  *  Utils class with common methos for Capabilities
@@ -25,6 +26,15 @@ class Utils
      * Owner type capability identifier
      */
     const CAP_TYPE_OWNER = 'owner';
+    
+    /**
+     * Non-assigned actions
+     *
+     * @var array
+     */
+    protected static $_nonAssignedActions = [
+        'add'
+    ];
 
     /**
      * Returns Controller's class name namespaced.
@@ -272,4 +282,56 @@ class Utils
 
         return $result;
     }
+    
+    /**
+     * Method that generates capabilities for specified controller's actions.
+     * Capabilities included are full or owner access types.
+     *
+     * @param  string $controllerName    Controller name
+     * @param  array  $actions           Controller actions
+     * @param  array  $assignationFields Table assignation fields (example: assigned_to)
+     * @return array
+     */
+    public static function getCapabilitiesForAction($controllerName, array $actions, array $assignationFields = [])
+    {
+        $key = implode('.', $actions);
+
+        $result = [];
+        foreach ($actions as $action) {
+            // generate action's full (all) type capabilities
+            $result[static::CAP_TYPE_FULL][] = new Cap(
+                static::generateCapabilityName($controllerName, $action),
+                [
+                    'label' => static::generateCapabilityLabel($controllerName, $action . '_all'),
+                    'description' => static::generateCapabilityDescription(
+                        $controllerName,
+                        static::humanizeActionName($action)
+                    )
+                ]
+            );
+            // skip rest of the logic if assignment fields are not found
+            // or if current action does not support assignment (Example: add / create)
+            if (empty($assignationFields) || in_array($action, static::$_nonAssignedActions)) {
+                continue;
+            }
+
+            // generate action's owner (assignment field) type capabilities
+            foreach ($assignationFields as $assignationField) {
+                $result[static::CAP_TYPE_OWNER][] = new Cap(
+                    static::generateCapabilityName($controllerName, $action . '_' . $assignationField),
+                    [
+                        'label' => static::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
+                        'description' => static::generateCapabilityDescription(
+                            $controllerName,
+                            static::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
+                        ),
+                        'field' => $assignationField
+                    ]
+                );
+            }
+        }
+
+        return $result;
+    }
+
 }

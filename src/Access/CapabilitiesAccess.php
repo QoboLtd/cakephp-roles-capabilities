@@ -38,15 +38,7 @@ class CapabilitiesAccess implements AccessInterface
      */
     protected $_controllerActionCapabilites = [];
 
-    /**
-     * Non-assigned actions
-     *
-     * @var array
-     */
-    protected $_nonAssignedActions = [
-        'add'
-    ];
-
+    
     /**
      * All user capabilities
      *
@@ -123,7 +115,7 @@ class CapabilitiesAccess implements AccessInterface
         // get controller table instance
         $controllerTable = Utils::getControllerTableInstance($controllerName);
 
-        return $this->_getCapabilities(
+        return Utils::getCapabilitiesForAction(
             Utils::generateCapabilityControllerName($controllerName),
             $actions,
             static::_getCapabilitiesTable()->getTableAssignationFields($controllerTable)
@@ -248,61 +240,5 @@ class CapabilitiesAccess implements AccessInterface
         }
 
         return static::$_capabilitiesTable;
-    }
-
-    /**
-     * Method that generates capabilities for specified controller's actions.
-     * Capabilities included are full or owner access types.
-     *
-     * @param  string $controllerName    Controller name
-     * @param  array  $actions           Controller actions
-     * @param  array  $assignationFields Table assignation fields (example: assigned_to)
-     * @return array
-     */
-    protected function _getCapabilities($controllerName, array $actions, array $assignationFields = [])
-    {
-        $key = implode('.', $actions);
-        if (!empty($this->_controllerActionCapabilites[$controllerName][$key])) {
-            return $this->_controllerActionCapabilites[$controllerName][$key];
-        }
-
-        $result = [];
-        foreach ($actions as $action) {
-            // generate action's full (all) type capabilities
-            $result[Utils::CAP_TYPE_FULL][] = new Cap(
-                Utils::generateCapabilityName($controllerName, $action),
-                [
-                    'label' => Utils::generateCapabilityLabel($controllerName, $action . '_all'),
-                    'description' => Utils::generateCapabilityDescription(
-                        $controllerName,
-                        Utils::humanizeActionName($action)
-                    )
-                ]
-            );
-            // skip rest of the logic if assignment fields are not found
-            // or if current action does not support assignment (Example: add / create)
-            if (empty($assignationFields) || in_array($action, $this->_nonAssignedActions)) {
-                continue;
-            }
-
-            // generate action's owner (assignment field) type capabilities
-            foreach ($assignationFields as $assignationField) {
-                $result[Utils::CAP_TYPE_OWNER][] = new Cap(
-                    Utils::generateCapabilityName($controllerName, $action . '_' . $assignationField),
-                    [
-                        'label' => Utils::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
-                        'description' => Utils::generateCapabilityDescription(
-                            $controllerName,
-                            Utils::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
-                        ),
-                        'field' => $assignationField
-                    ]
-                );
-            }
-        }
-
-        $this->_controllerActionCapabilites[$controllerName][$key] = $result;
-
-        return $this->_controllerActionCapabilites[$controllerName][$key];
     }
 }
