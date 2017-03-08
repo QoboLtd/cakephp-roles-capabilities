@@ -7,6 +7,10 @@ namespace RolesCapabilities\Access;
  *
  *  Check if user is logged in or not
  *
+ *  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *  NOTE: use that check very carefully! It gives full access to any authorized user!!!
+ *  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
 class AuthenticatedAccess implements AccessInterface
