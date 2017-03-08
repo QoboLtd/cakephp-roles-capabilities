@@ -5,7 +5,7 @@ namespace RolesCapabilities\Access;
 use Cake\Network\Exception\ForbiddenException;
 
 /**
- *  CheckAccessFactory Class
+ *  AccessFactory Class
  *
  *  Base class for checking of user's access rights
  *
@@ -14,19 +14,19 @@ use Cake\Network\Exception\ForbiddenException;
 class AccessFactory
 {
     /**
-     *  Check Access classes suffix
+     *  Access classes suffix
      *
      */
     const CHECKER_SUFFIX = 'Access';
 
     /**
-     *  Check Access Interface name
+     *  Access Interface name
      *
      */
     const CHECK_ACCESS_INTERFACE = 'AccessInterface';
 
     /**
-     *  List of rules for checkAccess() function
+     *  List of rules for hasAccess() function
      *
      * @var array
      */
@@ -47,17 +47,17 @@ class AccessFactory
     }
 
     /**
-     *  checkAccess
+     *  hasAccess
      *
      *  Implement basic logic to check user's access
      *
      * @param array $url    URL user tries to access for
      * @param array $user   user's session data
-     * @return void
+     * @return bool         true in case of access is granted and false otherwise
      */
     public function hasAccess($url = [], $user = [])
     {
-        foreach ($this->_checkRules as $rule) {
+        foreach ($this->getCheckRules() as $rule) {
             $result = $this->_getCheckRuleObject($rule)->hasAccess($url, $user);
 
             if ($result) {
@@ -65,7 +65,7 @@ class AccessFactory
             }
         }
 
-        throw new ForbiddenException();
+        return false;
     }
 
     /**
@@ -73,7 +73,7 @@ class AccessFactory
      *
      * @return array    list of rules
      */
-    public function getChecRules()
+    public function getCheckRules()
     {
         return $this->_checkRules;
     }

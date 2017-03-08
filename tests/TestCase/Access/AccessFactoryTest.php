@@ -12,7 +12,7 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
             'MyRule1', 'MyRule2'
         ];
         $af = new AccessFactory($rules);
-        $this->assertArraySubset($af->getChecRules(), $rules);
+        $this->assertArraySubset($af->getCheckRules(), $rules);
     }
 
     public function testHasAccessAuthorize()

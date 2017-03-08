@@ -123,7 +123,23 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function getControllerPublicMethodsTest($controller)
+    /**
+     * @dataProvider getControllerMethods
+     */
+    public function getControllerPublicMethodsTest($controller, $expected)
+    {
+        $result = Utils::getControllerPublicMethods($controller);
+        $this->assertArrayHasKey($expected, $result);
+    }
+
+    public function getControllerMethods()
+    {
+        return [
+            ['AppControllerdddd', 'beforeFilter444']
+        ];
+    }
+
+    public function filterSkippedActionsTest()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
