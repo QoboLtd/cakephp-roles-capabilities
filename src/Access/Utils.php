@@ -26,7 +26,7 @@ class Utils
      * Owner type capability identifier
      */
     const CAP_TYPE_OWNER = 'owner';
-    
+
     /**
      * Non-assigned actions
      *
@@ -282,7 +282,7 @@ class Utils
 
         return $result;
     }
-    
+
     /**
      * Method that generates capabilities for specified controller's actions.
      * Capabilities included are full or owner access types.
@@ -333,5 +333,4 @@ class Utils
 
         return $result;
     }
-
 }

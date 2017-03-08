@@ -15,7 +15,7 @@ class NoAuthAccess extends AccessBaseClass
     protected $_skipControllers = [
         'CakeDC\Users\Controller\SocialAccountsController',
         'App\Controller\PagesController'
-    ]; 
+    ];
 
     /**
      *  Skip actions
@@ -25,8 +25,8 @@ class NoAuthAccess extends AccessBaseClass
     ];
 
     /**
-     *  hasAccess() 
-     * 
+     *  hasAccess()
+     *
      *  check if access is allowed for that action and user
      *
      * @param array $url    URL accessed by user
@@ -50,9 +50,9 @@ class NoAuthAccess extends AccessBaseClass
 
         return false;
     }
-    
+
     /**
-     *  _getSkipActions() 
+     *  _getSkipActions()
      *
      *  returns a list of actions which should be skipped
      *
@@ -130,11 +130,11 @@ class NoAuthAccess extends AccessBaseClass
             $skipActions,
             Utils::getCakeControllerActions()
         );
-        
+
         if (in_array($action, $skipActions)) {
             return true;
         }
-        
+
         return false;
     }
 }

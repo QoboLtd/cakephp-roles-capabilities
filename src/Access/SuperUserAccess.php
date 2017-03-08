@@ -23,7 +23,7 @@ class SuperUserAccess extends AuthenticatedAccess
         $result = parent::hasAccess($url, $user);
         if (!$result) {
             return $result;
-        }    
+        }
         if (!empty($user['is_superuser']) && $user['is_superuser']) {
             $result = true;
         }

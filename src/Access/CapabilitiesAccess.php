@@ -10,79 +10,78 @@ use ReflectionMethod;
 use RolesCapabilities\Access\Utils;
 use RolesCapabilities\Capability as Cap;
 
+/**
+ *  CapabilitiesAccess class checks if user has access to specific entity
+ *
+ * @author Michael Stepanov <m.stepanov@qobo.biz>
+ */
+class CapabilitiesAccess extends AuthenticatedAccess
+{
     /**
-     *  CapabilitiesAccess class checks if user has access to specific entity
+     * Capabilities Table instance.
      *
-     * @author Michael Stepanov <m.stepanov@qobo.biz>
+     * @var object
      */
-    class CapabilitiesAccess extends AuthenticatedAccess
+    protected static $_capabilitiesTable;
+
+    /**
+     * User action specific capabilities
+     *
+     * @var array
+     */
+    protected $_userActionCapabilities = [];
+
+    /**
+     * Controller action(s) capabilities
+     *
+     * @var array
+     */
+    protected $_controllerActionCapabilites = [];
+
+    /**
+     * All user capabilities
+     *
+     * @var array
+     */
+    protected $_userCapabilities = [];
+
+    /**
+     *  CheckAccess Capabilities
+     *
+     * @param array $url    request URL
+     * @param array $user   user's session data
+     * @return bool         true or false
+     */
+    public function hasAccess($url, $user)
     {
-        /**
-         * Capabilities Table instance.
-         *
-         * @var object
-         */
-        protected static $_capabilitiesTable;
+        $result = parent::hasAccess($url, $user);
+        if (!$result) {
+            return false;
+        }
 
-        /**
-         * User action specific capabilities
-         *
-         * @var array
-         */
-        protected $_userActionCapabilities = [];
+        $controllerName = Utils::getControllerFullName($url);
 
-        /**
-         * Controller action(s) capabilities
-         *
-         * @var array
-         */
-        protected $_controllerActionCapabilites = [];
+        $actionCapabilities = [];
+        if (!empty($url['action'])) {
+            $actionCapabilities = $this->getCapabilities($controllerName, [$url['action']]);
+        }
 
-        
-        /**
-         * All user capabilities
-         *
-         * @var array
-         */
-        protected $_userCapabilities = [];
+        // if action capabilities is empty, means that current controller or action are skipped
+        if (empty($actionCapabilities)) {
+            return true;
+        }
 
-        /**
-         *  CheckAccess Capabilities
-         *
-         * @param array $url    request URL
-         * @param array $user   user's session data
-         * @return bool         true or false
-         */
-        public function hasAccess($url, $user)
-        {
-            $result = parent::hasAccess($url, $user);
-            if (!$result) {
-                return false;
-            }
+        $hasAccess = $this->hasTypeAccess(Utils::getTypeFull(), $actionCapabilities, $user, $url);
 
-            $controllerName = Utils::getControllerFullName($url);
-
-            $actionCapabilities = [];
-            if (!empty($url['action'])) {
-                $actionCapabilities = $this->getCapabilities($controllerName, [$url['action']]);
-            }
-
-            // if action capabilities is empty, means that current controller or action are skipped
-            if (empty($actionCapabilities)) {
+        // if user has no full access capabilities
+        if (!$hasAccess) {
+            $hasAccess = $this->hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $url);
+            if ($hasAccess) {
                 return true;
             }
-
-            $hasAccess = $this->hasTypeAccess(Utils::getTypeFull(), $actionCapabilities, $user, $url);
-
-            // if user has no full access capabilities
-            if (!$hasAccess) {
-                $hasAccess = $this->hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $url);
-                if ($hasAccess) {
-                    return true;
-                }
-            } else {
-                return true;
-            }
+        } else {
+            return true;
+        }
 
         return false;
     }
