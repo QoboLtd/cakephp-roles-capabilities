@@ -13,7 +13,7 @@ namespace RolesCapabilities\Access;
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class AuthenticatedAccess implements AccessInterface
+class AuthenticatedAccess extends NoAuthAccess
 {
     /**
      *  hasAccess impllementation for authentication
@@ -25,7 +25,10 @@ class AuthenticatedAccess implements AccessInterface
      */
     public function hasAccess($url, $user)
     {
-        $result = false;
+        $result = parent::hasAccess($url, $user);
+        if ($result) {
+            return $result;
+        }
         if (!empty($user)) {
             $result = true;
         }

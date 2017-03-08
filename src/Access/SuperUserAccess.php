@@ -9,7 +9,7 @@ namespace RolesCapabilities\Access;
  *
  * @author Michael Stepanov <m.stepanov@qobo.biz>
  */
-class SuperUserAccess implements AccessInterface
+class SuperUserAccess extends AuthenticatedAccess
 {
     /**
      *  hasAccess for super user
@@ -20,7 +20,10 @@ class SuperUserAccess implements AccessInterface
      */
     public function hasAccess($url, $user)
     {
-        $result = false;
+        $result = parent::hasAccess($url, $user);
+        if (!$result) {
+            return $result;
+        }    
         if (!empty($user['is_superuser']) && $user['is_superuser']) {
             $result = true;
         }

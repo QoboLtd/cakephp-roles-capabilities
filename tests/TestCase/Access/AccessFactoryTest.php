@@ -15,9 +15,12 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertArraySubset($af->getCheckRules(), $rules);
     }
 
-    public function testHasAccessAuthorize()
+    public function testIsAuthenticated()
     {
-        $user = [];
+        $user = [
+            'id' => '00000000-0000-0000-0000-000000000001',
+            'is_superuser' => true,
+        ];
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
@@ -27,6 +30,9 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $af = new AccessFactory();
         $result = $af->hasAccess($url, $user);
         $this->assertTrue($result);
+
+        $result = $af->hasAccess($url, []);
+        $this->assertFalse($result);
     }
 
     public function testHasAccessSuperUser()
