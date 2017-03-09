@@ -143,8 +143,6 @@ class NoAuthAccess extends AccessBaseClass
         }
 
         if (in_array($action, $skipActions)) {
-            debug(__METHOD__ . ": found $action in " . print_r($skipActions, true));
-
             return true;
         }
 
