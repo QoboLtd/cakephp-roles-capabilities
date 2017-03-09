@@ -51,7 +51,6 @@ class CapabilityComponent extends Component
         $this->_controller = $this->_registry->getController();
         $this->_user = $this->Auth->user();
         $this->_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        $this->_capabilitiesTable->setCurrentRequest($config['currentRequest']);
         $this->_capabilitiesTable->setCurrentUser($this->Auth->user());
     }
 

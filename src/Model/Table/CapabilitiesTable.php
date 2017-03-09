@@ -25,14 +25,7 @@ class CapabilitiesTable extends Table
 {
     
     /**
-     * Current request parameters
-     *
-     * @var array
-     */
-    protected $_currentRequest;
-
-    /**
-     * Current user details
+     * Current user details - used to filter list queries
      *
      * @var array
      */
@@ -107,32 +100,6 @@ class CapabilitiesTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
-    }
-
-    /**
-     * Current request parameters setter.
-     *
-     * @param  array $request Request parameters
-     * @return void
-     */
-    public function setCurrentRequest(array $request)
-    {
-        $this->_currentRequest = $request;
-    }
-
-    /**
-     * Current request parameters getter.
-     *
-     * @param  string|null       $key Specific field to retrieve
-     * @return array|string|null
-     */
-    public function getCurrentRequest($key = null)
-    {
-        if (!is_null($key)) {
-            return isset($this->_currentRequest[$key]) ? $this->_currentRequest[$key] : null;
-        }
-
-        return $this->_currentRequest;
     }
 
     /**

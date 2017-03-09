@@ -76,28 +76,6 @@ class CapabilitiesTableTest extends TestCase
         $this->markTestIncomplete('Not implemented yet.');
     }
 
-    public function testSetCurrentRequest()
-    {
-        $data = [
-            'foo' => 'bar',
-            'blah' => true,
-        ];
-        $this->Capabilities->setCurrentRequest($data);
-        $result = $this->Capabilities->getCurrentRequest();
-        $this->assertEquals($data, $result, "Setting current request is broken");
-    }
-
-    public function testGetCurrentRequest()
-    {
-        $data = [
-            'foo' => 'bar',
-            'blah' => true,
-        ];
-        $this->Capabilities->setCurrentRequest($data);
-        $result = $this->Capabilities->getCurrentRequest('foo');
-        $this->assertEquals('bar', $result, "Getting keys of current request is broken");
-    }
-
     public function testSetCurrentUser()
     {
         $data = [
