@@ -2,6 +2,7 @@
 
 namespace RolesCapabilities\Access;
 
+use Cake\Core\Configure;
 /**
  *  NoAuthAccess class
  *
@@ -23,6 +24,16 @@ class NoAuthAccess extends AccessBaseClass
     protected $_skipActions = [
         'login', 'logout'
     ];
+    
+    public function __construct()
+    {
+        // merge controllers to be skipped from app's configuration
+        $skipControllers = Configure::read('RolesCapabilities.skip_controllers');
+        $this->_skipControllers = array_merge(
+            $this->_skipControllers,
+            is_null($skipControllers) ? [] : $skipControllers
+        );
+    }
 
     /**
      *  hasAccess()

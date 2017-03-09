@@ -23,25 +23,7 @@ use RolesCapabilities\Model\Entity\Capability;
  */
 class CapabilitiesTable extends Table
 {
-    /**
-     * Default skip controllers
-     *
-     * @var array
-     */
-    protected $_skipControllers = [
-        'CakeDC\Users\Controller\SocialAccountsController',
-        'App\Controller\PagesController'
-    ];
-
-    /**
-     * Default skip actions
-     *
-     * @var array
-     */
-    protected $_skipActions = [
-        '*' => ['getCapabilities', 'getSkipControllers', 'getSkipActions']
-    ];
-
+    
     /**
      * Current request parameters
      *
@@ -82,14 +64,7 @@ class CapabilitiesTable extends Table
     public function initialize(array $config)
     {
         parent::initialize($config);
-
-        // merge controllers to be skipped from app's configuration
-        $skipControllers = Configure::read('RolesCapabilities.skip_controllers');
-        $this->_skipControllers = array_merge(
-            $this->_skipControllers,
-            is_null($skipControllers) ? [] : $skipControllers
-        );
-
+        
         $this->table('capabilities');
         $this->displayField('name');
         $this->primaryKey('id');
@@ -234,34 +209,7 @@ class CapabilitiesTable extends Table
 
         return false;
     }
-
-    /**
-     * Get list of skipped controllers.
-     *
-     * @return array
-     */
-    public function getSkipControllers()
-    {
-        return $this->_skipControllers;
-    }
-
-    /**
-     * Get list of controller's skipped actions.
-     *
-     * @param  string $controllerName Controller name
-     * @return array
-     */
-    public function getSkipActions($controllerName)
-    {
-        if (!isset($this->_skipActions[$controllerName])) {
-            $result = $this->_skipActions['*'];
-        } else {
-            $result = $this->_skipActions[$controllerName];
-        }
-
-        return $result;
-    }
-
+    
     /**
      * Method that retrieves specified group(s) roles.
      *
