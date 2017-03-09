@@ -23,7 +23,7 @@ use RolesCapabilities\Model\Entity\Capability;
  */
 class CapabilitiesTable extends Table
 {
-    
+
     /**
      * Current user details - used to filter list queries
      *
@@ -57,7 +57,7 @@ class CapabilitiesTable extends Table
     public function initialize(array $config)
     {
         parent::initialize($config);
-        
+
         $this->table('capabilities');
         $this->displayField('name');
         $this->primaryKey('id');
@@ -176,7 +176,7 @@ class CapabilitiesTable extends Table
 
         return false;
     }
-    
+
     /**
      * Method that retrieves specified group(s) roles.
      *
