@@ -418,7 +418,7 @@ class Utils
      * @param string $userId    ID of user
      * @return array            list of user's capabilities or empty array
      */
-    public function fetchUserCapabilities($userId)
+    public static function fetchUserCapabilities($userId)
     {
         $entities = [];
 
@@ -444,7 +444,7 @@ class Utils
      * @param  array  $actions        Controller actions
      * @return array
      */
-    public function getCapabilities($controllerName = null, array $actions = [])
+    public static function getCapabilities($controllerName = null, array $actions = [])
     {
         $result = [];
 
@@ -486,7 +486,7 @@ class Utils
      * @param  array  $url                Controller url
      * @return bool
      */
-    public function hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
+    public static function hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
     {
         // skip if action has no access capabilities for specified type
         if (!isset($actionCapabilities[$type])) {
@@ -524,7 +524,7 @@ class Utils
      * @param  string $userId     user id
      * @return bool
      */
-    public function hasAccessInCapabilities($capability, $userId)
+    public static function hasAccessInCapabilities($capability, $userId)
     {
         $userCaps = static::fetchUserCapabilities($userId);
         if (in_array($capability, $userCaps)) {
