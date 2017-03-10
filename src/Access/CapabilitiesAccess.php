@@ -18,13 +18,6 @@ use RolesCapabilities\Capability as Cap;
 class CapabilitiesAccess extends AuthenticatedAccess
 {
     /**
-     * Capabilities Table instance.
-     *
-     * @var object
-     */
-    protected static $_capabilitiesTable;
-
-    /**
      * User action specific capabilities
      *
      * @var array
@@ -63,7 +56,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
 
         $actionCapabilities = [];
         if (!empty($url['action'])) {
-            $actionCapabilities = $this->getCapabilities($controllerName, [$url['action']]);
+            $actionCapabilities = Utils::getCapabilities($controllerName, [$url['action']]);
         }
 
         // if action capabilities is empty, means that current controller or action are skipped
@@ -87,46 +80,6 @@ class CapabilitiesAccess extends AuthenticatedAccess
     }
 
     /**
-     * Returns Controller permission capabilities.
-     *
-     * @param  string $controllerName Controller name
-     * @param  array  $actions        Controller actions
-     * @return array
-     */
-    public function getCapabilities($controllerName = null, array $actions = [])
-    {
-        $result = [];
-
-        if (is_null($controllerName) || !is_string($controllerName)) {
-            return $result;
-        }
-
-        $skipControllers = [];
-        if (is_callable([$controllerName, 'getSkipControllers'])) {
-            $skipControllers = $controllerName::getSkipControllers();
-        }
-
-        if (in_array($controllerName, $skipControllers)) {
-            return $result;
-        }
-
-        $actions = Utils::getActions($controllerName, $actions);
-
-        if (empty($actions)) {
-            return $result;
-        }
-
-        // get controller table instance
-        $controllerTable = Utils::getControllerTableInstance($controllerName);
-
-        return Utils::getCapabilitiesForAction(
-            Utils::generateCapabilityControllerName($controllerName),
-            $actions,
-            static::_getCapabilitiesTable()->getTableAssignationFields($controllerTable)
-        );
-    }
-
-    /**
      * Method that retrieves specified user's capabilities
      * @param  string $userId user id
      * @return array
@@ -136,7 +89,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
         if (empty($this->_userCapabilities)) {
             $this->_userCapabilities = Utils::fetchUserCapabilities($userId);
         }
-
+        
         return $this->_userCapabilities;
     }
 
@@ -215,19 +168,5 @@ class CapabilitiesAccess extends AuthenticatedAccess
     public function getUserActionCapabilities()
     {
         return $this->_userActionCapabilities;
-    }
-
-    /**
-     * Get instance of Capabilities Table.
-     *
-     * @return object Capabilities Table object
-     */
-    protected static function _getCapabilitiesTable()
-    {
-        if (empty(static::$_capabilitiesTable)) {
-            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        }
-
-        return static::$_capabilitiesTable;
     }
 }

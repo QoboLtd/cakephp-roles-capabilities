@@ -436,6 +436,46 @@ class Utils
 
         return $entities;
     }
+    
+    /**
+     * Returns Controller permission capabilities.
+     *
+     * @param  string $controllerName Controller name
+     * @param  array  $actions        Controller actions
+     * @return array
+     */
+    public function getCapabilities($controllerName = null, array $actions = [])
+    {
+        $result = [];
+
+        if (is_null($controllerName) || !is_string($controllerName)) {
+            return $result;
+        }
+
+        $skipControllers = [];
+        if (is_callable([$controllerName, 'getSkipControllers'])) {
+            $skipControllers = $controllerName::getSkipControllers();
+        }
+
+        if (in_array($controllerName, $skipControllers)) {
+            return $result;
+        }
+
+        $actions = static::getActions($controllerName, $actions);
+
+        if (empty($actions)) {
+            return $result;
+        }
+
+        // get controller table instance
+        $controllerTable = static::getControllerTableInstance($controllerName);
+
+        return static::getCapabilitiesForAction(
+            static::generateCapabilityControllerName($controllerName),
+            $actions,
+            static::_getCapabilitiesTable()->getTableAssignationFields($controllerTable)
+        );
+    }
 
     /**
      * Get instance of Capabilities Table.
