@@ -133,23 +133,8 @@ class CapabilitiesAccess extends AuthenticatedAccess
      */
     public function getUserCapabilities($userId)
     {
-        if (!empty($this->_userCapabilities)) {
-            return $this->_userCapabilities;
-        }
-
-        $userGroups = static::_getCapabilitiesTable()->getUserGroups($userId);
-        if (empty($userGroups)) {
-            return $this->_userCapabilities;
-        }
-
-        $userRoles = static::_getCapabilitiesTable()->getGroupsRoles($userGroups);
-        if (empty($userRoles)) {
-            return $this->_userCapabilities;
-        }
-
-        $entities = static::_getCapabilitiesTable()->getUserRolesEntities($userRoles);
-        if (!empty($entities)) {
-            $this->_userCapabilities = $entities;
+        if (empty($this->_userCapabilities)) {
+            $this->_userCapabilities = Utils::fetchUserCapabilities($userId);
         }
 
         return $this->_userCapabilities;

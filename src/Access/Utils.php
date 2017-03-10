@@ -38,6 +38,8 @@ class Utils
         'add'
     ];
 
+    protected static $_capabilitiesTable = null;
+
     /**
      * Returns Controller's class name namespaced.
      *
@@ -408,5 +410,44 @@ class Utils
         }
 
         return $controllers;
+    }
+
+    /**
+     *  fetchUserCapabilities() fetches user capabilities list
+     *
+     * @param string $userId    ID of user
+     * @return array            list of user's capabilities or empty array
+     */
+    public function fetchUserCapabilities($userId)
+    {
+        $entities = [];
+
+        $userGroups = static::_getCapabilitiesTable()->getUserGroups($userId);
+        if (empty($userGroups)) {
+            return $entities;
+        }
+
+        $userRoles = static::_getCapabilitiesTable()->getGroupsRoles($userGroups);
+        if (empty($userRoles)) {
+            return $entities;
+        }
+
+        $entities = static::_getCapabilitiesTable()->getUserRolesEntities($userRoles);
+
+        return $entities;
+    }
+
+    /**
+     * Get instance of Capabilities Table.
+     *
+     * @return object Capabilities Table object
+     */
+    protected static function _getCapabilitiesTable()
+    {
+        if (empty(static::$_capabilitiesTable)) {
+            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        }
+
+        return static::$_capabilitiesTable;
     }
 }
