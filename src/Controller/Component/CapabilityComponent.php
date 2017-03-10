@@ -4,7 +4,7 @@ namespace RolesCapabilities\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Core\App;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Utility\Capability;
+use RolesCapabilities\Access\Utils;
 
 class CapabilityComponent extends Component
 {
@@ -55,13 +55,13 @@ class CapabilityComponent extends Component
     }
 
     /**
-     * @see RolesCapabilities\Utility\Capability::getAllCapabilities()
+     * @see RolesCapabilities\Access\Utils::getAllCapabilities()
      * @deprecated
      * @return array
      */
     public function getAllCapabilities()
     {
-        return Capability::getAllCapabilities();
+        return Utils::getAllCapabilities();
     }
 
     /**
