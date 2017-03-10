@@ -478,6 +478,32 @@ class Utils
     }
 
     /**
+     * Method that checks if user has full access on Controller's action.
+     *
+     * @param  string $type               Capability type
+     * @param  array  $actionCapabilities Action capabilities
+     * @param  array  $user               User info
+     * @param  array  $url                Controller url
+     * @return bool
+     */
+    public function hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
+    {
+        // skip if action has no access capabilities for specified type
+        if (!isset($actionCapabilities[$type])) {
+            return false;
+        }
+
+        foreach ($actionCapabilities[$type] as $actionCapability) {
+            // user has access
+            if (static::hasAccessInCapabilities($actionCapability->getName(), $user['id'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get instance of Capabilities Table.
      *
      * @return object Capabilities Table object
@@ -489,5 +515,22 @@ class Utils
         }
 
         return static::$_capabilitiesTable;
+    }
+
+    /**
+     * Method that checks if current user is allowed access.
+     * Returns true if current user has access, false otherwise.
+     * @param  string $capability capability name
+     * @param  string $userId     user id
+     * @return bool
+     */
+    public function hasAccessInCapabilities($capability, $userId)
+    {
+        $userCaps = static::fetchUserCapabilities($userId);
+        if (in_array($capability, $userCaps)) {
+            return true;
+        }
+
+        return false;
     }
 }
