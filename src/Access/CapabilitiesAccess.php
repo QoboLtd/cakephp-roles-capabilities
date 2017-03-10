@@ -89,7 +89,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
         if (empty($this->_userCapabilities)) {
             $this->_userCapabilities = Utils::fetchUserCapabilities($userId);
         }
-        
+
         return $this->_userCapabilities;
     }
 

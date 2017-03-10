@@ -436,7 +436,7 @@ class Utils
 
         return $entities;
     }
-    
+
     /**
      * Returns Controller permission capabilities.
      *
