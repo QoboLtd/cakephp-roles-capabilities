@@ -9,7 +9,7 @@ use Cake\Core\Configure;
  *
  *  Contains logic to check skip controllers and actions
  */
-class NoAuthAccess extends AccessBaseClass
+class NoAuthAccess extends BaseAccessClass
 {
     /**
      *  Skip controllers

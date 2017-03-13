@@ -4,9 +4,8 @@ namespace RolesCapabilities\Access;
 
 /**
  *  Base class for all check access rules classes
- *
  */
-abstract class AccessBaseClass implements AccessInterface
+abstract class BaseAccessClass implements AccessInterface
 {
     /**
      *  Abstract method to check user's access for specified URL
