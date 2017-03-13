@@ -64,15 +64,15 @@ class CapabilitiesAccess extends AuthenticatedAccess
             return true;
         }
 
+        // User has full access
         $hasAccess = Utils::hasTypeAccess(Utils::getTypeFull(), $actionCapabilities, $user, $url);
+        if ($hasAccess) {
+            return true;
+        }
 
         // if user has no full access capabilities
-        if (!$hasAccess) {
-            $hasAccess = Utils::hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $url);
-            if ($hasAccess) {
-                return true;
-            }
-        } else {
+        $hasAccess = Utils::hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $url);
+        if ($hasAccess) {
             return true;
         }
 
