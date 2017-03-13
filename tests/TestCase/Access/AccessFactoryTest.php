@@ -68,4 +68,21 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $result = $af->hasAccess($url, $user);
         $this->assertTrue($result);
     }
+
+    public function testUnknownRule()
+    {
+        $user = [
+            'id' => '00000000-0000-0000-0000-000000000001',
+        ];
+
+        $url = [
+           'plugin' => 'Blah',
+           'controller' => 'Foo',
+           'action' => 'view'
+        ];
+
+        $af = new AccessFactory(['blah', 'bar', 'foo']);
+        $this->expectException(\InvalidArgumentException::class);
+        $result = $af->hasAccess($url, $user);
+    }
 }

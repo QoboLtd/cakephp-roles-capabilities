@@ -90,6 +90,8 @@ class AccessFactory
 
         if (class_exists($ruleClass) && in_array($interface, class_implements($ruleClass))) {
             return new $ruleClass();
+        } else {
+            throw new \InvalidArgumentException("Unknown rule [$ruleName]");
         }
     }
 }
