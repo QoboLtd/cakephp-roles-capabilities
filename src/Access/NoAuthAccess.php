@@ -14,24 +14,22 @@ class NoAuthAccess extends BaseAccessClass
     /**
      *  Skip controllers
      */
-    protected $_skipControllers = [
-        'CakeDC\Users\Controller\SocialAccountsController',
-        'App\Controller\PagesController'
-    ];
+    protected $_skipControllers = [];
 
     /**
      *  Skip actions
      */
-    protected $_skipActions = [
-        'login', 'logout'
-    ];
+    protected $_skipActions = [];
 
     /**
      *  Constructor
-     *
      */
     public function __construct()
     {
+        $this->_skipControllers = (array)Configure::read('RolesCapabilities.ownerCheck.skipControllers');
+
+        $this->_skipActions = (array)Configure::read('RolesCapabilities.ownerCheck.skipActions');
+
         // merge controllers to be skipped from app's configuration
         $skipControllers = Configure::read('RolesCapabilities.skip_controllers');
         $this->_skipControllers = array_merge(
@@ -68,25 +66,25 @@ class NoAuthAccess extends BaseAccessClass
     }
 
     /**
-     *  _getSkipActions()
+     *  getSkipActions()
      *
      *  returns a list of actions which should be skipped
      *
      * @return array    list of skipped actions
      */
-    protected function _getSkipActions()
+    public function getSkipActions()
     {
         return $this->_skipActions;
     }
 
     /**
-     *  _getSkipControllers()
+     *  getSkipControllers()
      *
      *  returns a list of skipped controllers
      *
      * @return array    list of skipped controllers
      */
-    protected function _getSkipControllers()
+    public function getSkipControllers()
     {
         return $this->_skipControllers;
     }
@@ -101,7 +99,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     protected function _isSkipController($controller)
     {
-        if (in_array($controller, $this->_getSkipControllers())) {
+        if (in_array($controller, $this->getSkipControllers())) {
             return true;
         }
 
@@ -119,7 +117,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     protected function _isSkipAction($action)
     {
-        if (in_array($action, $this->_getSkipActions())) {
+        if (in_array($action, $this->getSkipActions())) {
             return true;
         }
 

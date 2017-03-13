@@ -15,13 +15,11 @@ class AccessFactory
 {
     /**
      *  Access classes suffix
-     *
      */
     const CHECKER_SUFFIX = 'Access';
 
     /**
      *  Access Interface name
-     *
      */
     const CHECK_ACCESS_INTERFACE = 'AccessInterface';
 
@@ -37,7 +35,7 @@ class AccessFactory
     /**
      *  Constructor
      *
-     *
+     * @param array $rules  list of rules to override defalt ones
      */
     public function __construct(array $rules = [])
     {

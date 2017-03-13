@@ -11,7 +11,15 @@ return [
                 'groups',
                 'groups_roles',
                 'groups_users'
-            ]
+            ],
+            'skipControllers' => [
+                'CakeDC\Users\Controller\SocialAccountsController',
+                'App\Controller\PagesController'
+            ],
+            'skipActions' => [
+                'login', 
+                'logout'
+            ]      
         ]
-    ]
+    ]        
 ];
