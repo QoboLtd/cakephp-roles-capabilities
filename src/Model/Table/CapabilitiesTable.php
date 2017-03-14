@@ -39,16 +39,6 @@ class CapabilitiesTable extends Table
     protected $_groupsRoles = [];
 
     /**
-     * Models that hold user information, usually used as associations to relate records to a user.
-     *
-     * @var array
-     */
-    protected $_assignationModels = [
-        'Users',
-        'CakeDC/Users.Users'
-    ];
-
-    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -126,28 +116,6 @@ class CapabilitiesTable extends Table
         }
 
         return $this->_currentUser;
-    }
-
-    /**
-     * Method that retrieves and returns Table's assignation fields. These are fields
-     * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
-     *
-     * @param  \Cake\ORM\Table $table Table instance
-     * @return array
-     */
-    public function getTableAssignationFields(Table $table)
-    {
-        $fields = [];
-        foreach ($table->associations() as $association) {
-            // skip non-assignation models
-            if (!in_array($association->className(), $this->_assignationModels)) {
-                continue;
-            }
-
-            $fields[] = $association->foreignKey();
-        }
-
-        return $fields;
     }
 
     /**

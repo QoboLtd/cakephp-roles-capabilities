@@ -3,6 +3,7 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -473,7 +474,7 @@ class Utils
         return static::getCapabilitiesForAction(
             static::generateCapabilityControllerName($controllerName),
             $actions,
-            static::_getCapabilitiesTable()->getTableAssignationFields($controllerTable)
+            static::getTableAssignationFields($controllerTable)
         );
     }
 
@@ -532,5 +533,28 @@ class Utils
         }
 
         return false;
+    }
+
+    /**
+     * Method that retrieves and returns Table's assignation fields. These are fields
+     * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
+     *
+     * @param  \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    public static function getTableAssignationFields(Table $table)
+    {
+        $fields = [];
+        $assignationModels = Configure::read('RolesCapabilities.accessCheck.assignationModels');
+        foreach ($table->associations() as $association) {
+            // skip non-assignation models
+            if (!in_array($association->className(), $assignationModels)) {
+                continue;
+            }
+
+            $fields[] = $association->foreignKey();
+        }
+
+        return $fields;
     }
 }

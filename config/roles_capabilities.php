@@ -26,6 +26,11 @@ return [
                 'SuperUser',
                 'Capabilities'
             ],
+            'assignationModels' => [
+                'Users',
+                'CakeDC/Users.Users'
+            ],
+
         ],
     ]        
 ];
