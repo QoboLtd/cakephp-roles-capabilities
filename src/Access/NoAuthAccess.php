@@ -26,16 +26,8 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function __construct()
     {
-        $this->_skipControllers = (array)Configure::read('RolesCapabilities.ownerCheck.skipControllers');
-
-        $this->_skipActions = (array)Configure::read('RolesCapabilities.ownerCheck.skipActions');
-
-        // merge controllers to be skipped from app's configuration
-        $skipControllers = Configure::read('RolesCapabilities.skip_controllers');
-        $this->_skipControllers = array_merge(
-            $this->_skipControllers,
-            is_null($skipControllers) ? [] : $skipControllers
-        );
+        $this->_skipControllers = (array)Configure::read('RolesCapabilities.accessCheck.skipControllers');
+        $this->_skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions');
     }
 
     /**
