@@ -4,7 +4,7 @@ namespace RolesCapabilities\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Core\App;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Utility\Capability;
+use RolesCapabilities\Access\Utils;
 
 class CapabilityComponent extends Component
 {
@@ -51,18 +51,17 @@ class CapabilityComponent extends Component
         $this->_controller = $this->_registry->getController();
         $this->_user = $this->Auth->user();
         $this->_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        $this->_capabilitiesTable->setCurrentRequest($config['currentRequest']);
         $this->_capabilitiesTable->setCurrentUser($this->Auth->user());
     }
 
     /**
-     * @see RolesCapabilities\Utility\Capability::getAllCapabilities()
+     * @see RolesCapabilities\Access\Utils::getAllCapabilities()
      * @deprecated
      * @return array
      */
     public function getAllCapabilities()
     {
-        return Capability::getAllCapabilities();
+        return Utils::getAllCapabilities();
     }
 
     /**

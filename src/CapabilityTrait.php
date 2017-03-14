@@ -5,29 +5,11 @@ use Cake\Core\App;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Access\AccessFactory;
+use RolesCapabilities\Access\Utils;
 
 trait CapabilityTrait
 {
-    /**
-     * Capabilities Table instance.
-     *
-     * @var object
-     */
-    protected static $_capabilitiesTable;
-
-    /**
-     * Get instance of Capabilities Table.
-     *
-     * @return object Capabilities Table object
-     */
-    protected static function _getCapabilitiesTable()
-    {
-        if (empty(static::$_capabilitiesTable)) {
-            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        }
-
-        return static::$_capabilitiesTable;
-    }
 
     /**
      * Returns permission capabilities.
@@ -38,23 +20,22 @@ trait CapabilityTrait
      */
     public static function getCapabilities($controllerName = null, array $actions = [])
     {
-        return static::_getCapabilitiesTable()->getCapabilities($controllerName, $actions);
+        return Utils::getCapabilities($controllerName, $actions);
     }
 
     /**
      * Check if current user has access to perform action.
      *
-     * @param  Event  $event Event object
-     * @return void
+     * @param  Event    $url Event object
+     * @return bool     result of hasAccess method
      * @throws Cake\Network\Exception\ForbiddenException
      * @todo                 this needs re-thinking
      */
-    protected function _checkAccess(Event $event)
+    protected function _checkAccess($url, $user)
     {
-        static::_getCapabilitiesTable()->checkAccess(
-            $event->subject()->request->params,
-            $this->Auth->user()
-        );
+        $accessFactory = new AccessFactory();
+
+        return $accessFactory->hasAccess($url, $user);
     }
 
     /**
@@ -87,26 +68,5 @@ trait CapabilityTrait
         if (!$hasAccess) {
             throw new ForbiddenException();
         }
-    }
-
-    /**
-     * Get list of skipped controllers.
-     *
-     * @return array
-     */
-    public static function getSkipControllers()
-    {
-        return static::_getCapabilitiesTable()->getSkipControllers();
-    }
-
-    /**
-     * Get list of controller's skipped actions.
-     *
-     * @param  string $controllerName Controller name
-     * @return array
-     */
-    public static function getSkipActions($controllerName)
-    {
-        return static::_getCapabilitiesTable()->getSkipActions($controllerName);
     }
 }

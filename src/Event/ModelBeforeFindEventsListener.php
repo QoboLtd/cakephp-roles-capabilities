@@ -9,6 +9,8 @@ use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Access\CapabilitiesAccess;
+use RolesCapabilities\Access\Utils;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
@@ -70,7 +72,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         // convert: 'MyPlugin.Articles' to: ['plugin' => 'MyPlugin', 'controller' => 'Articles']
         $url = array_combine(['plugin', 'controller'], pluginSplit($tableName));
 
-        $controllerName = $aclTable->getControllerFullName($url);
+        $controllerName = Utils::getControllerFullName($url);
         // skip if controller class name was not found
         if (!$controllerName) {
             return;
@@ -96,16 +98,14 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      */
     protected function _filterQuery(Query $query, Table $table, array $user, $controllerName)
     {
-        // get acl table
-        $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
-
+        $capAccess = new CapabilitiesAccess();
         // get current user capabilities
-        $userCapabilities = $aclTable->getUserCapabilities($user['id']);
+        $userCapabilities = $capAccess->getUserCapabilities($user['id']);
 
         // @todo currently we are always assume index action, this probably needs to change in the future
-        $actionCapabilities = $aclTable->getCapabilities($controllerName, ['index']);
+        $actionCapabilities = Utils::getCapabilities($controllerName, ['index']);
 
-        $fullType = $aclTable->getTypeFull();
+        $fullType = Utils::getTypeFull();
         // check user capabilities against action's full capabilities
         if (isset($actionCapabilities[$fullType])) {
             foreach ($actionCapabilities[$fullType] as $capability) {
@@ -118,7 +118,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
 
         // check if user has owner capability for current action,
         // if it does modify the query accordingly and return.
-        $ownerType = $aclTable->getTypeOwner();
+        $ownerType = Utils::getTypeOwner();
         // check user capabilities against action's owner capabilities
         if (isset($actionCapabilities[$ownerType])) {
             $hasOwnerType = false;
@@ -133,6 +133,17 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
 
             if ($hasOwnerType) {
                 return;
+            }
+        }
+
+        $fullType = Utils::getTypeFull();
+        // check user capabilities against action's full capabilities
+        if (isset($actionCapabilities[$fullType])) {
+            foreach ($actionCapabilities[$fullType] as $capability) {
+                // if current action's full capability is matched in user's capabilities just return
+                if (in_array($capability->getName(), $userCapabilities)) {
+                    return;
+                }
             }
         }
 

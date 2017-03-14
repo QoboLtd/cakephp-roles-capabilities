@@ -11,7 +11,26 @@ return [
                 'groups',
                 'groups_roles',
                 'groups_users'
-            ]
-        ]
-    ]
+            ],                  
+        ],
+        'accessCheck' => [
+            'skipControllers' => [
+                'CakeDC\Users\Controller\SocialAccountsController',
+                'App\Controller\PagesController'
+            ],
+            'skipActions' => [
+                'login', 
+                'logout'
+            ],
+            'defaultRules' => [
+                'SuperUser',
+                'Capabilities'
+            ],
+            'assignationModels' => [
+                'Users',
+                'CakeDC/Users.Users'
+            ],
+
+        ],
+    ]        
 ];

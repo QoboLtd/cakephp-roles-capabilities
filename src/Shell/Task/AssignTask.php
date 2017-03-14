@@ -6,7 +6,7 @@ use Cake\Core\Configure;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Utility\Capability;
+use RolesCapabilities\Access\Utils;
 
 /**
  * Task for assigning all capabilities to Admins role.
@@ -97,7 +97,7 @@ class AssignTask extends Shell
     {
         $result = [];
 
-        $allCapabilities = Capability::getAllCapabilities();
+        $allCapabilities = Utils::getAllCapabilities();
         if (!empty($allCapabilities)) {
             foreach ($allCapabilities as $controller => $capabilities) {
                 $result = array_merge($result, array_keys($capabilities));
