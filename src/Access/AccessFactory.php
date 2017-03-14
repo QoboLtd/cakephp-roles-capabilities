@@ -39,7 +39,7 @@ class AccessFactory
     public function __construct(array $rules = [])
     {
         $this->_checkRules = (array)Configure::read('RolesCapabilities.accessCheck.defaultRules');
-        
+
         if (!empty($rules)) {
             $this->_checkRules = $rules;
         }
