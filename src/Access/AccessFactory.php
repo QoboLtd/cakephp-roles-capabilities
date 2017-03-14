@@ -2,6 +2,7 @@
 
 namespace RolesCapabilities\Access;
 
+use Cake\Core\Configure;
 use Cake\Network\Exception\ForbiddenException;
 
 /**
@@ -28,9 +29,7 @@ class AccessFactory
      *
      * @var array
      */
-    protected $_checkRules = [
-        'SuperUser', 'Capabilities'
-    ];
+    protected $_checkRules = [];
 
     /**
      *  Constructor
@@ -39,6 +38,8 @@ class AccessFactory
      */
     public function __construct(array $rules = [])
     {
+        $this->_checkRules = (array)Configure::read('RolesCapabilities.accessCheck.defaultRules');
+        
         if (!empty($rules)) {
             $this->_checkRules = $rules;
         }
