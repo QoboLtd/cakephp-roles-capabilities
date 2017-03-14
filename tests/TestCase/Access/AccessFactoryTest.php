@@ -23,7 +23,7 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action' => 'view'
+           'action' => 'login'
         ];
 
         $af = new AccessFactory();
@@ -35,7 +35,6 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $user = [
             'id' => '00000000-0000-0000-0000-000000000001',
-            'is_superuser' => true,
         ];
         $url = [
            'plugin' => 'Blah',
