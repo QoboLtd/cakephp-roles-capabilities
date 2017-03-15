@@ -18,5 +18,9 @@ class ChangeTypeOfTrashedField extends AbstractMigration
             'null' => true,
         ]);
         $table->save();
+
+        // Update existing records to set null for non-deleted ones
+        // NOTE: cast to char is needed for the mysql 5.7*!
+        $count = $this->execute('UPDATE roles SET trashed=NULL WHERE CAST(trashed AS CHAR(20)) = "0000-00-00 00:00:00"');
     }
 }
