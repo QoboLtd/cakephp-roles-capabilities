@@ -179,7 +179,7 @@ class Utils
      * @param  string          $controllerName Controller name
      * @return \Cake\ORM\Table
      */
-    public function getControllerTableInstance($controllerName)
+    public static function getControllerTableInstance($controllerName)
     {
         $parts = explode('\\', $controllerName);
         // get last part, "/ArticlesController"
