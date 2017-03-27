@@ -15,17 +15,22 @@ echo $this->Html->scriptBlock(
 );
 ?>
 <section class="content-header">
-    <h1>Roles
-        <div class="pull-right">
-            <div class="btn-group btn-group-sm" role="group">
-            <?= $this->Html->link(
-                '<i class="fa fa-plus"></i> ' . __('Add'),
-                ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'add'],
-                ['escape' => false, 'title' => __('Add'), 'class' => 'btn btn-default']
-            ); ?>
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h4><?= __('Roles');?></h4>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <div class="pull-right">
+                <div class="btn-group btn-group-sm" role="group">
+                <?= $this->Html->link(
+                    '<i class="fa fa-plus"></i> ' . __('Add'),
+                    ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'add'],
+                    ['escape' => false, 'title' => __('Add'), 'class' => 'btn btn-default']
+                ); ?>
+                </div>
             </div>
         </div>
-    </h1>
+    </div>
 </section>
 <section class="content">
     <div class="box">
