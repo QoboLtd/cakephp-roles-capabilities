@@ -1,8 +1,14 @@
 <section class="content-header">
-    <h1><?= $this->Html->link(
-        __('Roles'),
-        ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'index']
-    ) . ' &raquo; ' . h($role->name) ?></h1>
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h4><?php echo $this->Html->link(__('Roles'), [
+                'plugin' => 'RolesCapabilities',
+                'controller' => 'Roles',
+                'action' => 'index'
+            ]) . ' &raquo; ' . h($role->name) ?>
+            </h4>
+        </div>
+    </div>
 </section>
 <section class="content">
     <div class="row">
