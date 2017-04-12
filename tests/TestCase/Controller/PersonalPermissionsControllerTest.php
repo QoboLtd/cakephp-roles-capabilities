@@ -18,7 +18,6 @@ class PersonalPermissionsControllerTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.roles_capabilities.personal_permissions',
         'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.social_accounts'
     ];
 
     /**
