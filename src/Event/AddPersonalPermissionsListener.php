@@ -12,7 +12,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     protected $allowedActions = [
         'view', 'edit', 'delete'
     ];
-    
+
     /**
      * Implemented Events
      *
@@ -45,8 +45,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      *  addPersonalPermissionsModal method
      *
      * @param Cake\Event\Event $event of the current request
-     * @param array $menu of the view page.
-     * @param array $user currently logged in.
+     * @param array $options of the view page.
      */
     public function addPersonalPermissionsModal(Event $event, array $options)
     {
@@ -74,15 +73,15 @@ class AddPersonalPermissionsListener implements EventListenerInterface
 
         foreach ($this->allowedActions as $action) {
             $button[] = '<li><a href="#" id="' . $action . '" data-toggle="modal" data-target="#permissions-modal-add">' . Inflector::humanize($action) . '</a></li>';
-        }    
+        }
         $button[] = '</ul>';
         $button[] = '</div>';
-        
+
         return implode("\n", $button);
     }
 
     /**
-     *  _addModalWindow method  
+     *  _addModalWindow method
      *
      * @return string   code of modal window
      */
@@ -129,12 +128,12 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     }
 
     /**
-     *  _addJSHandler method  
-     *  
+     *  _addJSHandler method
+     *
      * @return string   JS code for perosnal permissions
      */
     protected function _addJSHandler()
-    {        
+    {
         return $event->subject()->Html->script(['RolesCapabilities.personal_permissions'], ['block' => 'scriptBottom']);
     }
 }
