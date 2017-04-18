@@ -25,4 +25,10 @@
             }
         });
     });
+
+    // Show popup with personal permissions
+    $('#personal_permissions').click(function () {
+        console.log('Personal permissions ...';
+        return false;
+    });
 })(jQuery);
