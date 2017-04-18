@@ -51,9 +51,11 @@ class PersonalPermissionsController extends AppController
      */
     public function add()
     {
+        $data = $this->request->getData();
+        $data['creator'] = $this->Auth->user('id'); 
         $personalPermission = $this->PersonalPermissions->newEntity();
         if ($this->request->is('post')) {
-            $personalPermission = $this->PersonalPermissions->patchEntity($personalPermission, $this->request->getData());
+            $personalPermission = $this->PersonalPermissions->patchEntity($personalPermission, $data);
             if ($this->PersonalPermissions->save($personalPermission)) {
                 $this->Flash->success(__('The personal permission has been saved.'));
 

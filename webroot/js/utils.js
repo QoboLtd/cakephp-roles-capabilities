@@ -27,12 +27,10 @@
     });
 
     // Show popup with personal permissions
-    $('#personal_permissions').click(
-        function () {
-            console.log('Personal permissions ...');
+    $('#personal_permissions').click(function () {
+        console.log('Personal permissions ...');
 
-            return false;
-        }
-    );
+        return false;
+    });
 }
     )(jQuery);
