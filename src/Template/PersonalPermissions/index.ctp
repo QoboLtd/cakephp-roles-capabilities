@@ -1,64 +1,94 @@
 <?php
-/**
- * @var \App\View\AppView $this
- */
+echo $this->Html->css(
+    [
+        'AdminLTE./plugins/datatables/dataTables.bootstrap',
+    ],
+    [
+        'block' => 'css'
+    ]
+);
+echo $this->Html->script(
+    [
+        'AdminLTE./plugins/datatables/jquery.dataTables.min',
+        'AdminLTE./plugins/datatables/dataTables.bootstrap.min'
+    ],
+    [
+        'block' => 'scriptBotton'
+    ]
+);
+echo $this->Html->scriptBlock(
+    '$(".table-datatable").DataTable();',
+    ['block' => 'scriptBotton']
+);
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Personal Permission'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="personalPermissions index large-9 medium-8 columns content">
-    <h3><?= __('Personal Permissions') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('foreign_key') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('model') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('user_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('creator') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('type') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('is_active') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('expired') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($personalPermissions as $personalPermission) : ?>
-            <tr>
-                <td><?= h($personalPermission->id) ?></td>
-                <td><?= h($personalPermission->foreign_key) ?></td>
-                <td><?= h($personalPermission->model) ?></td>
-                <td><?= $personalPermission->has('user') ? $this->Html->link($personalPermission->user->id, ['controller' => 'Users', 'action' => 'view', $personalPermission->user->id]) : '' ?></td>
-                <td><?= h($personalPermission->creator) ?></td>
-                <td><?= h($personalPermission->type) ?></td>
-                <td><?= h($personalPermission->is_active) ?></td>
-                <td><?= h($personalPermission->expired) ?></td>
-                <td><?= h($personalPermission->created) ?></td>
-                <td><?= h($personalPermission->modified) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $personalPermission->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $personalPermission->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $personalPermission->id], ['confirm' => __('Are you sure you want to delete # {0}?', $personalPermission->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+<section class="content-header">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h4><?= __('PersonalPermissions');?></h4>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <div class="pull-right">
+                <div class="btn-group btn-group-sm" role="group">
+                &nbsp; 
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-body">
+            <table class="table table-hover table-condensed table-vertical-align table-datatable">
+                <thead>
+                    <tr>
+                        <th><?= $this->Paginator->sort('Model') ?></th>
+                        <th><?= h('ID'); ?></th>
+                        <th><?= h('Type'); ?></th>
+                        <th><?= h('Expiration Date'); ?></th>
+                        <th><?= h('Status'); ?></th>
+                        <th class="actions"><?= __('Actions') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($personalPermissions as $permission) : ?>
+                    <tr>
+                        <td><?= h($permission->model) ?></td>
+                        <td><?= h($permission->foreign_key); ?></td>
+                        <td><?= h($permission->type); ?></td>
+                        <td><?= h($permission->expired); ?></td>
+                        <td><?= h($permission->is_active ? 'Enabled' : 'Disabled'); ?></td>
+                        <td class="actions">
+                            <div class="btn-group btn-group-xs" role="group">
+                            <?= $this->Html->link(
+                                '<i class="fa fa-eye"></i>',
+                                ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'view', $permission->id],
+                                ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                            ); ?>
+                            <?php if (!$permission->deny_edit) : ?>
+                                <?= $this->Html->link(
+                                    '<i class="fa fa-pencil"></i>',
+                                    ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'edit', $permission->id],
+                                    ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                ); ?>
+                            <?php endif; ?>
+                            <?php if (!$permission->deny_delete) : ?>
+                                <?= $this->Form->postLink(
+                                    '<i class="fa fa-trash"></i>',
+                                    ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'delete', $permission->id],
+                                    [
+                                        'confirm' => __('Are you sure you want to delete # {0}?', $permission->id),
+                                        'title' => __('Delete'),
+                                        'class' => 'btn btn-default btn-sm',
+                                        'escape' => false
+                                    ]
+                                ) ?>
+                            <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

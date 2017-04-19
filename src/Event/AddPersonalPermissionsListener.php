@@ -36,7 +36,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      */
     public function addPersonalPermissionsButton(Event $event, array $menu, array $user)
     {
-        $content = $this->_addButton($event);
+        $content = $this->_addDropdownButton($event, $menu);
         $content .= $this->_addModalWindow($event);
 
         $event->result = $content;
@@ -53,11 +53,9 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     {
         $content = $this->_addModalWindow($event);
 
-        debug($options);
-        die();
         $event->result = $content;
     }
-    
+
     /**
      *  _addButton method
      *
@@ -66,11 +64,11 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      */
     protected function _addButton(Event $event)
     {
-        return  $event->subject()->Html->link(
+        return $event->subject()->Html->link(
             __('Permissions'),
             '#',
             [
-                'class' => 'btn btn-default', 
+                'class' => 'btn btn-default',
                 'data-toggle' => "modal",
                 'data-target' => "#permissions-modal-add"
             ]
@@ -83,20 +81,24 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      * @param Cake\Event\Event $event of the current request
      * @return string   code of button
      */
-    protected function _addDropdownButton(Event $event)
+    protected function _addDropdownButton(Event $event, array $menu)
     {
+        $viewUrl = '/roles-capabilities/personal-permissions/index';
+        $addUrl = '/roles-capabilities/personal-permissions/addNew';
+        if (!empty($menu[0]['url']['controller']) && !empty($menu[0]['url'][0])) {
+            $viewUrl .= '?model=' . $menu[0]['url']['controller'] . '&foreign_key=' . $menu[0]['url'][0];
+        }
+
         $button = [];
 
         $button[] = '<div class="btn-group btn-group-sm">';
         $button[] = '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-        $button[] = __('Permissions') . '<span class="caret"></span>';
+        $button[] = '<i class="fa fa-shield"></i>' . __('Permissions') . '<span class="caret"></span>';
         $button[] = '<span class="sr-only">Toggle Dropdown</span>';
         $button[] = '</button>';
         $button[] = '<ul class="dropdown-menu">';
-
-        foreach ($this->allowedActions as $action) {
-            $button[] = '<li><a href="#" id="' . $action . '" data-toggle="modal" data-target="#permissions-modal-add">' . Inflector::humanize($action) . '</a></li>';
-        }
+        $button[] = '<li><a href="' . $addUrl . '" data-toggle="modal" data-target="#permissions-modal-add">Add Permission</a></li>';
+        $button[] = '<li><a href="' . $viewUrl . '">View Permissions</a></li>';
         $button[] = '</ul>';
         $button[] = '</div>';
 

@@ -1,6 +1,7 @@
 <?php
 namespace RolesCapabilities\Controller;
 
+use Cake\Utility\Inflector;
 use RolesCapabilities\Controller\AppController;
 
 /**
@@ -10,6 +11,10 @@ use RolesCapabilities\Controller\AppController;
  */
 class PersonalPermissionsController extends AppController
 {
+    /**
+     * @var allowedActions
+     */
+    protected $allowedActions = ['view', 'edit', 'delete'];
 
     /**
      * Index method
@@ -18,8 +23,18 @@ class PersonalPermissionsController extends AppController
      */
     public function index()
     {
+        $conditions = [];
+        $params = $this->request->query();
+        if (!empty($params['model'])) {
+            $conditions['model'] = $params['model'];
+        }
+        if (!empty($params['foreign_key'])) {
+            $conditions['foreign_key'] = $params['foreign_key'];
+        }
+
         $this->paginate = [
-            'contain' => ['Users']
+            'contain' => ['Users'],
+            'conditions' => $conditions,
         ];
         $personalPermissions = $this->paginate($this->PersonalPermissions);
 
@@ -52,19 +67,30 @@ class PersonalPermissionsController extends AppController
     public function add()
     {
         $data = $this->request->getData();
-        $data['creator'] = $this->Auth->user('id'); 
+        $data['creator'] = $this->Auth->user('id');
         $personalPermission = $this->PersonalPermissions->newEntity();
         if ($this->request->is('post')) {
             $personalPermission = $this->PersonalPermissions->patchEntity($personalPermission, $data);
             if ($this->PersonalPermissions->save($personalPermission)) {
                 $this->Flash->success(__('The personal permission has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]);
             }
             $this->Flash->error(__('The personal permission could not be saved. Please, try again.'));
         }
-        $users = $this->PersonalPermissions->Users->find('list', ['limit' => 200]);
-        $this->set(compact('personalPermission', 'users'));
+        $users = $this->PersonalPermissions->Users->find('list', ['keyField' => 'id', 'valueField' => 'username'])
+                ->where([
+                    'active' => 1
+                ])
+                ->limit(100)
+                ->toArray();
+        $users[''] = '';
+        asort($users);
+        $types[''] = '';
+        foreach ($this->allowedActions as $action) {
+            $types[$action] = Inflector::humanize($action);
+        }
+        $this->set(compact('personalPermission', 'users', 'types'));
         $this->set('_serialize', ['personalPermission']);
     }
 
