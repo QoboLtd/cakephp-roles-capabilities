@@ -25,6 +25,7 @@ return [
             ],
             'defaultRules' => [
                 'SuperUser',
+                'PersonalPermissions',
                 'Capabilities'
             ],
             'assignationModels' => [

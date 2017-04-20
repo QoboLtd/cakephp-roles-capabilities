@@ -19,14 +19,19 @@ class PersonalPermissionsAccess extends AuthenticatedAccess
      * @param array $user   user's session data
      * @return bool         true or false
      */
-    public function hasAccess(array $url, array $user)
+    public function hasAccess($url, $user)
     {
         $result = parent::hasAccess($url, $user);
         if (!$result) {
             return false;
         }
 
-        $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermission');
+        // Personal permissions are assigned to the specified entity only!
+        if (empty($url['pass'][0])) {
+            return true;
+        }
+
+        $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');
         $query = $permissionTable->find('all', [
             'conditions' => [
                 'model' => $url['controller'],
