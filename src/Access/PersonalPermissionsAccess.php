@@ -19,7 +19,7 @@ class PersonalPermissionsAccess extends AuthenticatedAccess
      * @param array $user   user's session data
      * @return bool         true or false
      */
-    public function hasAccess()
+    public function hasAccess(array $url, array $user)
     {
         $result = parent::hasAccess($url, $user);
         if (!$result) {
