@@ -130,6 +130,7 @@ class PersonalPermissionsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+        $data = $this->request->getData();
         $personalPermission = $this->PersonalPermissions->get($id);
         if ($this->PersonalPermissions->delete($personalPermission)) {
             $this->Flash->success(__('The personal permission has been deleted.'));
@@ -137,6 +138,6 @@ class PersonalPermissionsController extends AppController
             $this->Flash->error(__('The personal permission could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]);
     }
 }
