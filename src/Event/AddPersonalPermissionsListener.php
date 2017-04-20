@@ -22,7 +22,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     {
         return [
             'CsvMigrations.View.topMenu.beforeRender' => 'addPersonalPermissionsButton',
-            'CsvMigrations.View.Body.Bottom' => 'addPersonalPermissionsModal',
+            //'CsvMigrations.View.Body.Bottom' => 'addPersonalPermissionsModal',
         ];
     }
 
@@ -37,7 +37,8 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     public function addPersonalPermissionsButton(Event $event, array $menu, array $user)
     {
         $content = $this->_addDropdownButton($event, $menu);
-        $content .= $this->_addModalWindow($event);
+        $content .= $this->_addModalWindow($event, $menu);
+        $content .= $this->_addModalWindowView($event, $menu);
 
         $event->result = $content;
     }
@@ -83,7 +84,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      */
     protected function _addDropdownButton(Event $event, array $menu)
     {
-        $viewUrl = '/roles-capabilities/personal-permissions/index';
+        $viewUrl = '/roles-capabilities/personal-permissions/indexModal';
         $addUrl = '/roles-capabilities/personal-permissions/addNew';
         if (!empty($menu[0]['url']['controller']) && !empty($menu[0]['url'][0])) {
             $viewUrl .= '?model=' . $menu[0]['url']['controller'] . '&foreign_key=' . $menu[0]['url'][0];
@@ -98,7 +99,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $button[] = '</button>';
         $button[] = '<ul class="dropdown-menu">';
         $button[] = '<li><a href="' . $addUrl . '" data-toggle="modal" data-target="#permissions-modal-add">Add Permission</a></li>';
-        $button[] = '<li><a href="' . $viewUrl . '">View Permissions</a></li>';
+        $button[] = '<li><a href="' . $viewUrl . '" data-toggle="modal" data-target="#permissions-modal-view">View Permissions</a></li>';
         $button[] = '</ul>';
         $button[] = '</div>';
 
@@ -111,7 +112,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      * @param Cake\Event\Event $event of the current request
      * @return string   code of modal window
      */
-    protected function _addModalWindow(Event $event)
+    protected function _addModalWindow(Event $event, array $menu)
     {
         $controllerName = $event->subject()->request->params['controller'];
         $postContent = [];
@@ -131,8 +132,22 @@ class AddPersonalPermissionsListener implements EventListenerInterface
             $actions[$action] = Inflector::humanize($action);
         }
 
+        $permissions = [];
+        if (!empty($menu[0]['url']['controller']) && !empty($menu[0]['url'][0])) {
+            $conditions = [];
+            $conditions['model'] = $menu[0]['url']['controller'];
+            $conditions['foreign_key'] = $menu[0]['url'][0];
+
+            $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');
+            $query = $permissionTable->find('all', [
+                'conditions' => $conditions,
+                'contain' => ['Users'],
+                'limit' => 100,
+            ]);
+            $permissions = $query->all();
+        }
+
         $postContent[] = '<div class="modal fade" id="permissions-modal-add" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">';
-        $postContent[] = $event->subject()->Form->create('RolesCapabilities.PersonalPermissions', ['url' => '/roles-capabilities/personal-permissions/add', 'id' => 'modal-form-permissions-add']);
         $postContent[] = '<div class="modal-dialog" role="document">';
         $postContent[] = '<div class="modal-content">';
         $postContent[] = '<div class="modal-header">';
@@ -140,6 +155,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $postContent[] = '<h4 class="modal-title" id="mySetsLabel">' . __('Add Permissions') . '</h4>';
         $postContent[] = '</div>'; // modal-header
         $postContent[] = '<div class="modal-body">';
+        $postContent[] = $event->subject()->Form->create('RolesCapabilities.PersonalPermissions', ['url' => '/roles-capabilities/personal-permissions/add', 'id' => 'modal-form-permissions-add']);
         $postContent[] = '<div class="sets-feedback-container"></div>';
         $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
         $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
@@ -152,18 +168,75 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $postContent[] = $event->subject()->Form->label(__('Permission'));
         $postContent[] = $event->subject()->Form->select('type', $actions, ['class' => 'select2', 'multiple' => false, 'required' => true]);
         $postContent[] = '</div></div>';
-        $postContent[] = '<div class="row"><div class="col-xs-12 col-md-12">';
-        $postContent[] = $event->subject()->Form->input('is_active', ['type' => 'checkbox']);
-        $postContent[] = '</div></div>';
+
+        $postContent[] = '<div class="sets-feedback-container"></div>';
+
+        foreach ($permissions as $permission) {
+            $postContent[] = '<div class="row">';
+            $postContent[] = '<div class="col-xs-6">' . $permission->user->username . '</div>';
+            $postContent[] = '<div class="col-xs-6">' . $permission->type . '</div>';
+            $postContent[] = '</div>';
+        }
 
         $postContent[] = '</div>'; //modal-body
         $postContent[] = '<div class="modal-footer">';
         $postContent[] = $event->subject()->Form->button(__('Submit'), ['name' => 'btn_operation', 'value' => 'submit', 'class' => 'btn btn-primary']);
         $postContent[] = '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
+        $postContent[] = $event->subject()->Form->end();
         $postContent[] = '</div>';
         $postContent[] = '</div>'; // modal-content
         $postContent[] = '</div>'; //modal-dialog
+        $postContent[] = '</div>'; // modal
+
+        return implode("\n", $postContent);
+    }
+
+    /**
+     * _addModalWindowView method
+     *
+     * @param Cake\Event\Event $event of the current request
+     * @return string   code of modal window
+     */
+    protected function _addModalWindowView(Event $event, array $menu)
+    {
+        $permissions = [];
+
+        if (!empty($menu[0]['url']['controller']) && !empty($menu[0]['url'][0])) {
+            $conditions = [];
+            $conditions['model'] = $menu[0]['url']['controller'];
+            $conditions['foreign_key'] = $menu[0]['url'][0];
+
+            $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');
+            $query = $permissionTable->find('all', [
+                'conditions' => $conditions,
+                'contain' => ['Users'],
+                'limit' => 100,
+            ]);
+            $permissions = $query->all();
+        }
+
+        $postContent[] = '<div class="modal fade" id="permissions-modal-view" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">';
+        $postContent[] = '<div class="modal-dialog" role="document">';
+        $postContent[] = '<div class="modal-content">';
+        $postContent[] = '<div class="modal-header">';
+        $postContent[] = '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+        $postContent[] = '<h4 class="modal-title" id="mySetsLabel">' . __('Add Permissions') . '</h4>';
+        $postContent[] = '</div>'; // modal-header
+        $postContent[] = '<div class="modal-body">';
+        $postContent[] = $event->subject()->Form->create('RolesCapabilities.PersonalPermissions', ['url' => '/roles-capabilities/personal-permissions/delete', 'id' => 'modal-form-permissions-view']);
+        $postContent[] = '<div class="sets-feedback-container"></div>';
+
+        foreach ($permissions as $permission) {
+            $postContent[] = $permission->user->username;
+        }
+
+        $postContent[] = '</div>'; //modal-body
+        $postContent[] = '<div class="modal-footer">';
+        $postContent[] = '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
         $postContent[] = $event->subject()->Form->end();
+        $postContent[] = '</div>';
+        $postContent[] = '</div>'; // modal-content
+        $postContent[] = '</div>'; //modal-dialog
         $postContent[] = '</div>'; // modal
 
         return implode("\n", $postContent);
