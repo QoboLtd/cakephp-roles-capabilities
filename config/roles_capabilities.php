@@ -10,7 +10,8 @@ return [
                 'users',
                 'groups',
                 'groups_roles',
-                'groups_users'
+                'groups_users',
+                'languages',
             ],                  
         ],
         'accessCheck' => [
@@ -24,6 +25,7 @@ return [
             ],
             'defaultRules' => [
                 'SuperUser',
+                'Permissions',
                 'Capabilities'
             ],
             'assignationModels' => [
