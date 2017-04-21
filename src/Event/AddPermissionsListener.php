@@ -197,8 +197,6 @@ class AddPermissionsListener implements EventListenerInterface
             ['block' => 'css']
         );
 
-
-
         return implode("\n", $postContent);
     }
 

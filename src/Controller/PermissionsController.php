@@ -77,7 +77,7 @@ class PermissionsController extends AppController
         $data['creator'] = $this->Auth->user('id');
         $permission = $this->Permissions->newEntity();
         if ($this->request->is('post')) {
-            $permission = $this->Permissions->patchEntity($Permission, $data);
+            $permission = $this->Permissions->patchEntity($permission, $data);
             if ($this->Permissions->save($permission)) {
                 $this->Flash->success(__('The  permission has been saved.'));
 
