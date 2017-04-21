@@ -46,7 +46,6 @@ echo $this->Html->scriptBlock(
                         <th><?= h('Type'); ?></th>
                         <th><?= h('Expiration Date'); ?></th>
                         <th><?= h('Status'); ?></th>
-                        <th class="actions"><?= __('Actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,7 +55,6 @@ echo $this->Html->scriptBlock(
                         <td><?= h($permission->foreign_key); ?></td>
                         <td><?= h($permission->type); ?></td>
                         <td><?= h($permission->expired); ?></td>
-                        <td><?= h($permission->is_active ? 'Enabled' : 'Disabled'); ?></td>
                         <td class="actions">
                             <div class="btn-group btn-group-xs" role="group">
                             <?= $this->Html->link(

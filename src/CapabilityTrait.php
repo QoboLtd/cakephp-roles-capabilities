@@ -69,4 +69,12 @@ trait CapabilityTrait
             throw new ForbiddenException();
         }
     }
+
+    /**
+     * managePermissions method
+     *
+     */
+    public function personalPermissions()
+    {
+    }
 }

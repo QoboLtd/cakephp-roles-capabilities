@@ -19,10 +19,10 @@
                         <dd><?= h($personalPermission->model) ?></dd>
                         <dt><?= __('Type') ?></dt>
                         <dd><?= h($personalPermission->type) ?></dd>
-                        <dt><?= __('User') ?></dt>
-                        <dd><?= h($personalPermission->user->username) ?></dd>
-                        <dt><?= __('Status') ?></dt>
-                        <dd><?= h($personalPermission->is_active ? 'Active' : 'Disabled') ?></dd>
+                        <dt><?= __('Entity ID') ?></dt>
+                        <dd><?= h($personalPermission->owner_foreign_key) ?></dd>
+                        <dt><?= __('Entity Model') ?></dt>
+                        <dd><?= h($personalPermission->owner_model) ?></dd>
                     </dl>
                 </div>
             </div>

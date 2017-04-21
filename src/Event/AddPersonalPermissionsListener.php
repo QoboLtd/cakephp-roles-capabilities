@@ -66,7 +66,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     {
         return $event->subject()->Html->link(
             '<i class="fa fa-shield"></i>&nbsp;' . __('Permissions'),
-            '/roles-capabilities/personal-permissions/add-new',
+            '/roles-capabilities/personal-permissions/add',
             [
                 'class' => 'btn btn-default',
                 'data-toggle' => "modal",
@@ -137,7 +137,6 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $postContent[] = '<div class="sets-feedback-container"></div>';
         $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
         $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
-        $postContent[] = $event->subject()->Form->hidden('is_active', ['value' => true]);
         $postContent[] = '<div class="row"><div class="col-xs-6">';
         $postContent[] = $event->subject()->Form->label(__('User'));
         $postContent[] = $event->subject()->Form->select('user_id', $users, ['class' => 'select2', 'multiple' => false, 'required' => false]);
@@ -279,13 +278,15 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         }
         $table[] = '</tr>';
         foreach ($permissions as $permission) {
+            $entityTable = TableRegistry::get($permission->owner_model);
+            $displayField = $entityTable->displayField();
             $table[] = '<tr>';
-            $table[] = '<td>' . $permission->owner_foreign_key . '</td>';
+            $table[] = '<td>' . $entityTable->get($permission->owner_foreign_key)->$displayField . '</td>';
             $table[] = '<td>' . $permission->owner_model . '</td>';
             $table[] = '<td>' . $permission->type . '</td>';
             $table[] = '<td>';
             $table[] = $event->subject()->Form->postLink(
-                __('Delete'),
+                '<i class="fa fa-trash"></i>',
                 '/roles-capabilities/personal-permissions/delete/' . $permission->id,
                 [
                     'class' => 'btn btn-default btn-sm',
@@ -294,6 +295,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
                         'model' => $event->subject()->request->params['controller'],
                         'foreign_key' => $event->subject()->request->params['pass'][0],
                     ],
+                    'escape' => false,
                 ]
             );
             $table[] = '</td>';

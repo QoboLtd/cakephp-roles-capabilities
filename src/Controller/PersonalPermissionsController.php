@@ -33,7 +33,6 @@ class PersonalPermissionsController extends AppController
         }
 
         $this->paginate = [
-            'contain' => ['Users'],
             'conditions' => $conditions,
         ];
         $personalPermissions = $this->paginate($this->PersonalPermissions);
@@ -51,9 +50,7 @@ class PersonalPermissionsController extends AppController
      */
     public function view($id = null)
     {
-        $personalPermission = $this->PersonalPermissions->get($id, [
-            'contain' => ['Users']
-        ]);
+        $personalPermission = $this->PersonalPermissions->get($id);
 
         $this->set('personalPermission', $personalPermission);
         $this->set('_serialize', ['personalPermission']);
@@ -70,10 +67,13 @@ class PersonalPermissionsController extends AppController
         if (!empty($data['group_id'])) {
             $data['owner_model'] = 'Groups';
             $data['owner_foreign_key'] = $data['group_id'];
-        } else {
+        } elseif (!empty($data['user_id'])) {
             $data['owner_model'] = 'Users';
             $data['owner_foreign_key'] = $data['user_id'];
+        } else {
+            throw new \InvalidArgumentException("Missing user or group!");
         }
+
         $data['creator'] = $this->Auth->user('id');
         $personalPermission = $this->PersonalPermissions->newEntity();
         if ($this->request->is('post')) {
@@ -85,12 +85,6 @@ class PersonalPermissionsController extends AppController
             }
             $this->Flash->error(__('The personal permission could not be saved. Please, try again.'));
         }
-        $users = $this->PersonalPermissions->Users->find('list', ['keyField' => 'id', 'valueField' => 'username'])
-                ->where([
-                    'active' => 1
-                ])
-                ->limit(100)
-                ->toArray();
         $users[''] = '';
         asort($users);
         $types[''] = '';
@@ -122,8 +116,7 @@ class PersonalPermissionsController extends AppController
             }
             $this->Flash->error(__('The personal permission could not be saved. Please, try again.'));
         }
-        $users = $this->PersonalPermissions->Users->find('list', ['limit' => 200]);
-        $this->set(compact('personalPermission', 'users'));
+        $this->set(compact('personalPermission'));
         $this->set('_serialize', ['personalPermission']);
     }
 
@@ -145,6 +138,8 @@ class PersonalPermissionsController extends AppController
             $this->Flash->error(__('The personal permission could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]);
+        return !empty($data['model']) && !empty($data['foreign_key']) ?
+                $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]) :
+                $this->redirect(['action' => 'index']);
     }
 }

@@ -25,10 +25,9 @@ class PersonalPermissionsAccess extends AuthenticatedAccess
         if (!$result) {
             return false;
         }
-
         // Personal permissions are assigned to the specified entity only!
         if (empty($url['pass'][0])) {
-            return true;
+            return false;
         }
 
         $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');

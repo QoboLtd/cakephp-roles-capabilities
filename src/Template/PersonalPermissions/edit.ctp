@@ -31,6 +31,7 @@ echo $this->Html->scriptBlock(
 <section class="content-header">
     <h1><?= __('Edit {0}', ['Personal Permission']) ?></h1>
 </section>
+<!--
 <section class="content">
     <div class="row">
         <div class="col-xs-12 col-md-6">
@@ -75,3 +76,4 @@ echo $this->Html->scriptBlock(
         </div>
     </div>
 </section>
+-->
