@@ -39,12 +39,6 @@ class PersonalPermissionsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER',
-            'className' => 'RolesCapabilities.Users'
-        ]);
     }
 
     /**
@@ -77,11 +71,6 @@ class PersonalPermissionsTable extends Table
             ->notEmpty('type');
 
         $validator
-            ->boolean('is_active')
-            ->requirePresence('is_active', 'create')
-            ->notEmpty('is_active');
-
-        $validator
             ->dateTime('expired')
             ->allowEmpty('expired');
 
@@ -97,8 +86,6 @@ class PersonalPermissionsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
-
         return $rules;
     }
 }

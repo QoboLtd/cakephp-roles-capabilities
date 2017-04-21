@@ -9,10 +9,8 @@ use Cake\ORM\Entity;
  * @property string $id
  * @property string $foreign_key
  * @property string $model
- * @property string $user_id
  * @property string $creator
  * @property string $type
- * @property bool $is_active
  * @property \Cake\I18n\Time $expired
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified

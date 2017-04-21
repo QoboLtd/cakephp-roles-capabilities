@@ -49,12 +49,10 @@ echo $this->Html->scriptBlock(
                         <div class="col-xs-12">
                                 <?= $this->Form->input('expired', [
                                 'type' => 'text',
-                                'label' => 'Date Expired',
-                                'data-provide' => 'datepicker',
+                                'label' => 'Expired On',
+                                'data-provide' => 'datetimepicker',
                                 'autocomplete' => 'off',
-                                'data-date-format' => 'yyyy-mm-dd',
-                                'data-date-autoclose' => true,
-                                'value' => $personalPermission->has('expired') ? $personalPermission->expired->i18nFormat('yyyy-MM-dd') : null,
+                                'value' => $personalPermission->has('expired') ? $personalPermission->expired : null,
                                 'templates' => [
                                     'input' => '<div class="input-group">
                                         <div class="input-group-addon">

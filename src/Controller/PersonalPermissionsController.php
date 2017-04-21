@@ -67,6 +67,13 @@ class PersonalPermissionsController extends AppController
     public function add()
     {
         $data = $this->request->getData();
+        if (!empty($data['group_id'])) {
+            $data['owner_model'] = 'Groups';
+            $data['owner_foreign_key'] = $data['group_id'];
+        } else {
+            $data['owner_model'] = 'Users';
+            $data['owner_foreign_key'] = $data['user_id'];
+        }
         $data['creator'] = $this->Auth->user('id');
         $personalPermission = $this->PersonalPermissions->newEntity();
         if ($this->request->is('post')) {

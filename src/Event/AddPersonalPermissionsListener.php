@@ -10,7 +10,7 @@ use Cake\Utility\Inflector;
 class AddPersonalPermissionsListener implements EventListenerInterface
 {
     protected $allowedActions = [
-        'view', 'edit', 'delete'
+        'index', 'view', 'edit', 'delete'
     ];
 
     /**
@@ -118,6 +118,8 @@ class AddPersonalPermissionsListener implements EventListenerInterface
 
         $users = $this->_getListOfUsers();
 
+        $groups = $this->_getListOfGroups();
+
         $actions = $this->_getListOfActions();
 
         $permissions = $this->_getListOfPermissions($menu[0]['url']['controller'], $menu[0]['url'][0]);
@@ -136,9 +138,12 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
         $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
         $postContent[] = $event->subject()->Form->hidden('is_active', ['value' => true]);
-        $postContent[] = '<div class="row"><div class="col-xs-12 col-md-12">';
+        $postContent[] = '<div class="row"><div class="col-xs-6">';
         $postContent[] = $event->subject()->Form->label(__('User'));
-        $postContent[] = $event->subject()->Form->select('user_id', $users, ['class' => 'select2', 'multiple' => false, 'required' => true]);
+        $postContent[] = $event->subject()->Form->select('user_id', $users, ['class' => 'select2', 'multiple' => false, 'required' => false]);
+        $postContent[] = '</div><div class="col-xs-6">';
+        $postContent[] = $event->subject()->Form->label(__('Groups'));
+        $postContent[] = $event->subject()->Form->select('group_id', $groups, ['class' => 'select2', 'multiple' => false, 'required' => false]);
         $postContent[] = '</div></div>';
 
         $postContent[] = '<div class="row"><div class="col-xs-12 col-md-12">';
@@ -213,6 +218,23 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     }
 
     /**
+     *  _getListOfGroups method
+     *
+     * @return array    list of available groups
+     */
+    protected function _getListOfGroups()
+    {
+        $groupsTable = TableRegistry::get('groups');
+        $groups = $groupsTable->find('list')
+            ->limit(100)
+            ->toArray();
+        $groups[''] = '';
+        asort($groups);
+
+        return $groups;
+    }
+
+    /**
      *  _getListOfPermissions method
      *
      * @param string $model         model name
@@ -230,7 +252,6 @@ class AddPersonalPermissionsListener implements EventListenerInterface
             $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');
             $query = $permissionTable->find('all', [
                 'conditions' => $conditions,
-                'contain' => ['Users'],
                 'limit' => 100,
             ]);
             $permissions = $query->all();
@@ -247,7 +268,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
      */
     protected function _showExistingPermissions($permissions, Event $event)
     {
-        $headers = ['Username', 'Permission', 'Actions'];
+        $headers = ['ID', 'Model', 'Permission', 'Actions'];
 
         $table = [];
         $table[] = '<table class="table">';
@@ -259,7 +280,8 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $table[] = '</tr>';
         foreach ($permissions as $permission) {
             $table[] = '<tr>';
-            $table[] = '<td>' . $permission->user->username . '</td>';
+            $table[] = '<td>' . $permission->owner_foreign_key . '</td>';
+            $table[] = '<td>' . $permission->owner_model . '</td>';
             $table[] = '<td>' . $permission->type . '</td>';
             $table[] = '<td>';
             $table[] = $event->subject()->Form->postLink(

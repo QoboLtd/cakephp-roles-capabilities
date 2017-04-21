@@ -32,14 +32,15 @@ class PersonalPermissionsAccess extends AuthenticatedAccess
         }
 
         $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');
-        $query = $permissionTable->find('all', [
-            'conditions' => [
-                'model' => $url['controller'],
-                'foreign_key' => $url['pass'][0],
-                'type' => $url['action'],
-                'user_id' => $user['id']
-            ],
-        ]);
+        $query = $permissionTable->find('all')
+            ->where([
+                    'model' => $url['controller'],
+                    'foreign_key' => $url['pass'][0],
+                    'type' => $url['action'],
+                    'owner_foreign_key' => $user['id'],
+                    'owner_model' => 'Users',
+                    ])
+            ->applyOptions(['accessCheck' => false]);
 
         return $query->count() > 0 ? true : false;
     }

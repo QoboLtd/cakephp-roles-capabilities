@@ -147,8 +147,51 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             }
         }
 
+        $allowedEntities = $this->_getAllowedEntities($table, $user);
+        if (!empty($allowedEntities)) {
+            $query->where([$table->alias() . '.id IN ' => array_keys($allowedEntities)]);
+
+            return;
+        }
+
         // if user has neither owner nor full capability on current action then filter out all records
         $primaryKey = $table->primaryKey();
         $query->where([$table->aliasField($primaryKey) => null]);
+    }
+
+    /**
+     * _getAllowedEntities method
+     *
+     *
+     */
+    protected function _getAllowedEntities(Table $table, array $user)
+    {
+        $groups = TableRegistry::get('RolesCapabilities.Capabilities')->getUserGroups($user['id']);
+
+        $personalPermissions = TableRegistry::get('RolesCapabilities.PersonalPermissions')
+            ->find('all')
+            ->select('foreign_key')
+            ->where([
+                'model' => $table->alias(),
+                'type IN ' => ['view', 'index'],
+            ])
+            ->orWhere([
+                'owner_foreign_key' => $user['id'],
+                'owner_model' => 'Users',
+            ])
+            ->orWhere([
+                'owner_foreign_key IN ' => $groups,
+                'owner_model' => 'Groups',
+            ])
+            ->applyOptions(['accessCheck' => false])
+            ->toArray();
+        $result = [];
+        if (!empty($personalPermissions)) {
+            foreach ($personalPermissions as $permission) {
+                $result[$permission->foreign_key] = 1;
+            }
+        }
+
+        return $result;
     }
 }
