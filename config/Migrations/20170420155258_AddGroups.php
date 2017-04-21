@@ -12,7 +12,7 @@ class AddGroups extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('personal_permissions');
+        $table = $this->table('permissions');
         
         $table->addColumn('owner_model', 'string', [
             'default' => null,

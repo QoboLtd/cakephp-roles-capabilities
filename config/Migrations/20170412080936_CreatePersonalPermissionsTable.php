@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class CreatePersonalPermissionsTable extends AbstractMigration
+class CreatePermissionsTable extends AbstractMigration
 {
     public $autoId = false;
     
@@ -14,7 +14,7 @@ class CreatePersonalPermissionsTable extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('personal_permissions');
+        $table = $this->table('permissions');
         $table->addColumn('id', 'uuid', [
             'default' => null,
             'null' => false,
