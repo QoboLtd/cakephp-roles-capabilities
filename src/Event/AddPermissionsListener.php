@@ -138,12 +138,15 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
         $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
         $postContent[] = '<div class="row"><div class="col-xs-6">';
-        $postContent[] = $event->subject()->Form->label(__('User'));
-        $postContent[] = $event->subject()->Form->select('user_id', $users, ['class' => 'select2', 'multiple' => false, 'required' => false]);
-        $postContent[] = '</div><div class="col-xs-6">';
-        $postContent[] = $event->subject()->Form->label(__('Groups'));
-        $postContent[] = $event->subject()->Form->select('group_id', $groups, ['class' => 'select2', 'multiple' => false, 'required' => false]);
-        $postContent[] = '</div></div>';
+        $postContent[] = $event->subject()->Form->input('type', [
+            'type' => 'select',
+            'options' => ['user' => 'User', 'group' => 'Group'],
+            'class' => 'select2',
+            'empty' => true,
+            'id' => 'permission-type'
+        ]);
+        $postContent[] = '</div><div class="col-xs-6"><div id="type-inner-container">';
+        $postContent[] = '</div></div></div>';
 
         $postContent[] = '<div class="row"><div class="col-xs-12 col-md-12">';
         $postContent[] = $event->subject()->Form->label(__('Permission'));
@@ -155,6 +158,17 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = $event->subject()->Form->end();
         $postContent[] = '</div></div><hr/>';
 
+        $postContent[] = '<div id="type-outer-container" class="hidden">';
+        $postContent[] = '<div id="permission-user">';
+        $postContent[] = $event->subject()->Form->label(__('User'));
+        $postContent[] = $event->subject()->Form->select('user_id', $users, ['id' => 'permission-user', 'class' => 'select2', 'multiple' => false, 'required' => false]);
+        $postContent[] = '</div>';
+        $postContent[] = '<div id="permission-group">';
+        $postContent[] = $event->subject()->Form->label(__('Groups'));
+        $postContent[] = $event->subject()->Form->select('group_id', $groups, ['id' => 'permission-group', 'class' => 'select2', 'multiple' => false, 'required' => false]);
+        $postContent[] = '</div>';
+        $postContent[] = '</div>';
+
         $postContent[] = $this->_showExistingPermissions($permissions, $event);
 
         $postContent[] = '</div>'; //modal-body
@@ -165,7 +179,25 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = '</div>'; //modal-dialog
         $postContent[] = '</div>'; // modal
 
-        $event->subject()->Html->script('RolesCapabilities.permissions', ['block' => 'scriptBotton']);
+        $event->subject()->Html->script(
+            [
+                'AdminLTE./plugins/select2/select2.full.min',
+                'RolesCapabilities.select2.init',
+                'RolesCapabilities.switch-target',
+                'RolesCapabilities.permissions',
+            ],
+            ['block' => 'scriptBotton']
+        );
+
+        $event->subject()->Html->css(
+            [
+                'AdminLTE./plugins/select2/select2.min',
+                'RolesCapabilities.select2-bootstrap.min',
+            ],
+            ['block' => 'css']
+        );
+
+
 
         return implode("\n", $postContent);
     }
