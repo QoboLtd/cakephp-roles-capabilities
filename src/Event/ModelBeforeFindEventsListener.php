@@ -174,7 +174,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             ->select('foreign_key')
             ->where([
                 'model' => $table->alias(),
-                'type IN ' => ['view', 'index'],
+                'type IN ' => ['view'],
                 'OR' => [
                             [
                                 'owner_foreign_key IN ' => array_keys($groups),
