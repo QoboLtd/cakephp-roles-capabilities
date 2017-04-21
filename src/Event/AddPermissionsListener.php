@@ -38,7 +38,7 @@ class AddPermissionsListener implements EventListenerInterface
     {
         $content = $this->_addButton($event, $menu);
         $content .= $this->_addModalWindow($event, $menu);
-        
+
         $event->result = $content;
     }
 
@@ -164,7 +164,7 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = '</div>'; // modal-content
         $postContent[] = '</div>'; //modal-dialog
         $postContent[] = '</div>'; // modal
-        
+
         $event->subject()->Html->script('RolesCapabilities.permissions', ['block' => 'scriptBotton']);
 
         return implode("\n", $postContent);
