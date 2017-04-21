@@ -14,7 +14,7 @@ class PersonalPermissionsController extends AppController
     /**
      * @var allowedActions
      */
-    protected $allowedActions = ['view', 'edit', 'delete'];
+    protected $allowedActions = ['view', 'edit', 'delete', 'index'];
 
     /**
      * Index method
