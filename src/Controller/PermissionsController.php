@@ -50,10 +50,10 @@ class PermissionsController extends AppController
      */
     public function view($id = null)
     {
-        $personalPermission = $this->Permissions->get($id);
+        $permission = $this->Permissions->get($id);
 
-        $this->set('personalPermission', $personalPermission);
-        $this->set('_serialize', ['personalPermission']);
+        $this->set('permission', $permission);
+        $this->set('_serialize', ['permission']);
     }
 
     /**
@@ -75,15 +75,15 @@ class PermissionsController extends AppController
         }
 
         $data['creator'] = $this->Auth->user('id');
-        $personalPermission = $this->Permissions->newEntity();
+        $permission = $this->Permissions->newEntity();
         if ($this->request->is('post')) {
-            $personalPermission = $this->Permissions->patchEntity($personalPermission, $data);
-            if ($this->Permissions->save($personalPermission)) {
-                $this->Flash->success(__('The personal permission has been saved.'));
+            $permission = $this->Permissions->patchEntity($Permission, $data);
+            if ($this->Permissions->save($permission)) {
+                $this->Flash->success(__('The  permission has been saved.'));
 
                 return $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]);
             }
-            $this->Flash->error(__('The personal permission could not be saved. Please, try again.'));
+            $this->Flash->error(__('The  permission could not be saved. Please, try again.'));
         }
         $users[''] = '';
         asort($users);
@@ -91,8 +91,8 @@ class PermissionsController extends AppController
         foreach ($this->allowedActions as $action) {
             $types[$action] = Inflector::humanize($action);
         }
-        $this->set(compact('personalPermission', 'users', 'types'));
-        $this->set('_serialize', ['personalPermission']);
+        $this->set(compact('permission', 'users', 'types'));
+        $this->set('_serialize', ['permission']);
     }
 
     /**
@@ -104,20 +104,20 @@ class PermissionsController extends AppController
      */
     public function edit($id = null)
     {
-        $personalPermission = $this->Permissions->get($id, [
+        $permission = $this->Permissions->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $personalPermission = $this->Permissions->patchEntity($personalPermission, $this->request->getData());
-            if ($this->Permissions->save($personalPermission)) {
-                $this->Flash->success(__('The personal permission has been saved.'));
+            $permission = $this->Permissions->patchEntity($Permission, $this->request->getData());
+            if ($this->Permissions->save($permission)) {
+                $this->Flash->success(__('The  permission has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The personal permission could not be saved. Please, try again.'));
+            $this->Flash->error(__('The  permission could not be saved. Please, try again.'));
         }
-        $this->set(compact('personalPermission'));
-        $this->set('_serialize', ['personalPermission']);
+        $this->set(compact('permission'));
+        $this->set('_serialize', ['permission']);
     }
 
     /**
@@ -131,11 +131,11 @@ class PermissionsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $data = $this->request->getData();
-        $personalPermission = $this->Permissions->get($id);
-        if ($this->Permissions->delete($personalPermission)) {
-            $this->Flash->success(__('The personal permission has been deleted.'));
+        $permission = $this->Permissions->get($id);
+        if ($this->Permissions->delete($permission)) {
+            $this->Flash->success(__('The  permission has been deleted.'));
         } else {
-            $this->Flash->error(__('The personal permission could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The  permission could not be deleted. Please, try again.'));
         }
 
         return !empty($data['model']) && !empty($data['foreign_key']) ?

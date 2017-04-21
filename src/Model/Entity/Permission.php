@@ -4,11 +4,13 @@ namespace RolesCapabilities\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * PersonalPermission Entity
+ * Permission Entity
  *
  * @property string $id
  * @property string $foreign_key
  * @property string $model
+ * @property string $owner_foreign_key
+ * @property string $owner_model
  * @property string $creator
  * @property string $type
  * @property \Cake\I18n\Time $expired
@@ -17,7 +19,7 @@ use Cake\ORM\Entity;
  *
  * @property \RolesCapabilities\Model\Entity\User $user
  */
-class PersonalPermission extends Entity
+class Permission extends Entity
 {
 
     /**

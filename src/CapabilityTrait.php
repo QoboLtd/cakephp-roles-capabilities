@@ -74,7 +74,7 @@ trait CapabilityTrait
      * managePermissions method
      *
      */
-    public function personalPermissions()
+    public function managePermissions()
     {
     }
 }

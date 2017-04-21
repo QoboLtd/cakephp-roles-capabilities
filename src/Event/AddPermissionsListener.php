@@ -66,7 +66,7 @@ class AddPermissionsListener implements EventListenerInterface
     {
         return $event->subject()->Html->link(
             '<i class="fa fa-shield"></i>&nbsp;' . __('Permissions'),
-            '/roles-capabilities/personal-permissions/add',
+            '/roles-capabilities/permissions/add',
             [
                 'class' => 'btn btn-default',
                 'data-toggle' => "modal",
@@ -84,8 +84,8 @@ class AddPermissionsListener implements EventListenerInterface
      */
     protected function _addDropdownButton(Event $event, array $menu)
     {
-        $viewUrl = '/roles-capabilities/personal-permissions/indexModal';
-        $addUrl = '/roles-capabilities/personal-permissions/addNew';
+        $viewUrl = '/roles-capabilities/permissions/indexModal';
+        $addUrl = '/roles-capabilities/permissions/addNew';
         if (!empty($menu[0]['url']['controller']) && !empty($menu[0]['url'][0])) {
             $viewUrl .= '?model=' . $menu[0]['url']['controller'] . '&foreign_key=' . $menu[0]['url'][0];
         }
@@ -133,7 +133,7 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = '<h4 class="modal-title" id="mySetsLabel">' . __('Add Permissions') . '</h4>';
         $postContent[] = '</div>'; // modal-header
         $postContent[] = '<div class="modal-body">';
-        $postContent[] = $event->subject()->Form->create('RolesCapabilities.Permissions', ['url' => '/roles-capabilities/personal-permissions/add', 'id' => 'modal-form-permissions-add']);
+        $postContent[] = $event->subject()->Form->create('RolesCapabilities.Permissions', ['url' => '/roles-capabilities/permissions/add', 'id' => 'modal-form-permissions-add']);
         $postContent[] = '<div class="sets-feedback-container"></div>';
         $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
         $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
@@ -176,7 +176,7 @@ class AddPermissionsListener implements EventListenerInterface
      */
     protected function _addJSHandler(Event $event)
     {
-        $js = $event->subject()->Html->script(['RolesCapabilities.personal_permissions']);
+        $js = $event->subject()->Html->script(['RolesCapabilities.permissions']);
 
         return $js;
     }
@@ -262,8 +262,8 @@ class AddPermissionsListener implements EventListenerInterface
     /**
      *  _showExistingPermissions method
      *
-     * @param array $permissions    list of existing personal permissions
-     * @return string               table to display list of existing personal permissions
+     * @param array $permissions    list of existing permissions
+     * @return string               table to display list of existing permissions
      */
     protected function _showExistingPermissions($permissions, Event $event)
     {
@@ -287,7 +287,7 @@ class AddPermissionsListener implements EventListenerInterface
             $table[] = '<td>';
             $table[] = $event->subject()->Form->postLink(
                 '<i class="fa fa-trash"></i>',
-                '/roles-capabilities/personal-permissions/delete/' . $permission->id,
+                '/roles-capabilities/permissions/delete/' . $permission->id,
                 [
                     'class' => 'btn btn-default btn-sm',
                     'confirm' => 'Are you sure to delete this permission?',

@@ -162,13 +162,14 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     /**
      * _getAllowedEntities method
      *
-     *
+     * @param \Cake\ORM\Table $table    Table instance
+     * @param array $user               user's details
      */
     protected function _getAllowedEntities(Table $table, array $user)
     {
         $groups = TableRegistry::get('RolesCapabilities.Capabilities')->getUserGroups($user['id']);
 
-        $personalPermissions = TableRegistry::get('RolesCapabilities.PersonalPermissions')
+        $permissions = TableRegistry::get('RolesCapabilities.Permissions')
             ->find('all')
             ->select('foreign_key')
             ->where([
@@ -188,8 +189,8 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             ->applyOptions(['accessCheck' => false])
             ->toArray();
         $result = [];
-        if (!empty($personalPermissions)) {
-            foreach ($personalPermissions as $permission) {
+        if (!empty($permissions)) {
+            foreach ($permissions as $permission) {
                 $result[$permission->foreign_key] = 1;
             }
         }

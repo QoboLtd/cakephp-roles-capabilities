@@ -1,8 +1,8 @@
 <section class="content-header">
     <h1><?= $this->Html->link(
-        __('Personal Permission'),
-        ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'index']
-    ) . ' &raquo; ' . h($personalPermission->model) ?></h1>
+        __(' Permission'),
+        ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'index']
+    ) . ' &raquo; ' . h($permission->model) ?></h1>
 </section>
 <section class="content">
     <div class="row">
@@ -16,13 +16,13 @@
                 <div class="box-body">
                     <dl class="dl-horizontal">
                         <dt><?= __('Model') ?></dt>
-                        <dd><?= h($personalPermission->model) ?></dd>
+                        <dd><?= h($permission->model) ?></dd>
                         <dt><?= __('Type') ?></dt>
-                        <dd><?= h($personalPermission->type) ?></dd>
+                        <dd><?= h($permission->type) ?></dd>
                         <dt><?= __('Entity ID') ?></dt>
-                        <dd><?= h($personalPermission->owner_foreign_key) ?></dd>
+                        <dd><?= h($permission->owner_foreign_key) ?></dd>
                         <dt><?= __('Entity Model') ?></dt>
-                        <dd><?= h($personalPermission->owner_model) ?></dd>
+                        <dd><?= h($permission->owner_model) ?></dd>
                     </dl>
                 </div>
             </div>

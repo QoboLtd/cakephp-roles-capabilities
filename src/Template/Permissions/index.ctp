@@ -24,7 +24,7 @@ echo $this->Html->scriptBlock(
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('PersonalPermissions');?></h4>
+            <h4><?= __('Permissions');?></h4>
         </div>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
@@ -49,7 +49,7 @@ echo $this->Html->scriptBlock(
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($personalPermissions as $permission) : ?>
+                    <?php foreach ($permissions as $permission) : ?>
                     <tr>
                         <td><?= h($permission->model) ?></td>
                         <td><?= h($permission->foreign_key); ?></td>
@@ -59,20 +59,20 @@ echo $this->Html->scriptBlock(
                             <div class="btn-group btn-group-xs" role="group">
                             <?= $this->Html->link(
                                 '<i class="fa fa-eye"></i>',
-                                ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'view', $permission->id],
+                                ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'view', $permission->id],
                                 ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                             ); ?>
                             <?php if (!$permission->deny_edit) : ?>
                                 <?= $this->Html->link(
                                     '<i class="fa fa-pencil"></i>',
-                                    ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'edit', $permission->id],
+                                    ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'edit', $permission->id],
                                     ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ); ?>
                             <?php endif; ?>
                             <?php if (!$permission->deny_delete) : ?>
                                 <?= $this->Form->postLink(
                                     '<i class="fa fa-trash"></i>',
-                                    ['plugin' => 'RolesCapabilities', 'controller' => 'PersonalPermissions', 'action' => 'delete', $permission->id],
+                                    ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'delete', $permission->id],
                                     [
                                         'confirm' => __('Are you sure you want to delete # {0}?', $permission->id),
                                         'title' => __('Delete'),
