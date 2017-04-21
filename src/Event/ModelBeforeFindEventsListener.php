@@ -174,14 +174,16 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             ->where([
                 'model' => $table->alias(),
                 'type IN ' => ['view', 'index'],
-            ])
-            ->orWhere([
-                'owner_foreign_key' => $user['id'],
-                'owner_model' => 'Users',
-            ])
-            ->orWhere([
-                'owner_foreign_key IN ' => $groups,
-                'owner_model' => 'Groups',
+                'OR' => [
+                            [
+                                'owner_foreign_key IN ' => array_keys($groups),
+                                'owner_model' => 'Groups',
+                            ],
+                            [
+                                'owner_foreign_key' => $user['id'],
+                                'owner_model' => 'Users',
+                            ]
+                    ]
             ])
             ->applyOptions(['accessCheck' => false])
             ->toArray();
