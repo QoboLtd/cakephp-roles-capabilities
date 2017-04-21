@@ -7,7 +7,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
-class AddPersonalPermissionsListener implements EventListenerInterface
+class AddPermissionsListener implements EventListenerInterface
 {
     protected $allowedActions = [
         'view', 'edit', 'delete'
@@ -21,20 +21,20 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'CsvMigrations.View.topMenu.beforeRender' => 'addPersonalPermissionsButton',
-            //'View.View.Body.Bottom' => 'addPersonalPermissionsModal',
+            'CsvMigrations.View.topMenu.beforeRender' => 'addPermissionsButton',
+            //'View.View.Body.Bottom' => 'addPermissionsModal',
         ];
     }
 
     /**
-     *  addPersonalPermissionsButton method
+     *  addPermissionsButton method
      *
      * @param Cake\Event\Event $event of the current request
      * @param array $menu of the view page.
      * @param array $user currently logged in.
      * @return void
      */
-    public function addPersonalPermissionsButton(Event $event, array $menu, array $user)
+    public function addPermissionsButton(Event $event, array $menu, array $user)
     {
         $content = $this->_addButton($event, $menu);
         $content .= $this->_addModalWindow($event, $menu);
@@ -43,13 +43,13 @@ class AddPersonalPermissionsListener implements EventListenerInterface
     }
 
     /**
-     *  addPersonalPermissionsModal method
+     *  addPermissionsModal method
      *
      * @param Cake\Event\Event $event of the current request
      * @param array $options of the view page.
      * @return void
      */
-    public function addPersonalPermissionsModal(Event $event, $options)
+    public function addPermissionsModal(Event $event, $options)
     {
         $content = $this->_addJSHandler($event);
         debug($content);
@@ -133,7 +133,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
         $postContent[] = '<h4 class="modal-title" id="mySetsLabel">' . __('Add Permissions') . '</h4>';
         $postContent[] = '</div>'; // modal-header
         $postContent[] = '<div class="modal-body">';
-        $postContent[] = $event->subject()->Form->create('RolesCapabilities.PersonalPermissions', ['url' => '/roles-capabilities/personal-permissions/add', 'id' => 'modal-form-permissions-add']);
+        $postContent[] = $event->subject()->Form->create('RolesCapabilities.Permissions', ['url' => '/roles-capabilities/personal-permissions/add', 'id' => 'modal-form-permissions-add']);
         $postContent[] = '<div class="sets-feedback-container"></div>';
         $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
         $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
@@ -248,7 +248,7 @@ class AddPersonalPermissionsListener implements EventListenerInterface
             $conditions['model'] = $model;
             $conditions['foreign_key'] = $foreignKey;
 
-            $permissionTable = TableRegistry::get('RolesCapabilities.PersonalPermissions');
+            $permissionTable = TableRegistry::get('RolesCapabilities.Permissions');
             $query = $permissionTable->find('all', [
                 'conditions' => $conditions,
                 'limit' => 100,

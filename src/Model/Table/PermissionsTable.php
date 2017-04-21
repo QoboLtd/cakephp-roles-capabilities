@@ -7,21 +7,21 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * PersonalPermissions Model
+ * Permissions Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Users
  *
- * @method \RolesCapabilities\Model\Entity\PersonalPermission get($primaryKey, $options = [])
- * @method \RolesCapabilities\Model\Entity\PersonalPermission newEntity($data = null, array $options = [])
- * @method \RolesCapabilities\Model\Entity\PersonalPermission[] newEntities(array $data, array $options = [])
- * @method \RolesCapabilities\Model\Entity\PersonalPermission|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \RolesCapabilities\Model\Entity\PersonalPermission patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \RolesCapabilities\Model\Entity\PersonalPermission[] patchEntities($entities, array $data, array $options = [])
- * @method \RolesCapabilities\Model\Entity\PersonalPermission findOrCreate($search, callable $callback = null, $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission get($primaryKey, $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission newEntity($data = null, array $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission[] newEntities(array $data, array $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission[] patchEntities($entities, array $data, array $options = [])
+ * @method \RolesCapabilities\Model\Entity\Permission findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class PersonalPermissionsTable extends Table
+class PermissionsTable extends Table
 {
 
     /**
@@ -34,7 +34,7 @@ class PersonalPermissionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('personal_permissions');
+        $this->setTable('permissions');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 

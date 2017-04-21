@@ -5,11 +5,11 @@ use Cake\Utility\Inflector;
 use RolesCapabilities\Controller\AppController;
 
 /**
- * PersonalPermissions Controller
+ * Permissions Controller
  *
- * @property \RolesCapabilities\Model\Table\PersonalPermissionsTable $PersonalPermissions
+ * @property \RolesCapabilities\Model\Table\PermissionsTable $Permissions
  */
-class PersonalPermissionsController extends AppController
+class PermissionsController extends AppController
 {
     /**
      * @var allowedActions
@@ -35,22 +35,22 @@ class PersonalPermissionsController extends AppController
         $this->paginate = [
             'conditions' => $conditions,
         ];
-        $personalPermissions = $this->paginate($this->PersonalPermissions);
+        $permissions = $this->paginate($this->Permissions);
 
-        $this->set(compact('personalPermissions'));
-        $this->set('_serialize', ['personalPermissions']);
+        $this->set(compact('permissions'));
+        $this->set('_serialize', ['permissions']);
     }
 
     /**
      * View method
      *
-     * @param string|null $id Personal Permission id.
+     * @param string|null $id Permission id.
      * @return \Cake\Network\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $personalPermission = $this->PersonalPermissions->get($id);
+        $personalPermission = $this->Permissions->get($id);
 
         $this->set('personalPermission', $personalPermission);
         $this->set('_serialize', ['personalPermission']);
@@ -75,10 +75,10 @@ class PersonalPermissionsController extends AppController
         }
 
         $data['creator'] = $this->Auth->user('id');
-        $personalPermission = $this->PersonalPermissions->newEntity();
+        $personalPermission = $this->Permissions->newEntity();
         if ($this->request->is('post')) {
-            $personalPermission = $this->PersonalPermissions->patchEntity($personalPermission, $data);
-            if ($this->PersonalPermissions->save($personalPermission)) {
+            $personalPermission = $this->Permissions->patchEntity($personalPermission, $data);
+            if ($this->Permissions->save($personalPermission)) {
                 $this->Flash->success(__('The personal permission has been saved.'));
 
                 return $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]);
@@ -98,18 +98,18 @@ class PersonalPermissionsController extends AppController
     /**
      * Edit method
      *
-     * @param string|null $id Personal Permission id.
+     * @param string|null $id  Permission id.
      * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $personalPermission = $this->PersonalPermissions->get($id, [
+        $personalPermission = $this->Permissions->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $personalPermission = $this->PersonalPermissions->patchEntity($personalPermission, $this->request->getData());
-            if ($this->PersonalPermissions->save($personalPermission)) {
+            $personalPermission = $this->Permissions->patchEntity($personalPermission, $this->request->getData());
+            if ($this->Permissions->save($personalPermission)) {
                 $this->Flash->success(__('The personal permission has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -123,7 +123,7 @@ class PersonalPermissionsController extends AppController
     /**
      * Delete method
      *
-     * @param string|null $id Personal Permission id.
+     * @param string|null $id  Permission id.
      * @return \Cake\Network\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -131,8 +131,8 @@ class PersonalPermissionsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $data = $this->request->getData();
-        $personalPermission = $this->PersonalPermissions->get($id);
-        if ($this->PersonalPermissions->delete($personalPermission)) {
+        $personalPermission = $this->Permissions->get($id);
+        if ($this->Permissions->delete($personalPermission)) {
             $this->Flash->success(__('The personal permission has been deleted.'));
         } else {
             $this->Flash->error(__('The personal permission could not be deleted. Please, try again.'));
