@@ -4,10 +4,10 @@ namespace RolesCapabilities\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * PersonalPermissionsFixture
+ * PermissionsFixture
  *
  */
-class PersonalPermissionsFixture extends TestFixture
+class PermissionsFixture extends TestFixture
 {
 
     /**
@@ -20,10 +20,10 @@ class PersonalPermissionsFixture extends TestFixture
         'id' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'foreign_key' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'model' => ['type' => 'string', 'length' => 128, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'user_id' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'owner_foreign_key' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'owner_model' => ['type' => 'string', 'length' => 128, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'creator' => ['type' => 'string', 'length' => 36, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'type' => ['type' => 'string', 'length' => 15, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'is_active' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'expired' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
@@ -46,11 +46,11 @@ class PersonalPermissionsFixture extends TestFixture
         [
             'id' => '4b93417b-d045-40ce-8206-0bcf363b2639',
             'foreign_key' => 'c4bd0658-f0d8-482b-bf02-4ffe45f18bdf',
-            'model' => 'Lorem ipsum dolor sit amet',
-            'user_id' => '83efaad1-8d3f-4a82-9e0e-c3830235abae',
+            'model' => 'Leads',
+            'owner_foreign_key' => '83efaad1-8d3f-4a82-9e0e-c3830235abae',
+            'owner_model' => 'Users',
             'creator' => 'Lorem ipsum dolor sit amet',
             'type' => 'Lorem ipsum d',
-            'is_active' => 1,
             'expired' => '2017-04-12 11:21:52',
             'created' => '2017-04-12 11:21:52',
             'modified' => '2017-04-12 11:21:52'

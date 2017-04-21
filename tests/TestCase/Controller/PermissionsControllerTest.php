@@ -2,12 +2,12 @@
 namespace RolesCapabilities\Test\TestCase\Controller;
 
 use Cake\TestSuite\IntegrationTestCase;
-use RolesCapabilities\Controller\PersonalPermissionsController;
+use RolesCapabilities\Controller\PermissionsController;
 
 /**
- * RolesCapabilities\Controller\PersonalPermissionsController Test Case
+ * RolesCapabilities\Controller\PermissionsController Test Case
  */
-class PersonalPermissionsControllerTest extends IntegrationTestCase
+class PermissionsControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -16,7 +16,7 @@ class PersonalPermissionsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.personal_permissions',
+        'plugin.roles_capabilities.permissions',
         'plugin.roles_capabilities.users',
     ];
 

@@ -3,20 +3,20 @@ namespace RolesCapabilities\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Model\Table\PersonalPermissionsTable;
+use RolesCapabilities\Model\Table\PermissionsTable;
 
 /**
- * RolesCapabilities\Model\Table\PersonalPermissionsTable Test Case
+ * RolesCapabilities\Model\Table\PermissionsTable Test Case
  */
-class PersonalPermissionsTableTest extends TestCase
+class PermissionsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \RolesCapabilities\Model\Table\PersonalPermissionsTable
+     * @var \RolesCapabilities\Model\Table\PermissionsTable
      */
-    public $PersonalPermissions;
+    public $Permissions;
 
     /**
      * Fixtures
@@ -24,7 +24,7 @@ class PersonalPermissionsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.personal_permissions',
+        'plugin.roles_capabilities.permissions',
         'plugin.roles_capabilities.users'
     ];
 
@@ -36,8 +36,8 @@ class PersonalPermissionsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('PersonalPermissions') ? [] : ['className' => 'RolesCapabilities\Model\Table\PersonalPermissionsTable'];
-        $this->PersonalPermissions = TableRegistry::get('PersonalPermissions', $config);
+        $config = TableRegistry::exists('Permissions') ? [] : ['className' => 'RolesCapabilities\Model\Table\PermissionsTable'];
+        $this->Permissions = TableRegistry::get('Permissions', $config);
     }
 
     /**
@@ -47,7 +47,7 @@ class PersonalPermissionsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->PersonalPermissions);
+        unset($this->Permissions);
 
         parent::tearDown();
     }
