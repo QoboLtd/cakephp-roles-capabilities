@@ -10,7 +10,7 @@ use Cake\Utility\Inflector;
 class AddPersonalPermissionsListener implements EventListenerInterface
 {
     protected $allowedActions = [
-        'index', 'view', 'edit', 'delete'
+        'view', 'edit', 'delete'
     ];
 
     /**
