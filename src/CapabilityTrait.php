@@ -73,6 +73,7 @@ trait CapabilityTrait
     /**
      * managePermissions method
      *
+     * Empty method just to have capability
      */
     public function managePermissions()
     {
