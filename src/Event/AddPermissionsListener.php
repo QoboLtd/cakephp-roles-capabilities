@@ -6,9 +6,12 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use RolesCapabilities\CapabilityTrait;
 
 class AddPermissionsListener implements EventListenerInterface
 {
+    use CapabilityTrait;
+
     protected $allowedActions = [
         'view', 'edit', 'delete'
     ];
@@ -22,7 +25,6 @@ class AddPermissionsListener implements EventListenerInterface
     {
         return [
             'CsvMigrations.View.topMenu.beforeRender' => 'addPermissionsButton',
-            //'View.View.Body.Bottom' => 'addPermissionsModal',
         ];
     }
 
@@ -36,10 +38,18 @@ class AddPermissionsListener implements EventListenerInterface
      */
     public function addPermissionsButton(Event $event, array $menu, array $user)
     {
-        $content = $this->_addButton($event, $menu);
-        $content .= $this->_addModalWindow($event, $menu);
+        $url = [
+            'plugin' => $event->subject()->plugin,
+            'controller' => $event->subject()->name,
+            'action' => 'managePermissions',
+        ];
 
-        $event->result = $content;
+        if ($this->_checkAccess($url, $user)) {
+            $content = $this->_addButton($event);
+            $content .= $this->_addModalWindow($event, $menu);
+
+            $event->result = $content;
+        }
     }
 
     /**
@@ -66,7 +76,7 @@ class AddPermissionsListener implements EventListenerInterface
     {
         return $event->subject()->Html->link(
             '<i class="fa fa-shield"></i>&nbsp;' . __('Permissions'),
-            '/roles-capabilities/permissions/add',
+            '#',
             [
                 'class' => 'btn btn-default',
                 'data-toggle' => "modal",
