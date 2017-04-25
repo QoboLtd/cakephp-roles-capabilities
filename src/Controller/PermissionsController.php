@@ -81,7 +81,7 @@ class PermissionsController extends AppController
             if ($this->Permissions->save($permission)) {
                 $this->Flash->success(__('The  permission has been saved.'));
 
-                return $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]);
+                return $this->redirect($this->referer());
             }
             $this->Flash->error(__('The  permission could not be saved. Please, try again.'));
         }
@@ -138,8 +138,6 @@ class PermissionsController extends AppController
             $this->Flash->error(__('The  permission could not be deleted. Please, try again.'));
         }
 
-        return !empty($data['model']) && !empty($data['foreign_key']) ?
-                $this->redirect(['plugin' => false, 'controller' => $data['model'], 'action' => 'view', $data['foreign_key']]) :
-                $this->redirect(['action' => 'index']);
+        $this->redirect($this->referer());
     }
 }
