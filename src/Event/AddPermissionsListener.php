@@ -25,7 +25,43 @@ class AddPermissionsListener implements EventListenerInterface
     {
         return [
             'CsvMigrations.View.topMenu.beforeRender' => 'addPermissionsButton',
+            'Cms.View.topMenu.beforeRender' => 'addCmsPermissionsButton'
         ];
+    }
+
+    /**
+     *  addPermissionsButton method
+     *
+     * @param Cake\Event\Event $event of the current request
+     * @param array $menu of the view page.
+     * @param array $user currently logged in.
+     * @return void
+     */
+    public function addCmsPermissionsButton(Event $event, array $menu, array $user)
+    {
+        $url = [
+            'plugin' => $event->subject()->plugin,
+            'controller' => $event->subject()->name,
+            'action' => 'managePermissions',
+        ];
+
+        $table = TableRegistry::get('Cms.Sites');
+        $query = $table->findByIdOrSlug(
+            $event->subject->request->param('pass.0'),
+            $event->subject->request->param('pass.0')
+        );
+
+        $site = $query->first();
+
+        $params = $event->subject()->request->params;
+        $params['pass'][0] = $site->id;
+
+        if ($this->_checkAccess($url, $user)) {
+            $content = $this->_addButton($event);
+            $content .= $this->_addModalWindow($event, $menu, $params);
+
+            $event->result = $content;
+        }
     }
 
     /**
@@ -46,7 +82,7 @@ class AddPermissionsListener implements EventListenerInterface
 
         if ($this->_checkAccess($url, $user)) {
             $content = $this->_addButton($event);
-            $content .= $this->_addModalWindow($event, $menu);
+            $content .= $this->_addModalWindow($event, $menu, $event->subject()->request->params);
 
             $event->result = $content;
         }
@@ -90,6 +126,7 @@ class AddPermissionsListener implements EventListenerInterface
      *  _addDropdownButton method
      *
      * @param Cake\Event\Event $event of the current request
+     * @param array $menu Menu
      * @return string   code of button
      */
     protected function _addDropdownButton(Event $event, array $menu)
@@ -120,11 +157,13 @@ class AddPermissionsListener implements EventListenerInterface
      *  _addModalWindow method
      *
      * @param Cake\Event\Event $event of the current request
+     * @param array $menu Menu
+     * @param array $params Request parameters
      * @return string   code of modal window
      */
-    protected function _addModalWindow(Event $event, array $menu)
+    protected function _addModalWindow(Event $event, array $menu, array $params)
     {
-        $controllerName = $event->subject()->request->params['controller'];
+        $controllerName = $params['controller'];
 
         $users = $this->_getListOfUsers();
 
@@ -132,7 +171,10 @@ class AddPermissionsListener implements EventListenerInterface
 
         $actions = $this->_getListOfActions();
 
-        $permissions = $this->_getListOfPermissions($menu[0]['url']['controller'], $menu[0]['url'][0]);
+        $permissions = $this->_getListOfPermissions(
+            $params['controller'],
+            $params['pass'][0]
+        );
 
         $postContent = [];
         $postContent[] = '<div class="modal fade" id="permissions-modal-add" tabindex="-1" role="dialog" aria-labelledby="mySetsLabel">';
@@ -145,8 +187,9 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = '<div class="modal-body">';
         $postContent[] = $event->subject()->Form->create('RolesCapabilities.Permissions', ['url' => '/roles-capabilities/permissions/add', 'id' => 'modal-form-permissions-add']);
         $postContent[] = '<div class="sets-feedback-container"></div>';
-        $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $event->subject()->request->params['pass'][0]]);
-        $postContent[] = $event->subject()->Form->hidden('model', ['value' => $event->subject()->request->params['controller']]);
+        $postContent[] = $event->subject()->Form->hidden('foreign_key', ['value' => $params['pass'][0]]);
+        $postContent[] = $event->subject()->Form->hidden('plugin', ['value' => $params['plugin']]);
+        $postContent[] = $event->subject()->Form->hidden('model', ['value' => $params['controller']]);
         $postContent[] = '<div class="row"><div class="col-xs-6">';
         $postContent[] = $event->subject()->Form->input('type', [
             'type' => 'select',
@@ -334,6 +377,7 @@ class AddPermissionsListener implements EventListenerInterface
                     'class' => 'btn btn-default btn-sm',
                     'confirm' => 'Are you sure to delete this permission?',
                     'data' => [
+                        'plugin' => $event->subject()->request->params['plugin'],
                         'model' => $event->subject()->request->params['controller'],
                         'foreign_key' => $event->subject()->request->params['pass'][0],
                     ],
