@@ -25,7 +25,7 @@ class AddPermissionsListener implements EventListenerInterface
     {
         return [
             'CsvMigrations.View.topMenu.beforeRender' => 'addPermissionsButton',
-            'Cms.View.topMenu.beforeRender' => 'addCmsPermissionsButton'
+            'Cms.Sites.toolbar.beforeRender' => 'addCmsPermissionsButton'
         ];
     }
 
@@ -60,7 +60,7 @@ class AddPermissionsListener implements EventListenerInterface
             $content = $this->_addButton($event);
             $content .= $this->_addModalWindow($event, $menu, $params);
 
-            $event->result = $content;
+            $event->result .= $content;
         }
     }
 
