@@ -30,7 +30,7 @@ class AddPermissionsListener implements EventListenerInterface
     }
 
     /**
-     *  addPermissionsButton method
+     *  addPermissionsButton method.
      *
      * @param Cake\Event\Event $event of the current request
      * @param array $menu of the view page.
