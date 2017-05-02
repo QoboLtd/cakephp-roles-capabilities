@@ -12,7 +12,7 @@ return [
                 'groups_roles',
                 'groups_users',
                 'languages',
-            ],                  
+            ],
         ],
         'accessCheck' => [
             'skipControllers' => [
@@ -20,8 +20,27 @@ return [
                 'App\Controller\PagesController'
             ],
             'skipActions' => [
-                'login', 
-                'logout'
+                '*' => [
+                    'getCapabilities',
+                    'getSkipActions'
+                ],
+                'CakeDC\Users\Controller\UsersController' => [
+                    'failedSocialLogin',
+                    'failedSocialLoginListener',
+                    'getUsersTable',
+                    'login',
+                    'logout',
+                    'requestResetPassword',
+                    'resendTokenValidation',
+                    'resetPassword',
+                    'setUsersTable',
+                    'socialEmail',
+                    'socialLogin',
+                    'twitterLogin',
+                    'validate',
+                    'validateEmail',
+                    'validateReCaptcha',
+                ]
             ],
             'defaultRules' => [
                 'SuperUser',
@@ -34,5 +53,5 @@ return [
             ],
 
         ],
-    ]        
+    ]
 ];
