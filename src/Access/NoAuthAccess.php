@@ -42,7 +42,6 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function hasAccess($url, $user)
     {
-        debug($this->_skipActions);die;
         if (!empty($url['action']) && $this->_isSkipAction($url['action'])) {
             return true;
         }
