@@ -42,6 +42,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function hasAccess($url, $user)
     {
+        debug($this->_skipActions);die;
         if (!empty($url['action']) && $this->_isSkipAction($url['action'])) {
             return true;
         }
@@ -66,7 +67,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function getSkipActions()
     {
-        return $this->_skipActions;
+        return $this->_skipActions['CakeDC\Users\Controller\UsersController'];
     }
 
     /**
