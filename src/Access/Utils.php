@@ -127,6 +127,18 @@ class Utils
             $skipActions = $controllerName::getSkipActions($controllerName);
         }
 
+        // skip actions for all controllers, if defined in the plugin's configuration.
+        $allSkipActions = Configure::read('RolesCapabilities.accessCheck.skipActions.*');
+        if (!empty($allSkipActions)) {
+            $skipActions = array_merge($skipActions, $allSkipActions);
+        }
+
+        // skip actions for specified controller, if defined in the plugin's configuration.
+        $controllerSkipActions = Configure::read('RolesCapabilities.accessCheck.skipActions.' . $controllerName);
+        if (!empty($controllerSkipActions)) {
+            $skipActions = array_merge($skipActions, $controllerSkipActions);
+        }
+
         $skipActions = array_merge(
             $skipActions,
             static::getCakeControllerActions()
@@ -453,9 +465,9 @@ class Utils
             return $result;
         }
 
-        $skipControllers = [];
+        $skipControllers = Configure::read('RolesCapabilities.accessCheck.skipControllers');
         if (is_callable([$controllerName, 'getSkipControllers'])) {
-            $skipControllers = $controllerName::getSkipControllers();
+            $skipControllers = array_merge($skipControllers, $controllerName::getSkipControllers());
         }
 
         if (in_array($controllerName, $skipControllers)) {
