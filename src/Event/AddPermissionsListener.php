@@ -84,7 +84,7 @@ class AddPermissionsListener implements EventListenerInterface
             $content = $this->_addButton($event);
             $content .= $this->_addModalWindow($event, $menu, $event->subject()->request->params);
 
-            $event->result = $content;
+            $event->result .= $content;
         }
     }
 
@@ -206,10 +206,10 @@ class AddPermissionsListener implements EventListenerInterface
         $postContent[] = $event->subject()->Form->select('type', $actions, ['class' => 'select2', 'multiple' => false, 'required' => true]);
         $postContent[] = '</div></div>';
 
-        $postContent[] = '<hr/><div class="row"><div class="col-xs-10">&nbsp;</div><div class="col-xs-2">';
-        $postContent[] = $event->subject()->Form->button(__('Submit'), ['name' => 'btn_operation', 'value' => 'submit', 'class' => 'btn btn-primary']);
+        $postContent[] = '<br /><div class="row"><div class="col-xs-12">';
+        $postContent[] = $event->subject()->Form->button(__('Submit'), ['name' => 'btn_operation', 'value' => 'submit', 'class' => 'btn btn-primary pull-right']);
         $postContent[] = $event->subject()->Form->end();
-        $postContent[] = '</div></div><hr/>';
+        $postContent[] = '</div></div><br />';
 
         $postContent[] = '<div id="type-outer-container" class="hidden">';
         $postContent[] = '<div id="permission-user">';
@@ -355,13 +355,16 @@ class AddPermissionsListener implements EventListenerInterface
         $headers = ['ID', 'Model', 'Permission', 'Actions'];
 
         $table = [];
-        $table[] = '<table class="table">';
+        $table[] = '<table class="table table-hover table-condensed table-vertical-align">';
+        $table[] = '<thead>';
         $table[] = '<tr>';
 
         foreach ($headers as $th) {
             $table[] = '<th>' . $th . '</th>';
         }
         $table[] = '</tr>';
+        $table[] = '</thead>';
+        $table[] = '<tbody>';
         foreach ($permissions as $permission) {
             $entityTable = TableRegistry::get($permission->owner_model);
             $displayField = $entityTable->displayField();
@@ -374,7 +377,7 @@ class AddPermissionsListener implements EventListenerInterface
                 '<i class="fa fa-trash"></i>',
                 '/roles-capabilities/permissions/delete/' . $permission->id,
                 [
-                    'class' => 'btn btn-default btn-sm',
+                    'class' => 'btn btn-default btn-xs',
                     'confirm' => 'Are you sure to delete this permission?',
                     'data' => [
                         'plugin' => $event->subject()->request->params['plugin'],
@@ -388,6 +391,7 @@ class AddPermissionsListener implements EventListenerInterface
 
             $table[] = '</tr>';
         }
+        $table[] = '</tbody>';
         $table[] = '</table>';
 
         return implode("\n", $table);
