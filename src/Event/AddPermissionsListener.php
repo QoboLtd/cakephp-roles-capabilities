@@ -84,7 +84,7 @@ class AddPermissionsListener implements EventListenerInterface
             $content = $this->_addButton($event);
             $content .= $this->_addModalWindow($event, $menu, $event->subject()->request->params);
 
-            $event->result = $content;
+            $event->result .= $content;
         }
     }
 
