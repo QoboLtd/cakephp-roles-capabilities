@@ -136,17 +136,6 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             }
         }
 
-        $fullType = Utils::getTypeFull();
-        // check user capabilities against action's full capabilities
-        if (isset($actionCapabilities[$fullType])) {
-            foreach ($actionCapabilities[$fullType] as $capability) {
-                // if current action's full capability is matched in user's capabilities just return
-                if (in_array($capability->getName(), $userCapabilities)) {
-                    return;
-                }
-            }
-        }
-
         $allowedEntities = $this->_getAllowedEntities($table, $user);
         if (!empty($allowedEntities)) {
             $query->where([$table->alias() . '.id IN ' => array_keys($allowedEntities)]);
