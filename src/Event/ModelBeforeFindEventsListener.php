@@ -121,29 +121,21 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         $ownerType = Utils::getTypeOwner();
         // check user capabilities against action's owner capabilities
         if (isset($actionCapabilities[$ownerType])) {
-            $hasOwnerType = false;
+            $ownerFields = [];
             foreach ($actionCapabilities[$ownerType] as $capability) {
                 if (!in_array($capability->getName(), $userCapabilities)) {
                     continue;
                 }
                 // if user has owner capability for current action add appropriate conditions to where clause
-                $query->where([$capability->getField() => $user['id']]);
-                $hasOwnerType = true;
+                $ownerFields[] = [$capability->getField() => $user['id']];
             }
 
-            if ($hasOwnerType) {
+            if (!empty($ownerFields)) {
+                $query->where(['OR' => $ownerFields]);
+            }
+
+            if (!empty($ownerFields)) {
                 return;
-            }
-        }
-
-        $fullType = Utils::getTypeFull();
-        // check user capabilities against action's full capabilities
-        if (isset($actionCapabilities[$fullType])) {
-            foreach ($actionCapabilities[$fullType] as $capability) {
-                // if current action's full capability is matched in user's capabilities just return
-                if (in_array($capability->getName(), $userCapabilities)) {
-                    return;
-                }
             }
         }
 
@@ -164,6 +156,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      *
      * @param \Cake\ORM\Table $table    Table instance
      * @param array $user               user's details
+     * @return array
      */
     protected function _getAllowedEntities(Table $table, array $user)
     {
