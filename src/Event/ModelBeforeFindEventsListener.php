@@ -121,17 +121,20 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         $ownerType = Utils::getTypeOwner();
         // check user capabilities against action's owner capabilities
         if (isset($actionCapabilities[$ownerType])) {
-            $hasOwnerType = false;
+            $ownerFields = [];
             foreach ($actionCapabilities[$ownerType] as $capability) {
                 if (!in_array($capability->getName(), $userCapabilities)) {
                     continue;
                 }
                 // if user has owner capability for current action add appropriate conditions to where clause
-                $query->where([$capability->getField() => $user['id']]);
-                $hasOwnerType = true;
+                $ownerFields[] = [$capability->getField() => $user['id']];
             }
 
-            if ($hasOwnerType) {
+            if (!empty($ownerFields)) {
+                $query->where(['OR' => $ownerFields]);
+            }
+
+            if (!empty($ownerFields)) {
                 return;
             }
         }
