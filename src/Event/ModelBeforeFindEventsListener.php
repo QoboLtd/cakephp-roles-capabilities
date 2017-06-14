@@ -156,6 +156,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      *
      * @param \Cake\ORM\Table $table    Table instance
      * @param array $user               user's details
+     * @return array
      */
     protected function _getAllowedEntities(Table $table, array $user)
     {
