@@ -198,7 +198,6 @@ class Utils
         $tableName = array_pop($parts);
         // remove "Controller" suffix from "/ArticlesController"
         $tableName = str_replace('Controller', '', $tableName);
-        // remove "/Controller/" part
         array_pop($parts);
         // get plugin part "/MyPlugin/"
         $plugin = array_pop($parts);
@@ -568,5 +567,20 @@ class Utils
         }
 
         return $fields;
+    }
+
+    /**
+     * normalizeControllerName method
+     *
+     * @param array $url including plugin if so, controller and action
+     * @return string full controller name including App or Plugin
+     */
+    public static function normalizeControllerName(array $url)
+    {
+        $plugin = !empty($url['plugin']) ? $url['plugin'] : 'App';
+        $plugin = preg_replace('/\//', '\\', $plugin);
+        $controllerName = $plugin . '\\Controller\\' . $url['controller'] . 'Controller';
+
+        return $controllerName;
     }
 }
