@@ -3,6 +3,7 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\Configure;
+use RolesCapabilities\Access\Utils;
 
 /**
  *  NoAuthAccess class
@@ -42,15 +43,11 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function hasAccess($url, $user)
     {
-        debug($url);
         if (!empty($url['action']) && !empty($url['controller'])) {
-            $plugin = !empty($url['plugin']) ? $url['plugin'] : 'App'; 
-            $plugin = preg_replace('/\//', '\\', $plugin);
-            $controllerName = $plugin . '\\Controller\\' . $url['controller'] . 'Controller';
-            debug($controllerName);
+            $controllerName = Utils::normalizeControllerName($url);
             if ($this->_isSkipAction($controllerName, $url['action'])) {
                 return true;
-            }    
+            }
         }
 
         if (!empty($url['controller']) && $this->_isSkipController($url['controller'])) {
@@ -74,7 +71,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function getSkipActions($controller)
     {
-        return $this->_skipActions[$controller];
+        return !empty($this->_skipActions[$controller]) ? $this->_skipActions[$controller] : [];
     }
 
     /**
