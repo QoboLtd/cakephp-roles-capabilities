@@ -2,6 +2,7 @@
 namespace RolesCapabilities;
 
 use Cake\Core\App;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
@@ -38,6 +39,19 @@ trait CapabilityTrait
         return $accessFactory->hasAccess($url, $user);
     }
 
+    /**
+     *  _getSkipActions method
+     *
+     * @param array $url user tries to access for
+     * @return array list of actions to skip
+     */
+    protected function _getSkipActions($url)
+    {
+        $controller = Utils::normalizeControllerName($url);
+        $skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions.' . $controller);
+
+        return $skipActions;
+    }
     /**
      * Check if specified role has access to perform action.
      *

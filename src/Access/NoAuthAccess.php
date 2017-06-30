@@ -3,6 +3,7 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\Configure;
+use RolesCapabilities\Access\Utils;
 
 /**
  *  NoAuthAccess class
@@ -42,8 +43,11 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function hasAccess($url, $user)
     {
-        if (!empty($url['action']) && $this->_isSkipAction($url['action'])) {
-            return true;
+        if (!empty($url['action']) && !empty($url['controller'])) {
+            $controllerName = Utils::normalizeControllerName($url);
+            if ($this->_isSkipAction($controllerName, $url['action'])) {
+                return true;
+            }
         }
 
         if (!empty($url['controller']) && $this->_isSkipController($url['controller'])) {
@@ -62,11 +66,12 @@ class NoAuthAccess extends BaseAccessClass
      *
      *  returns a list of actions which should be skipped
      *
+     * @param string $controller the user tried to access
      * @return array    list of skipped actions
      */
-    public function getSkipActions()
+    public function getSkipActions($controller)
     {
-        return $this->_skipActions['CakeDC\Users\Controller\UsersController'];
+        return !empty($this->_skipActions[$controller]) ? $this->_skipActions[$controller] : [];
     }
 
     /**
@@ -103,13 +108,14 @@ class NoAuthAccess extends BaseAccessClass
      *
      *  checks if given action should be skipped
      *
-     * @param string $action    action the user tries to access
-     * @return bool             true if action is empty or in the list of skip actions, false if not
+     * @param string $controller    the user tries to access
+     * @param string $action        the user tries to access
+     * @return bool                 true if action is empty or in the list of skip actions, false if not
      *
      */
-    protected function _isSkipAction($action)
+    protected function _isSkipAction($controller, $action)
     {
-        if (in_array($action, $this->getSkipActions())) {
+        if (in_array($action, $this->getSkipActions($controller))) {
             return true;
         }
 
