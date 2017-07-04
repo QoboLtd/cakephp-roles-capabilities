@@ -41,9 +41,6 @@ return [
                     'validateEmail',
                     'validateReCaptcha',
                 ],
-                'App\Controller\SystemController' => [
-                    'info',
-                ],
             ],
             'defaultRules' => [
                 'NoAuth',
