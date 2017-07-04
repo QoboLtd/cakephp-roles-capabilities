@@ -40,9 +40,13 @@ return [
                     'validate',
                     'validateEmail',
                     'validateReCaptcha',
-                ]
+                ],
+                'App\Controller\SystemController' => [
+                    'info',
+                ],
             ],
             'defaultRules' => [
+                'NoAuth',
                 'SuperUser',
                 'Permissions',
                 'Capabilities'
