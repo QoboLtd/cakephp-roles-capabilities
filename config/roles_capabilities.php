@@ -30,6 +30,7 @@ return [
                     'getUsersTable',
                     'login',
                     'logout',
+                    'register',
                     'requestResetPassword',
                     'resendTokenValidation',
                     'resetPassword',
