@@ -278,7 +278,6 @@ class AddPermissionsListener implements EventListenerInterface
             ->where([
                 'active' => 1
             ])
-            ->limit(100)
             ->toArray();
         $users[''] = '';
         asort($users);
@@ -310,7 +309,6 @@ class AddPermissionsListener implements EventListenerInterface
     {
         $groupsTable = TableRegistry::get('groups');
         $groups = $groupsTable->find('list')
-            ->limit(100)
             ->toArray();
         $groups[''] = '';
         asort($groups);
