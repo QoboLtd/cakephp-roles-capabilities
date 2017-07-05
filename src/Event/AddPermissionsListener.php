@@ -25,6 +25,7 @@ class AddPermissionsListener implements EventListenerInterface
     {
         return [
             'CsvMigrations.View.topMenu.beforeRender' => 'addPermissionsButton',
+            'Integrations.View.topMenu.beforeRender' => 'addPermissionsButton',
             'Cms.Sites.toolbar.beforeRender' => 'addCmsPermissionsButton'
         ];
     }
