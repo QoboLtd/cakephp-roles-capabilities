@@ -41,9 +41,10 @@ return [
                     'validate',
                     'validateEmail',
                     'validateReCaptcha',
-                ]
+                ],
             ],
             'defaultRules' => [
+                'NoAuth',
                 'SuperUser',
                 'Permissions',
                 'Capabilities'
