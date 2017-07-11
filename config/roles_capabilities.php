@@ -25,6 +25,7 @@ return [
                     'getSkipActions'
                 ],
                 'CakeDC\Users\Controller\UsersController' => [
+                    'changePassword',
                     'failedSocialLogin',
                     'failedSocialLoginListener',
                     'getUsersTable',
