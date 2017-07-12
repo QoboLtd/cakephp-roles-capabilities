@@ -21,6 +21,7 @@ class RolesFixture extends TestFixture
         'name' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'trashed' => ['type' => 'datetime', 'null' => true],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'UNIQUE_NAME' => ['type' => 'unique', 'columns' => ['name'], 'length' => []],
@@ -42,7 +43,8 @@ class RolesFixture extends TestFixture
             'id' => '79928943-0016-4677-869a-e37728ff6564',
             'name' => 'Lorem ipsum dolor sit amet',
             'created' => '2016-02-09 13:35:11',
-            'modified' => '2016-02-09 13:35:11'
+            'modified' => '2016-02-09 13:35:11',
+            'trashed' => null,
         ],
     ];
 }
