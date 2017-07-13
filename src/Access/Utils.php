@@ -31,6 +31,11 @@ class Utils
     const CAP_TYPE_OWNER = 'owner';
 
     /**
+     * Parent type capability identifier
+     */
+    const CAP_TYPE_PARENT = 'parent';
+
+    /**
      * Non-assigned actions
      *
      * @var array
