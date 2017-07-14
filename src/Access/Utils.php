@@ -198,17 +198,11 @@ class Utils
      */
     public static function getControllerTableInstance($controllerName)
     {
-        $parts = explode('\\', $controllerName);
-        // get last part, "/ArticlesController"
-        $tableName = array_pop($parts);
-        // remove "Controller" suffix from "/ArticlesController"
-        $tableName = str_replace('Controller', '', $tableName);
-        array_pop($parts);
-        // get plugin part "/MyPlugin/"
-        $plugin = array_pop($parts);
-        // prefix plugin to table name if is not "App"
-        if ('App' !== $plugin) {
-            $tableName = $plugin . '.' . $tableName;
+        $tableName = App::shortName($controllerName, 'Controller', 'Controller');
+
+        // remove vendor prefix
+        if (false !== strpos($tableName, '/')) {
+            $tableName = substr($tableName, strpos($tableName, '/') + 1);
         }
 
         return TableRegistry::get($tableName);
