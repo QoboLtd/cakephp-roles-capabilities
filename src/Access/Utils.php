@@ -9,6 +9,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use DirectoryIterator;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
 use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
@@ -362,6 +363,21 @@ class Utils
             }
         }
 
+        $parentModules = static::getTableParentModules($table);
+        if (!empty($parentModules)) {
+            $result[static::CAP_TYPE_PARENT][] = new Cap(
+                static::generateCapabilityName($controllerName, 'fetch_parent'),
+                [
+                    'label' => static::generateCapabilityLabel($controllerName, 'fetch_parent'),
+                    'description' => static::generateCapabilityDescription(
+                        $controllerName,
+                        'fetch if owner on parent module (' . implode(', ', $parentModules) . ')'
+                    ),
+                    'parent_modules' => $parentModules
+                ]
+            );
+        }
+
         return $result;
     }
 
@@ -580,6 +596,22 @@ class Utils
         }
 
         return $fields;
+    }
+
+    /**
+     * Get table parent modules from module configuration.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    public static function getTableParentModules(Table $table)
+    {
+        list(, $moduleName) = pluginSplit($table->registryAlias());
+
+        $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
+        $config = $mc->parse();
+
+        return $config->table->parent_modules;
     }
 
     /**
