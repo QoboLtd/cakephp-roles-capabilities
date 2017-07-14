@@ -307,7 +307,7 @@ class Utils
      * @param  array  $assignationFields Table assignation fields (example: assigned_to)
      * @return array
      */
-    public static function getCapabilitiesForAction($controllerName, array $actions, array $assignationFields = [])
+    public static function getCapabilitiesForAction($controllerName, array $actions, array $assignationFields)
     {
         $key = implode('.', $actions);
 
@@ -479,13 +479,15 @@ class Utils
         }
 
         // get controller table instance
-        $controllerTable = static::getControllerTableInstance($controllerName);
+        $table = static::getControllerTableInstance($controllerName);
 
-        return static::getCapabilitiesForAction(
+        $result = static::getCapabilitiesForAction(
             static::generateCapabilityControllerName($controllerName),
             $actions,
-            static::getTableAssignationFields($controllerTable)
+            static::getTableAssignationFields($table)
         );
+
+        return $result;
     }
 
     /**
