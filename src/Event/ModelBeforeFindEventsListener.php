@@ -140,14 +140,14 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      */
     protected function _hasFullAccess(array $actionCaps, array $userCaps)
     {
-        $fullType = Utils::getTypeFull();
+        $type = Utils::getTypeFull();
 
-        if (!isset($actionCaps[$fullType])) {
+        if (!isset($actionCaps[$type])) {
             return false;
         }
 
         // check user capabilities against action's full capabilities
-        foreach ($actionCaps[$fullType] as $actionCap) {
+        foreach ($actionCaps[$type] as $actionCap) {
             // if current action's full capability is matched in user's capabilities just return
             if (in_array($actionCap->getName(), $userCaps)) {
                 return true;
@@ -169,13 +169,13 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     {
         $result = [];
 
-        $ownerType = Utils::getTypeOwner();
-        if (!isset($actionCaps[$ownerType])) {
+        $type = Utils::getTypeOwner();
+        if (!isset($actionCaps[$type])) {
             return $result;
         }
 
         // check user capabilities against action's owner capabilities
-        foreach ($actionCaps[$ownerType] as $capability) {
+        foreach ($actionCaps[$type] as $capability) {
             if (!in_array($capability->getName(), $userCaps)) {
                 continue;
             }
