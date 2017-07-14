@@ -100,48 +100,28 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     {
         $capAccess = new CapabilitiesAccess();
         // get current user capabilities
-        $userCapabilities = $capAccess->getUserCapabilities($user['id']);
+        $userCaps = $capAccess->getUserCapabilities($user['id']);
 
         // @todo currently we are always assume index action, this probably needs to change in the future
-        $actionCapabilities = Utils::getCapabilities($controllerName, ['index']);
+        $actionCaps = Utils::getCapabilities($controllerName, ['index']);
 
-        $fullType = Utils::getTypeFull();
-        // check user capabilities against action's full capabilities
-        if (isset($actionCapabilities[$fullType])) {
-            foreach ($actionCapabilities[$fullType] as $capability) {
-                // if current action's full capability is matched in user's capabilities just return
-                if (in_array($capability->getName(), $userCapabilities)) {
-                    return;
-                }
-            }
+        if ($this->_hasFullAccess($actionCaps, $userCaps)) {
+            return;
         }
 
-        // check if user has owner capability for current action,
-        // if it does modify the query accordingly and return.
-        $ownerType = Utils::getTypeOwner();
-        // check user capabilities against action's owner capabilities
-        if (isset($actionCapabilities[$ownerType])) {
-            $ownerFields = [];
-            foreach ($actionCapabilities[$ownerType] as $capability) {
-                if (!in_array($capability->getName(), $userCapabilities)) {
-                    continue;
-                }
-                // if user has owner capability for current action add appropriate conditions to where clause
-                $ownerFields[] = [$capability->getField() => $user['id']];
-            }
-
-            if (!empty($ownerFields)) {
-                $query->where(['OR' => $ownerFields]);
-            }
-
-            if (!empty($ownerFields)) {
-                return;
-            }
+        $where = [];
+        $ownerFields = $this->_getOwnerFields($actionCaps, $user, $userCaps);
+        if (!empty($ownerFields)) {
+            $where = array_merge($where, $ownerFields);
         }
 
-        $allowedEntities = $this->_getAllowedEntities($table, $user);
-        if (!empty($allowedEntities)) {
-            $query->where([$table->alias() . '.id IN ' => array_keys($allowedEntities)]);
+        $permissions = $this->_getPermissions($table, $user);
+        if (!empty($permissions)) {
+            $where = array_merge($where, $permissions);
+        }
+
+        if (!empty($where)) {
+            $query->where(['OR' => $where]);
 
             return;
         }
@@ -152,41 +132,98 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     }
 
     /**
-     * _getAllowedEntities method
+     * Check if user has full access.
      *
-     * @param \Cake\ORM\Table $table    Table instance
-     * @param array $user               user's details
+     * @param array $actionCaps Action capabilities
+     * @param array $userCaps User capabilities
+     * @return bool
+     */
+    protected function _hasFullAccess(array $actionCaps, array $userCaps)
+    {
+        $fullType = Utils::getTypeFull();
+
+        if (!isset($actionCaps[$fullType])) {
+            return false;
+        }
+
+        // check user capabilities against action's full capabilities
+        foreach ($actionCaps[$fullType] as $actionCap) {
+            // if current action's full capability is matched in user's capabilities just return
+            if (in_array($actionCap->getName(), $userCaps)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return owner fields and value.
+     *
+     * @param array $actionCaps Action capabilities
+     * @param array $user User info
+     * @param array $userCaps User capabilities
      * @return array
      */
-    protected function _getAllowedEntities(Table $table, array $user)
+    protected function _getOwnerFields(array $actionCaps, array $user, array $userCaps)
     {
+        $result = [];
+
+        $ownerType = Utils::getTypeOwner();
+        if (!isset($actionCaps[$ownerType])) {
+            return $result;
+        }
+
+        // check user capabilities against action's owner capabilities
+        foreach ($actionCaps[$ownerType] as $capability) {
+            if (!in_array($capability->getName(), $userCaps)) {
+                continue;
+            }
+            // if user has owner capability for current action add appropriate conditions to where clause
+            $result[$capability->getField()] = $user['id'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return permissions.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param array $user User info
+     * @return array
+     */
+    protected function _getPermissions(Table $table, array $user)
+    {
+        $result = [];
+
         $groups = TableRegistry::get('RolesCapabilities.Capabilities')->getUserGroups($user['id']);
 
-        $permissions = TableRegistry::get('RolesCapabilities.Permissions')
+        $query = TableRegistry::get('RolesCapabilities.Permissions')
             ->find('all')
             ->select('foreign_key')
             ->where([
-                'model' => $table->alias(),
+                'model' => $table->registryAlias(),
                 'type IN ' => ['view'],
                 'OR' => [
-                            [
-                                'owner_foreign_key IN ' => array_keys($groups),
-                                'owner_model' => 'Groups',
-                            ],
-                            [
-                                'owner_foreign_key' => $user['id'],
-                                'owner_model' => 'Users',
-                            ]
-                    ]
+                    ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
+                    ['owner_foreign_key' => $user['id'], 'owner_model' => 'Users']
+                ]
             ])
-            ->applyOptions(['accessCheck' => false])
-            ->toArray();
-        $result = [];
-        if (!empty($permissions)) {
-            foreach ($permissions as $permission) {
-                $result[$permission->foreign_key] = 1;
-            }
+            ->applyOptions(['accessCheck' => false]);
+
+        if ($query->isEmpty()) {
+            return $result;
         }
+
+        $primaryKey = $table->aliasField($table->getPrimaryKey());
+
+        $values = [];
+        foreach ($query->all() as $permission) {
+            $values[] = $permission->foreign_key;
+        }
+
+        $result[$primaryKey . ' IN'] = array_unique($values);
 
         return $result;
     }
