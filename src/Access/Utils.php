@@ -312,16 +312,16 @@ class Utils
      * Method that generates capabilities for specified controller's actions.
      * Capabilities included are full or owner access types.
      *
-     * @param  string $controllerName    Controller name
-     * @param  array  $actions           Controller actions
-     * @param  array  $assignationFields Table assignation fields (example: assigned_to)
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $controllerName Controller name
+     * @param array $actions Controller actions
      * @return array
      */
-    public static function getCapabilitiesForAction($controllerName, array $actions, array $assignationFields)
+    public static function getCapabilitiesForAction(Table $table, $controllerName, array $actions)
     {
-        $key = implode('.', $actions);
-
         $result = [];
+        $controllerName = static::generateCapabilityControllerName($controllerName);
+
         foreach ($actions as $action) {
             // generate action's full (all) type capabilities
             $result[static::CAP_TYPE_FULL][] = new Cap(
@@ -334,25 +334,31 @@ class Utils
                     )
                 ]
             );
-            // skip rest of the logic if assignment fields are not found
-            // or if current action does not support assignment (Example: add / create)
-            if (empty($assignationFields) || in_array($action, static::$_nonAssignedActions)) {
-                continue;
-            }
+        }
 
-            // generate action's owner (assignment field) type capabilities
-            foreach ($assignationFields as $assignationField) {
-                $result[static::CAP_TYPE_OWNER][] = new Cap(
-                    static::generateCapabilityName($controllerName, $action . '_' . $assignationField),
-                    [
-                        'label' => static::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
-                        'description' => static::generateCapabilityDescription(
-                            $controllerName,
-                            static::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
-                        ),
-                        'field' => $assignationField
-                    ]
-                );
+        $assignationFields = static::getTableAssignationFields($table);
+        if (!empty($assignationFields)) {
+            foreach ($actions as $action) {
+                // skip rest of the logic if assignment fields are not found
+                // or if current action does not support assignment (Example: add / create)
+                if (in_array($action, static::$_nonAssignedActions)) {
+                    continue;
+                }
+
+                // generate action's owner (assignment field) type capabilities
+                foreach ($assignationFields as $assignationField) {
+                    $result[static::CAP_TYPE_OWNER][] = new Cap(
+                        static::generateCapabilityName($controllerName, $action . '_' . $assignationField),
+                        [
+                            'label' => static::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
+                            'description' => static::generateCapabilityDescription(
+                                $controllerName,
+                                static::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
+                            ),
+                            'field' => $table->aliasField($assignationField)
+                        ]
+                    );
+                }
             }
         }
 
@@ -491,11 +497,7 @@ class Utils
         // get controller table instance
         $table = static::getControllerTableInstance($controllerName);
 
-        $result = static::getCapabilitiesForAction(
-            static::generateCapabilityControllerName($controllerName),
-            $actions,
-            static::getTableAssignationFields($table)
-        );
+        $result = static::getCapabilitiesForAction($table, $controllerName, $actions);
 
         return $result;
     }
