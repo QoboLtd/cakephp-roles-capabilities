@@ -90,6 +90,16 @@ class Utils
     }
 
     /**
+     * Get parent type capability identifier.
+     *
+     * @return string
+     */
+    public static function getTypeParent()
+    {
+        return static::CAP_TYPE_PARENT;
+    }
+
+    /**
      * Method that retrieves and returns Controller public methods.
      *
      * @param  string $controllerName Controller name
