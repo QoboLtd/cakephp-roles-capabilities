@@ -129,12 +129,12 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
 
         $joins = $this->_getParentJoins($table, $actionCaps, $user, $userCaps);
         if (!empty($joins)) {
-            foreach ($joins as $name => $params) {
+            foreach ($joins as $name => $conditions) {
                 $query->leftJoinWith($name, function ($q) {
                     return $q->applyOptions(['accessCheck' => false]);
                 });
 
-                $where = array_merge($where, $params['where']);
+                $where = array_merge($where, $conditions);
             }
         }
 
@@ -297,16 +297,13 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
                 continue;
             }
 
-            $where = [];
+            $conditions = [];
             foreach ($fields as $field) {
-                $where[$targetTable->aliasField($field)] = $user['id'];
+                $conditions[$targetTable->aliasField($field)] = $user['id'];
             }
 
             $foreignKey = $targetTable->aliasField($association->getForeignKey());
-            $result[$association->getName()] = [
-                'conditions' => $foreignKey . ' = ' . $primaryKey,
-                'where' => $where
-            ];
+            $result[$association->getName()] = $conditions;
         }
 
         return $result;
