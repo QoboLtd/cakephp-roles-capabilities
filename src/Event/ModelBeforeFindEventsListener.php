@@ -15,6 +15,13 @@ use RolesCapabilities\Access\Utils;
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
     /**
+     * List target associations.
+     *
+     * @var array
+     */
+    protected $_targetAssociations = ['manyToMany', 'manyToOne'];
+
+    /**
      * Implemented Events
      *
      * @return array
@@ -120,9 +127,22 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             $where = array_merge($where, $permissions);
         }
 
+        $joins = $this->_getParentJoins($table, $actionCaps, $user, $userCaps);
+        if (!empty($joins)) {
+            foreach ($joins as $name => $params) {
+                $query->leftJoinWith($name, function ($q) {
+                    return $q->applyOptions(['accessCheck' => false]);
+                });
+
+                $where = array_merge($where, $params['where']);
+            }
+        }
+
         if (!empty($where)) {
             $query->where(['OR' => $where]);
+        }
 
+        if (!empty($where) || !empty($joins)) {
             return;
         }
 
@@ -224,6 +244,71 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         }
 
         $result[$primaryKey . ' IN'] = array_unique($values);
+
+        return $result;
+    }
+
+    /**
+     * Return parent association joins.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param array $actionCaps Action capabilities
+     * @param array $user User info
+     * @param array $userCaps User capabilities
+     * @return array
+     */
+    protected function _getParentJoins(Table $table, array $actionCaps, array $user, array $userCaps)
+    {
+        $result = [];
+
+        $type = Utils::getTypeParent();
+        if (!isset($actionCaps[$type])) {
+            return $result;
+        }
+
+        $modules = [];
+        // check parent capabilities against action's parent capabilities
+        foreach ($actionCaps[$type] as $capability) {
+            if (!in_array($capability->getName(), $userCaps)) {
+                continue;
+            }
+            // if user has owner capability for current action add appropriate conditions to where clause
+            $modules = $capability->getParentModules();
+        }
+
+        if (empty($modules)) {
+            return $result;
+        }
+
+        $primaryKey = $table->aliasField($table->getPrimaryKey());
+        foreach ($table->associations() as $association) {
+            if (!in_array($association->type(), $this->_targetAssociations)) {
+                continue;
+            }
+
+            $targetTable = $association->getTarget();
+            $targetName = App::shortName(get_class($targetTable), 'Model/Table', 'Table');
+            if (!in_array($targetName, $modules)) {
+                continue;
+            }
+
+
+            $fields = Utils::getTableAssignationFields($targetTable);
+            if (empty($fields)) {
+                continue;
+            }
+
+            $where = [];
+            foreach ($fields as $field) {
+                $where[$targetTable->aliasField($field)] = $user['id'];
+            }
+
+            $foreignKey = $targetTable->aliasField($association->getForeignKey());
+            $result[$association->getName()] = [
+                'conditions' => $foreignKey . ' = ' . $primaryKey,
+                'where' => $where
+            ];
+        }
 
         return $result;
     }
