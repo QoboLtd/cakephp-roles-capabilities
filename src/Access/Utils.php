@@ -390,13 +390,11 @@ class Utils
     {
         $result = [];
         foreach (self::getControllers() as $controller) {
-            if (is_callable([$controller, 'getCapabilities'])) {
-                foreach ($controller::getCapabilities($controller) as $type => $capabilities) {
-                    foreach ($capabilities as $capability) {
-                        $result[$controller][$capability->getName()] = $capability->getDescription();
-                    }
-                }
+            if (!is_callable([$controller, 'getCapabilities'])) {
+                continue;
             }
+
+            $result[$controller] = $controller::getCapabilities($controller);
         }
 
         return $result;

@@ -1,3 +1,6 @@
+<?php
+use Cake\Utility\Inflector;
+?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
@@ -48,16 +51,8 @@
                 </ul>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="capabilities">
-                        <?php if (!empty($role->capabilities)) : ?>
                         <div class="row">
-                            <?php
-                            $setCapabilities = [];
-                            foreach ($role->capabilities as $cap) {
-                                $setCapabilities[] = $cap->name;
-                            }
-                            ksort($capabilities);
-                            ?>
-                            <?php foreach ($capabilities as $groupName => $groupCaps) : ?>
+                            <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                                 <div class="box box-default permission-box collapsed-box">
                                     <div class="box-header with-border">
@@ -68,16 +63,20 @@
                                     </div>
                                     <div class="box-body">
                                     <?php
-                                    asort($groupCaps);
-                                    foreach ($groupCaps as $k => $v) {
-                                        $checked = in_array($k, $setCapabilities);
-                                        echo $this->Form->input('capabilities[_names][' . $k . ']', [
-                                        'type' => 'checkbox',
-                                        'checked' => $checked,
-                                        'disabled' => true,
-                                        'label' => $v,
-                                        'div' => false
-                                        ]);
+                                    foreach ($groupCaps as $type => $caps) {
+                                        usort($caps, function ($a, $b) {
+                                            return strcmp($a->getDescription(), $b->getDescription());
+                                        });
+                                        echo $this->Html->tag('h4', Inflector::humanize($type) . ' ' . __('Access'));
+                                        foreach ($caps as $cap) {
+                                            echo $this->Form->input('capabilities[_names][' . $cap->getName() . ']', [
+                                                'type' => 'checkbox',
+                                                'label' => $cap->getDescription(),
+                                                'div' => false,
+                                                'disabled' => true,
+                                                'checked' => in_array($cap->getName(), $roleCaps)
+                                            ]);
+                                        }
                                     }
                                     ?>
                                     </div>
@@ -85,7 +84,6 @@
                             </div>
                             <?php endforeach; ?>
                         </div>
-                        <?php endif; ?>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="groups">
                         <?php if (!empty($role->groups)) : ?>

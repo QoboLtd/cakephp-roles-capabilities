@@ -1,4 +1,6 @@
 <?php
+use Cake\Utility\Inflector;
+
 echo $this->Html->css(
     [
         'AdminLTE./plugins/select2/select2.min',
@@ -48,7 +50,7 @@ echo $this->Html->scriptBlock(
             </div>
         </div>
     </div>
-    <div class="box box-default">
+    <div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
             <div class="box-tools pull-right">
@@ -91,14 +93,20 @@ echo $this->Html->scriptBlock(
                                 'label' => __('Select All'),
                             ]);
                             echo $this->Html->tag('hr');
-                            asort($groupCaps);
-                            foreach ($groupCaps as $k => $v) {
-                                echo $this->Form->input('capabilities[_names][' . $k . ']', [
-                                    'type' => 'checkbox',
-                                    'label' => $v,
-                                    'div' => false,
-                                    'checked' => in_array($k, $roleCaps)
-                                ]);
+
+                            foreach ($groupCaps as $type => $caps) {
+                                usort($caps, function ($a, $b) {
+                                    return strcmp($a->getDescription(), $b->getDescription());
+                                });
+                                echo $this->Html->tag('h4', Inflector::humanize($type) . ' ' . __('Access'));
+                                foreach ($caps as $cap) {
+                                    echo $this->Form->input('capabilities[_names][' . $cap->getName() . ']', [
+                                        'type' => 'checkbox',
+                                        'label' => $cap->getDescription(),
+                                        'div' => false,
+                                        'checked' => in_array($cap->getName(), $roleCaps)
+                                    ]);
+                                }
                             }
                             ?>
                         </div>

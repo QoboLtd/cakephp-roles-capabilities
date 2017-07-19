@@ -32,10 +32,12 @@ class RolesController extends AppController
     public function view($id = null)
     {
         $role = $this->Roles->get($id, [
-            'contain' => ['Groups', 'Capabilities']
+            'contain' => ['Groups']
         ]);
+        $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
         $capabilities = $this->Capability->getAllCapabilities();
         $this->set('capabilities', $capabilities);
+        $this->set('roleCaps', $roleCaps);
         $this->set('role', $role);
         $this->set('_serialize', ['role']);
     }
