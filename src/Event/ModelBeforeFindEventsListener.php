@@ -292,7 +292,6 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
                 continue;
             }
 
-
             $fields = Utils::getTableAssignationFields($targetTable);
             if (empty($fields)) {
                 continue;
