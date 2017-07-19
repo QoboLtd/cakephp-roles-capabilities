@@ -40,6 +40,14 @@ class CapabilitiesAccess extends AuthenticatedAccess
     protected $_userCapabilities = [];
 
     /**
+     * Parent Access logic targeted actions.
+     *
+     * @var array
+     * @todo This is a temporary fix until proper model / controller specific capabilities are implemented.
+     */
+    protected $_parentAccessActions = ['index', 'view'];
+
+    /**
      *  CheckAccess Capabilities
      *
      * @param array $url    request URL
@@ -77,9 +85,11 @@ class CapabilitiesAccess extends AuthenticatedAccess
             return true;
         }
 
-        $hasAccess = $this->_hasParentAccess($url, $user);
-        if ($hasAccess) {
-            return true;
+        if (in_array($url['action'], $this->_parentAccessActions)) {
+            $hasAccess = $this->_hasParentAccess($url, $user);
+            if ($hasAccess) {
+                return true;
+            }
         }
 
         return false;
