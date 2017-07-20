@@ -69,6 +69,11 @@ echo $this->Html->scriptBlock(
         <div class="box-body">
             <div class="row">
             <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
+                <?php
+                if (empty($groupCaps)) {
+                    continue;
+                }
+                ?>
                 <?php if ($count > $maxNum) : ?>
                     </div>
                     <div class="row">
