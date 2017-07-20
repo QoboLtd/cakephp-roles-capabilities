@@ -691,7 +691,7 @@ class Utils
         $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
         $config = $mc->parse();
 
-        return $config->table->parent_modules;
+        return $config->table->permissions_parent_modules;
     }
 
     /**
