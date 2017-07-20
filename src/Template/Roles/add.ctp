@@ -1,4 +1,6 @@
 <?php
+use Cake\Utility\Inflector;
+
 echo $this->Html->css(
     [
         'AdminLTE./plugins/select2/select2.min',
@@ -48,7 +50,7 @@ echo $this->Html->scriptBlock(
             </div>
         </div>
     </div>
-    <div class="box box-default">
+    <div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
             <div class="box-tools pull-right">
@@ -67,14 +69,19 @@ echo $this->Html->scriptBlock(
         <div class="box-body">
             <div class="row">
             <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
+                <?php
+                if (empty($groupCaps)) {
+                    continue;
+                }
+                ?>
                 <?php if ($count > $maxNum) : ?>
                     </div>
                     <div class="row">
                     <?php $count = 0; ?>
                 <?php endif; ?>
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="box box-default permission-box collapsed-box">
-                        <div class="box-header with-border">
+                    <div class="box box-default box-solid permission-box collapsed-box">
+                        <div class="box-header">
                             <h3 class="box-title"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></h3>
                             <div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
@@ -91,13 +98,19 @@ echo $this->Html->scriptBlock(
                                 'label' => __('Select All'),
                             ]);
                             echo $this->Html->tag('hr');
-                            asort($groupCaps);
-                            foreach ($groupCaps as $k => $v) {
-                                echo $this->Form->input('capabilities[_names][' . $k . ']', [
-                                    'type' => 'checkbox',
-                                    'label' => $v,
-                                    'div' => false
-                                ]);
+
+                            foreach ($groupCaps as $type => $caps) {
+                                usort($caps, function ($a, $b) {
+                                    return strcmp($a->getDescription(), $b->getDescription());
+                                });
+                                echo $this->Html->tag('h4', Inflector::humanize($type) . ' ' . __('Access'));
+                                foreach ($caps as $cap) {
+                                    echo $this->Form->input('capabilities[_names][' . $cap->getName() . ']', [
+                                        'type' => 'checkbox',
+                                        'label' => $cap->getDescription(),
+                                        'div' => false
+                                    ]);
+                                }
                             }
                             ?>
                         </div>

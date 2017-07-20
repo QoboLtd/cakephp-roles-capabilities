@@ -40,6 +40,12 @@ class Capability
     protected $_field;
 
     /**
+     * Capability parent modules
+     * @var array
+     */
+    protected $_parentModules = [];
+
+    /**
      * Constructor method
      * @param string $name    Capability name
      * @param array  $options Capability options
@@ -57,6 +63,10 @@ class Capability
 
         if (isset($options['field'])) {
             $this->setField($options['field']);
+        }
+
+        if (isset($options['parent_modules'])) {
+            $this->setParentModules($options['parent_modules']);
         }
     }
 
@@ -156,5 +166,28 @@ class Capability
     public function getField()
     {
         return $this->_field;
+    }
+
+    /**
+     * Set parent module(s)
+     *
+     * @param string $parentModules Capability parent module(s)
+     * @return Capability
+     */
+    public function setParentModules($parentModules)
+    {
+        $this->_parentModules = $parentModules;
+
+        return $this;
+    }
+
+    /**
+     * Get parent module(s)
+     *
+     * @return array
+     */
+    public function getParentModules()
+    {
+        return $this->_parentModules;
     }
 }

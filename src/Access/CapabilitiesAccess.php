@@ -40,6 +40,14 @@ class CapabilitiesAccess extends AuthenticatedAccess
     protected $_userCapabilities = [];
 
     /**
+     * Parent Access logic targeted actions.
+     *
+     * @var array
+     * @todo This is a temporary fix until proper model / controller specific capabilities are implemented.
+     */
+    protected $_parentAccessActions = ['index', 'view'];
+
+    /**
      *  CheckAccess Capabilities
      *
      * @param array $url    request URL
@@ -77,9 +85,11 @@ class CapabilitiesAccess extends AuthenticatedAccess
             return true;
         }
 
-        $hasAccess = $this->_hasParentAccess($url, $user);
-        if ($hasAccess) {
-            return true;
+        if (in_array($url['action'], $this->_parentAccessActions)) {
+            $hasAccess = $this->_hasParentAccess($url, $user);
+            if ($hasAccess) {
+                return true;
+            }
         }
 
         return false;
@@ -92,32 +102,14 @@ class CapabilitiesAccess extends AuthenticatedAccess
      * @param array $user   user's session data
      * @return bool         true or false
      */
-    private function _hasParentAccess($url, $user)
+    protected function _hasParentAccess($url, $user)
     {
         $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, Inflector::camelize($url['controller']));
         $moduleConfig = (array)json_decode(json_encode($mc->parse()), true);
 
         $parents = $moduleConfig['table']['parent_modules'];
-        foreach ($parents as $parent) {
-            $parentUrl = $url;
-            $parentUrl['controller'] = $parent;
 
-            $controllerName = Utils::getControllerFullName($parentUrl);
-            $actionCapabilities = Utils::getCapabilities($controllerName, [$parentUrl['action']]);
-
-            $hasAccess = Utils::hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $parentUrl);
-            if ($hasAccess) {
-                return true;
-            }
-
-            // if user has no full access capabilities
-            $hasAccess = Utils::hasTypeAccess(Utils::getTypeOwner(), $actionCapabilities, $user, $parentUrl);
-            if ($hasAccess) {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty($parents);
     }
 
     /**

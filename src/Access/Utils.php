@@ -9,6 +9,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use DirectoryIterator;
+use Qobo\Utils\ModuleConfig\ModuleConfig;
 use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
@@ -87,6 +88,16 @@ class Utils
     public static function getTypeOwner()
     {
         return static::CAP_TYPE_OWNER;
+    }
+
+    /**
+     * Get parent type capability identifier.
+     *
+     * @return string
+     */
+    public static function getTypeParent()
+    {
+        return static::CAP_TYPE_PARENT;
     }
 
     /**
@@ -198,17 +209,11 @@ class Utils
      */
     public static function getControllerTableInstance($controllerName)
     {
-        $parts = explode('\\', $controllerName);
-        // get last part, "/ArticlesController"
-        $tableName = array_pop($parts);
-        // remove "Controller" suffix from "/ArticlesController"
-        $tableName = str_replace('Controller', '', $tableName);
-        array_pop($parts);
-        // get plugin part "/MyPlugin/"
-        $plugin = array_pop($parts);
-        // prefix plugin to table name if is not "App"
-        if ('App' !== $plugin) {
-            $tableName = $plugin . '.' . $tableName;
+        $tableName = App::shortName($controllerName, 'Controller', 'Controller');
+
+        // remove vendor prefix
+        if (false !== strpos($tableName, '/')) {
+            $tableName = substr($tableName, strpos($tableName, '/') + 1);
         }
 
         return TableRegistry::get($tableName);
@@ -308,49 +313,152 @@ class Utils
      * Method that generates capabilities for specified controller's actions.
      * Capabilities included are full or owner access types.
      *
-     * @param  string $controllerName    Controller name
-     * @param  array  $actions           Controller actions
-     * @param  array  $assignationFields Table assignation fields (example: assigned_to)
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
      * @return array
      */
-    public static function getCapabilitiesForAction($controllerName, array $actions, array $assignationFields = [])
+    public static function getCapabilitiesForAction(Table $table, $contrName, array $actions)
     {
-        $key = implode('.', $actions);
-
         $result = [];
+
+        if (empty($contrName) || empty($actions)) {
+            return $result;
+        }
+
+        $contrName = static::generateCapabilityControllerName($contrName);
+
+        $fullCapabilities = static::_generateFullCapabilities($contrName, $actions);
+        if (!empty($fullCapabilities)) {
+            $result[static::CAP_TYPE_FULL] = $fullCapabilities;
+        }
+
+        $ownerCapabilities = static::_generateOwnerCapabilities($table, $contrName, $actions);
+        if (!empty($ownerCapabilities)) {
+            $result[static::CAP_TYPE_OWNER] = $ownerCapabilities;
+        }
+
+        $parentCapabilities = static::_generateParentCapabilities($table, $contrName, $actions);
+        if (!empty($parentCapabilities)) {
+            $result[static::CAP_TYPE_PARENT] = $parentCapabilities;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generate controller full capabilities.
+     *
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @return array
+     */
+    protected static function _generateFullCapabilities($contrName, array $actions)
+    {
+        $result = [];
+
+        if (empty($contrName) || empty($actions)) {
+            return $result;
+        }
+
+        // generate action's full (all) type capabilities
         foreach ($actions as $action) {
-            // generate action's full (all) type capabilities
-            $result[static::CAP_TYPE_FULL][] = new Cap(
-                static::generateCapabilityName($controllerName, $action),
-                [
-                    'label' => static::generateCapabilityLabel($controllerName, $action . '_all'),
-                    'description' => static::generateCapabilityDescription(
-                        $controllerName,
-                        static::humanizeActionName($action)
-                    )
-                ]
-            );
+            $name = static::generateCapabilityName($contrName, $action);
+            $options = [
+                'label' => static::generateCapabilityLabel($contrName, $action . '_all'),
+                'description' => static::generateCapabilityDescription($contrName, static::humanizeActionName($action))
+            ];
+
+            $result[] = new Cap($name, $options);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generate controller owner capabilities.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @return array
+     */
+    protected static function _generateOwnerCapabilities(Table $table, $contrName, array $actions)
+    {
+        $result = [];
+
+        if (empty($contrName) || empty($actions)) {
+            return $result;
+        }
+
+        $assignationFields = static::getTableAssignationFields($table);
+        if (empty($assignationFields)) {
+            return $result;
+        }
+
+        foreach ($actions as $action) {
             // skip rest of the logic if assignment fields are not found
             // or if current action does not support assignment (Example: add / create)
-            if (empty($assignationFields) || in_array($action, static::$_nonAssignedActions)) {
+            if (in_array($action, static::$_nonAssignedActions)) {
                 continue;
             }
 
             // generate action's owner (assignment field) type capabilities
             foreach ($assignationFields as $assignationField) {
-                $result[static::CAP_TYPE_OWNER][] = new Cap(
-                    static::generateCapabilityName($controllerName, $action . '_' . $assignationField),
-                    [
-                        'label' => static::generateCapabilityLabel($controllerName, $action . '_' . $assignationField),
-                        'description' => static::generateCapabilityDescription(
-                            $controllerName,
-                            static::humanizeActionName($action) . ' if owner (' . Inflector::humanize($assignationField) . ')'
-                        ),
-                        'field' => $assignationField
-                    ]
+                $label = static::generateCapabilityLabel($contrName, $action . '_' . $assignationField);
+                $suffix = ' if owner (' . Inflector::humanize($assignationField) . ')';
+                $description = static::generateCapabilityDescription(
+                    $contrName,
+                    static::humanizeActionName($action) . $suffix
                 );
+                $field = $table->aliasField($assignationField);
+
+                $name = static::generateCapabilityName($contrName, $action . '_' . $assignationField);
+                $options = [
+                    'label' => $label,
+                    'description' => $description,
+                    'field' => $field
+                ];
+
+                $result[] = new Cap($name, $options);
             }
         }
+
+        return $result;
+    }
+
+    /**
+     * Generate controller parent capabilities.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @return array
+     */
+    protected static function _generateParentCapabilities(Table $table, $contrName, array $actions)
+    {
+        $result = [];
+
+        if (empty($contrName) || empty($actions)) {
+            return $result;
+        }
+
+        $parentModules = static::getTableParentModules($table);
+        if (empty($parentModules)) {
+            return $result;
+        }
+
+        $name = static::generateCapabilityName($contrName, 'fetch_parent');
+        $options = [
+            'label' => static::generateCapabilityLabel($contrName, 'fetch_parent'),
+            'description' => static::generateCapabilityDescription(
+                $contrName,
+                'fetch if owner on parent module (' . implode(', ', $parentModules) . ')'
+            ),
+            'parent_modules' => $parentModules
+        ];
+
+        $result[] = new Cap($name, $options);
 
         return $result;
     }
@@ -364,13 +472,11 @@ class Utils
     {
         $result = [];
         foreach (self::getControllers() as $controller) {
-            if (is_callable([$controller, 'getCapabilities'])) {
-                foreach ($controller::getCapabilities($controller) as $type => $capabilities) {
-                    foreach ($capabilities as $capability) {
-                        $result[$controller][$capability->getName()] = $capability->getDescription();
-                    }
-                }
+            if (!is_callable([$controller, 'getCapabilities'])) {
+                continue;
             }
+
+            $result[$controller] = $controller::getCapabilities($controller);
         }
 
         return $result;
@@ -485,13 +591,11 @@ class Utils
         }
 
         // get controller table instance
-        $controllerTable = static::getControllerTableInstance($controllerName);
+        $table = static::getControllerTableInstance($controllerName);
 
-        return static::getCapabilitiesForAction(
-            static::generateCapabilityControllerName($controllerName),
-            $actions,
-            static::getTableAssignationFields($controllerTable)
-        );
+        $result = static::getCapabilitiesForAction($table, $controllerName, $actions);
+
+        return $result;
     }
 
     /**
@@ -572,6 +676,22 @@ class Utils
         }
 
         return $fields;
+    }
+
+    /**
+     * Get table parent modules from module configuration.
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    public static function getTableParentModules(Table $table)
+    {
+        list(, $moduleName) = pluginSplit($table->registryAlias());
+
+        $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
+        $config = $mc->parse();
+
+        return $config->table->parent_modules;
     }
 
     /**
