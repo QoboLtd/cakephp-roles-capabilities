@@ -80,8 +80,8 @@ echo $this->Html->scriptBlock(
                     <?php $count = 0; ?>
                 <?php endif; ?>
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="box box-default permission-box collapsed-box">
-                        <div class="box-header with-border">
+                    <div class="box box-default box-solid permission-box collapsed-box">
+                        <div class="box-header">
                             <h3 class="box-title"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></h3>
                             <div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
