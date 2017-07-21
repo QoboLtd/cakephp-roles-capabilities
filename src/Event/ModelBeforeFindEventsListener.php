@@ -223,7 +223,9 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             ->find('all')
             ->select('foreign_key')
             ->where([
-                'model' => $table->registryAlias(),
+                // @todo this might causes issues in the future with
+                // APP table's name matching a plugin's table name.
+                'model' => $table->alias(),
                 'type IN ' => ['view'],
                 'OR' => [
                     ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
