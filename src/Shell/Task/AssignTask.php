@@ -98,15 +98,25 @@ class AssignTask extends Shell
         $result = [];
 
         $allCapabilities = Utils::getAllCapabilities();
-        if (!empty($allCapabilities)) {
-            foreach ($allCapabilities as $controller => $capabilities) {
-                $result = array_merge($result, array_keys($capabilities));
+        if (empty($allCapabilities)) {
+            $this->err('No capabilities found in the system, all following tasks are skipped');
+        }
+
+        foreach ($allCapabilities as $groupName => $groupCaps) {
+            if (empty($groupCaps)) {
+                continue;
             }
 
-            // set all capabilities as selected
-            $result = array_fill_keys($result, '1');
-            $result = $table->prepareCapabilities($result);
+            foreach ($groupCaps as $type => $caps) {
+                foreach ($caps as $cap) {
+                    $result = array_merge($result, [$cap->getName()]);
+                }
+            }
         }
+
+        // set all capabilities as selected
+        $result = array_fill_keys($result, '1');
+        $result = $table->prepareCapabilities($result);
 
         if (empty($result)) {
             $this->err('No capabilities found in the system, all following tasks are skipped');
