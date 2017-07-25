@@ -2,6 +2,7 @@
 
 namespace RolesCapabilities\Test\TestCase\Access;
 
+use Cake\Core\Configure;
 use RolesCapabilities\Access\Utils;
 
 class UtilsTest extends \PHPUnit_Framework_TestCase
@@ -142,5 +143,27 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     public function filterSkippedActionsTest()
     {
         $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    public function testGetAllCapabilities()
+    {
+        Configure::write('CsvMigrations.modules.path', '');
+
+        $result = [];
+        foreach (Utils::getAllCapabilities() as $groupName => $groupCaps) {
+            foreach ($groupCaps as $type => $caps) {
+                foreach ($caps as $cap) {
+                    $result = array_merge($result, [$cap->getName()]);
+                }
+            }
+        }
+
+        $name = Utils::generateCapabilityControllerName('RolesCapabilities\Test\App\Controller\ArticlesController');
+
+        $needle = Utils::generateCapabilityName($name, 'index');
+        $this->assertContains($needle, $result);
+
+        $needle = Utils::generateCapabilityName($name, 'managePermissions');
+        $this->assertContains($needle, $result);
     }
 }

@@ -27,10 +27,11 @@ trait CapabilityTrait
     /**
      * Check if current user has access to perform action.
      *
-     * @param  Event    $url Event object
-     * @return bool     result of hasAccess method
+     * @param Event $url Event object
+     * @param array $user User info
+     * @return bool result of hasAccess method
      * @throws Cake\Network\Exception\ForbiddenException
-     * @todo                 this needs re-thinking
+     * @todo this needs re-thinking
      */
     protected function _checkAccess($url, $user)
     {
@@ -88,6 +89,8 @@ trait CapabilityTrait
      * managePermissions method
      *
      * Empty method just to have capability
+     *
+     * @return void
      */
     public function managePermissions()
     {
