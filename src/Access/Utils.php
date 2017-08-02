@@ -41,11 +41,11 @@ class Utils
      *
      * @var array
      */
-    protected static $_nonAssignedActions = [
+    protected static $nonAssignedActions = [
         'add'
     ];
 
-    protected static $_capabilitiesTable = null;
+    protected static $capabilitiesTable = null;
 
     /**
      * Returns Controller's class name namespaced.
@@ -399,7 +399,7 @@ class Utils
         foreach ($actions as $action) {
             // skip rest of the logic if assignment fields are not found
             // or if current action does not support assignment (Example: add / create)
-            if (in_array($action, static::$_nonAssignedActions)) {
+            if (in_array($action, static::$nonAssignedActions)) {
                 continue;
             }
 
@@ -631,11 +631,11 @@ class Utils
      */
     protected static function _getCapabilitiesTable()
     {
-        if (empty(static::$_capabilitiesTable)) {
-            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        if (empty(static::$capabilitiesTable)) {
+            static::$capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
         }
 
-        return static::$_capabilitiesTable;
+        return static::$capabilitiesTable;
     }
 
     /**
@@ -688,10 +688,10 @@ class Utils
     {
         list(, $moduleName) = pluginSplit($table->registryAlias());
 
-        $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
-        $config = $mc->parse();
+        $config = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
+        $moduleConfig = $config->parse();
 
-        return $config->table->permissions_parent_modules;
+        return $moduleConfig->table->permissions_parent_modules;
     }
 
     /**

@@ -10,7 +10,7 @@ class Capability
      * default options
      * @var array
      */
-    protected $_default_options = [
+    protected $defaultOptions = [
         'label' => '',
         'description' => ''
     ];
@@ -19,31 +19,31 @@ class Capability
      * Capability name
      * @var string
      */
-    protected $_name;
+    protected $name;
 
     /**
      * Capability label
      * @var string
      */
-    protected $_label;
+    protected $label;
 
     /**
      * Capability description
      * @var string
      */
-    protected $_description;
+    protected $description;
 
     /**
      * Capability field
      * @var string
      */
-    protected $_field;
+    protected $field;
 
     /**
      * Capability parent modules
      * @var array
      */
-    protected $_parentModules = [];
+    protected $parentModules = [];
 
     /**
      * Constructor method
@@ -55,7 +55,7 @@ class Capability
         $this->setName($name);
 
         // set capability options
-        $options = array_merge($this->_default_options, $options);
+        $options = array_merge($this->defaultOptions, $options);
 
         $this->setLabel($options['label']);
 
@@ -76,7 +76,7 @@ class Capability
      */
     public function __toString()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -89,7 +89,7 @@ class Capability
         if (!is_string($name) || empty($name)) {
             throw new \InvalidArgumentException();
         }
-        $this->_name = $name;
+        $this->name = $name;
 
         return $this;
     }
@@ -100,7 +100,7 @@ class Capability
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -110,7 +110,7 @@ class Capability
      */
     public function setLabel($label = '')
     {
-        $this->_label = '' !== trim($label) ? $label : ucwords(str_replace('_', ' ', $this->_name));
+        $this->label = '' !== trim($label) ? $label : ucwords(str_replace('_', ' ', $this->name));
 
         return $this;
     }
@@ -121,7 +121,7 @@ class Capability
      */
     public function getLabel()
     {
-        return $this->_label;
+        return $this->label;
     }
 
     /**
@@ -131,7 +131,7 @@ class Capability
      */
     public function setDescription($description)
     {
-        $this->_description = $description;
+        $this->description = $description;
 
         return $this;
     }
@@ -142,7 +142,7 @@ class Capability
      */
     public function getDescription()
     {
-        return $this->_description;
+        return $this->description;
     }
 
     /**
@@ -153,7 +153,7 @@ class Capability
      */
     public function setField($field)
     {
-        $this->_field = $field;
+        $this->field = $field;
 
         return $this;
     }
@@ -165,7 +165,7 @@ class Capability
      */
     public function getField()
     {
-        return $this->_field;
+        return $this->field;
     }
 
     /**
@@ -176,7 +176,7 @@ class Capability
      */
     public function setParentModules($parentModules)
     {
-        $this->_parentModules = $parentModules;
+        $this->parentModules = $parentModules;
 
         return $this;
     }
@@ -188,6 +188,6 @@ class Capability
      */
     public function getParentModules()
     {
-        return $this->_parentModules;
+        return $this->parentModules;
     }
 }

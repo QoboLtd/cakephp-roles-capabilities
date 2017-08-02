@@ -104,8 +104,8 @@ class CapabilitiesAccess extends AuthenticatedAccess
      */
     protected function _hasParentAccess($url, $user)
     {
-        $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, Inflector::camelize($url['controller']));
-        $moduleConfig = (array)json_decode(json_encode($mc->parse()), true);
+        $config = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, Inflector::camelize($url['controller']));
+        $moduleConfig = (array)json_decode(json_encode($config->parse()), true);
 
         $parents = $moduleConfig['table']['permissions_parent_modules'];
 
