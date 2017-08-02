@@ -41,7 +41,7 @@ class Utils
      *
      * @var array
      */
-    protected static $_nonAssignedActions = [
+    protected static $nonAssignedActions = [
         'add'
     ];
 
@@ -399,7 +399,7 @@ class Utils
         foreach ($actions as $action) {
             // skip rest of the logic if assignment fields are not found
             // or if current action does not support assignment (Example: add / create)
-            if (in_array($action, static::$_nonAssignedActions)) {
+            if (in_array($action, static::$nonAssignedActions)) {
                 continue;
             }
 
