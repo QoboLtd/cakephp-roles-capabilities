@@ -688,10 +688,10 @@ class Utils
     {
         list(, $moduleName) = pluginSplit($table->registryAlias());
 
-        $mc = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
-        $config = $mc->parse();
+        $config = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
+        $moduleConfig = $config->parse();
 
-        return $config->table->permissions_parent_modules;
+        return $moduleConfig->table->permissions_parent_modules;
     }
 
     /**
