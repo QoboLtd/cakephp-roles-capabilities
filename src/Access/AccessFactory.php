@@ -29,7 +29,7 @@ class AccessFactory
      *
      * @var array
      */
-    protected $_checkRules = [];
+    protected $checkRules = [];
 
     /**
      *  Constructor
@@ -38,10 +38,10 @@ class AccessFactory
      */
     public function __construct(array $rules = [])
     {
-        $this->_checkRules = (array)Configure::read('RolesCapabilities.accessCheck.defaultRules');
+        $this->checkRules = (array)Configure::read('RolesCapabilities.accessCheck.defaultRules');
 
         if (!empty($rules)) {
-            $this->_checkRules = $rules;
+            $this->checkRules = $rules;
         }
     }
 
@@ -73,7 +73,7 @@ class AccessFactory
      */
     public function getCheckRules()
     {
-        return $this->_checkRules;
+        return $this->checkRules;
     }
 
     /**
