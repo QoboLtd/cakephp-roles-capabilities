@@ -45,7 +45,7 @@ class Utils
         'add'
     ];
 
-    protected static $_capabilitiesTable = null;
+    protected static $capabilitiesTable = null;
 
     /**
      * Returns Controller's class name namespaced.
@@ -631,11 +631,11 @@ class Utils
      */
     protected static function _getCapabilitiesTable()
     {
-        if (empty(static::$_capabilitiesTable)) {
-            static::$_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        if (empty(static::$capabilitiesTable)) {
+            static::$capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
         }
 
-        return static::$_capabilitiesTable;
+        return static::$capabilitiesTable;
     }
 
     /**
