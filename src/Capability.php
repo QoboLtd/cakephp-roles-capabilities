@@ -10,7 +10,7 @@ class Capability
      * default options
      * @var array
      */
-    protected $_default_options = [
+    protected $defaultOptions = [
         'label' => '',
         'description' => ''
     ];
@@ -55,7 +55,7 @@ class Capability
         $this->setName($name);
 
         // set capability options
-        $options = array_merge($this->_default_options, $options);
+        $options = array_merge($this->defaultOptions, $options);
 
         $this->setLabel($options['label']);
 
