@@ -1,5 +1,5 @@
 <?php
-namespace RolesCapabilities\Event;
+namespace RolesCapabilities\Event\Model;
 
 use ArrayObject;
 use Cake\Core\App;
