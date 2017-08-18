@@ -411,7 +411,7 @@ class Utils
                     $contrName,
                     static::humanizeActionName($action) . $suffix
                 );
-                $field = $table->aliasField($assignationField);
+                $field = $assignationField;
 
                 $name = static::generateCapabilityName($contrName, $action . '_' . $assignationField);
                 $options = [
