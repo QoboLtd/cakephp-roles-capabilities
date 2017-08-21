@@ -41,7 +41,7 @@ echo $this->Html->scriptBlock(
             <table class="table table-hover table-condensed table-vertical-align table-datatable">
                 <thead>
                     <tr>
-                        <th><?= $this->Paginator->sort('Model') ?></th>
+                        <th><?= h('Model') ?></th>
                         <th><?= h('ID'); ?></th>
                         <th><?= h('Type'); ?></th>
                         <th><?= h('Expiration Date'); ?></th>
