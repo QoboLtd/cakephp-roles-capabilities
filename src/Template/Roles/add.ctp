@@ -4,7 +4,8 @@ use Cake\Utility\Inflector;
 echo $this->Html->css(
     [
         'AdminLTE./plugins/select2/select2.min',
-        'RolesCapabilities.select2-bootstrap.min'
+        'Qobo/Utils.select2-bootstrap.min',
+        'Qobo/Utils.select2-style'
     ],
     [
         'block' => 'css'
