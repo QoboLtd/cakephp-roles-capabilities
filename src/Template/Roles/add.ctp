@@ -4,20 +4,21 @@ use Cake\Utility\Inflector;
 echo $this->Html->css(
     [
         'AdminLTE./plugins/select2/select2.min',
-        'RolesCapabilities.select2-bootstrap.min'
+        'Qobo/Utils.select2-bootstrap.min',
+        'Qobo/Utils.select2-style'
     ],
     [
         'block' => 'css'
     ]
 );
-echo $this->Html->script('AdminLTE./plugins/select2/select2.full.min', ['block' => 'scriptBotton']);
-echo $this->Html->scriptBlock(
-    '$(".select2").select2({
-        theme: "bootstrap",
-        placeholder: "Select an option",
-        allowClear: true
-    });',
-    ['block' => 'scriptBotton']
+echo $this->Html->script(
+    [
+        'AdminLTE./plugins/select2/select2.full.min',
+        'Qobo/Utils.select2.init',
+    ],
+    [
+        'block' => 'scriptBottom'
+    ]
 );
 ?>
 <section class="content-header">
@@ -126,4 +127,4 @@ echo $this->Html->scriptBlock(
     </div>
     <?= $this->Form->end() ?>
 </section>
-<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBotton']); ?>
+<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBottom']); ?>

@@ -13,12 +13,12 @@ echo $this->Html->script(
         'AdminLTE./plugins/datatables/dataTables.bootstrap.min'
     ],
     [
-        'block' => 'scriptBotton'
+        'block' => 'scriptBottom'
     ]
 );
 echo $this->Html->scriptBlock(
     '$(".table-datatable").DataTable();',
-    ['block' => 'scriptBotton']
+    ['block' => 'scriptBottom']
 );
 ?>
 <section class="content-header">
@@ -29,7 +29,7 @@ echo $this->Html->scriptBlock(
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
                 <div class="btn-group btn-group-sm" role="group">
-                &nbsp; 
+                &nbsp;
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@ echo $this->Html->scriptBlock(
             <table class="table table-hover table-condensed table-vertical-align table-datatable">
                 <thead>
                     <tr>
-                        <th><?= $this->Paginator->sort('Model') ?></th>
+                        <th><?= h('Model') ?></th>
                         <th><?= h('ID'); ?></th>
                         <th><?= h('Type'); ?></th>
                         <th><?= h('Expiration Date'); ?></th>
