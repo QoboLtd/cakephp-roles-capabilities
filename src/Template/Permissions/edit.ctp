@@ -15,7 +15,7 @@ echo $this->Html->script(
         'AdminLTE./plugins/select2/select2.full.min',
     ],
     [
-        'block' => 'scriptBotton'
+        'block' => 'scriptBottom'
     ]
 );
 echo $this->Html->scriptBlock(
@@ -25,7 +25,7 @@ echo $this->Html->scriptBlock(
         placeholder: "Select an option",
         allowClear: true
     });',
-    ['block' => 'scriptBotton']
+    ['block' => 'scriptBottom']
 );
 ?>
 <section class="content-header">

@@ -10,14 +10,14 @@ echo $this->Html->css(
         'block' => 'css'
     ]
 );
-echo $this->Html->script('AdminLTE./plugins/select2/select2.full.min', ['block' => 'scriptBotton']);
+echo $this->Html->script('AdminLTE./plugins/select2/select2.full.min', ['block' => 'scriptBottom']);
 echo $this->Html->scriptBlock(
     '$(".select2").select2({
         theme: "bootstrap",
         placeholder: "Select an option",
         allowClear: true
     });',
-    ['block' => 'scriptBotton']
+    ['block' => 'scriptBottom']
 );
 ?>
 <section class="content-header">
@@ -126,4 +126,4 @@ echo $this->Html->scriptBlock(
     </div>
     <?= $this->Form->end() ?>
 </section>
-<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBotton']); ?>
+<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBottom']); ?>
