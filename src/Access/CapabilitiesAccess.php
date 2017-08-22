@@ -5,6 +5,7 @@ namespace RolesCapabilities\Access;
 use Cake\Core\App;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use ReflectionClass;
 use ReflectionMethod;
@@ -104,7 +105,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
      */
     protected function _hasParentAccess($url, $user)
     {
-        $config = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, Inflector::camelize($url['controller']));
+        $config = new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($url['controller']));
         $moduleConfig = (array)json_decode(json_encode($config->parse()), true);
 
         $parents = $moduleConfig['table']['permissions_parent_modules'];

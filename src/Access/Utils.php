@@ -9,6 +9,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use DirectoryIterator;
+use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use ReflectionClass;
 use ReflectionMethod;
@@ -688,7 +689,7 @@ class Utils
     {
         list(, $moduleName) = pluginSplit($table->registryAlias());
 
-        $config = new ModuleConfig(ModuleConfig::CONFIG_TYPE_MODULE, $moduleName);
+        $config = new ModuleConfig(ConfigType::MODULE(), $moduleName);
         $moduleConfig = $config->parse();
 
         return $moduleConfig->table->permissions_parent_modules;
