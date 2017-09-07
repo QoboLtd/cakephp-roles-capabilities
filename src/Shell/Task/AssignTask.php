@@ -18,7 +18,7 @@ class AssignTask extends Shell
      *
      * @var string
      */
-    protected $_role = 'Admins';
+    protected $_role;
 
     /**
      * Output message.
@@ -32,6 +32,12 @@ class AssignTask extends Shell
      */
     public function main()
     {
+        $this->_role = (string)Configure::read('RolesCapabilities.Roles.Admin.name');
+
+        if (empty($this->_role)) {
+            $this->abort('[Admins] role is not defined');
+        }
+
         $this->out('Task: assign all capabilities to [' . $this->_role . '] role');
         $this->hr();
 
