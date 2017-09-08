@@ -114,3 +114,5 @@ Cake\Core\Plugin::load($pluginName, ['path' => ROOT . DS, 'autoload' => true, 'r
 
 Cake\Routing\DispatcherFactory::add('Routing');
 Cake\Routing\DispatcherFactory::add('ControllerFactory');
+
+Configure::load('RolesCapabilities.roles_capabilities');
