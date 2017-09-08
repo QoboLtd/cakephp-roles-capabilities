@@ -56,5 +56,19 @@ return [
             ],
 
         ],
+        'Roles' => [
+            'Admin' => [
+                'name' => 'Admins',
+                'description' => 'Administrators role',
+                'deny_edit' => true,
+                'deny_delete' => true
+            ],
+            'Everyone' => [
+                'name' => 'Everyone',
+                'description' => 'Generic role',
+                'deny_edit' => false,
+                'deny_delete' => true
+            ]
+        ]
     ]
 ];
