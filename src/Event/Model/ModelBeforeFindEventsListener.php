@@ -117,7 +117,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         }
 
         $where = [];
-        $ownerFields = $this->_getOwnerFields($actionCaps, $user, $userCaps);
+        $ownerFields = $this->_getOwnerFields($table, $actionCaps, $user, $userCaps);
         if (!empty($ownerFields)) {
             $where = array_merge($where, $ownerFields);
         }
@@ -185,7 +185,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $userCaps User capabilities
      * @return array
      */
-    protected function _getOwnerFields(array $actionCaps, array $user, array $userCaps)
+    protected function _getOwnerFields(Table $table, array $actionCaps, array $user, array $userCaps)
     {
         $result = [];
 
@@ -200,7 +200,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
                 continue;
             }
             // if user has owner capability for current action add appropriate conditions to where clause
-            $result[$capability->getField()] = $user['id'];
+            $result[$table->aliasField($capability->getField())] = $user['id'];
         }
 
         return $result;
