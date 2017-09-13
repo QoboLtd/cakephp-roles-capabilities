@@ -51,13 +51,15 @@ class RolesController extends AppController
     {
         $role = $this->Roles->newEntity();
         if ($this->request->is('post')) {
-            $role = $this->Roles->patchEntity($role, $this->request->data);
+            $data = $this->request->data;
+            $role = $this->Roles->patchEntity($role, $data);
             // prepare associated capability records for creation
-            if (!empty($this->request->data['capabilities']['_names'])) {
+            if (!empty($data['capabilities'])) {
                 $role->capabilities = $this->Roles->prepareCapabilities(
-                    $this->request->data['capabilities']['_names']
+                    json_decode($data['capabilities'], true)
                 );
             }
+
             if ($this->Roles->save($role)) {
                 $this->Flash->success(__('The role has been saved.'));
 
@@ -85,11 +87,12 @@ class RolesController extends AppController
             'contain' => ['Groups']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $role = $this->Roles->patchEntity($role, $this->request->data);
+            $data = $this->request->data;
+            $role = $this->Roles->patchEntity($role, $data);
             // prepare associated capability records for creation
-            if (!empty($this->request->data['capabilities']['_names'])) {
+            if (!empty($data['capabilities'])) {
                 $role->capabilities = $this->Roles->prepareCapabilities(
-                    $this->request->data['capabilities']['_names']
+                    json_decode($data['capabilities'], true)
                 );
             }
             // delete existing role capabilities
