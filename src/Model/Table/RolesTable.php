@@ -99,15 +99,20 @@ class RolesTable extends Table
      */
     public function prepareCapabilities(array $capabilities = [])
     {
+        if (empty($capabilities)) {
+            return [];
+        }
+
         $result = [];
-        if (!empty($capabilities)) {
-            foreach ($capabilities as $capName => $checked) {
-                if ('1' === $checked) {
-                    $capEntity = $this->Capabilities->newEntity();
-                    $capEntity->name = $capName;
-                    $result[] = $capEntity;
-                }
+        foreach ($capabilities as $capName => $checked) {
+            $checked = (bool)$checked;
+            if (!$checked) {
+                continue;
             }
+
+            $capEntity = $this->Capabilities->newEntity();
+            $capEntity->name = $capName;
+            $result[] = $capEntity;
         }
 
         return $result;

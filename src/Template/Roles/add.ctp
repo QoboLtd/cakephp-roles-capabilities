@@ -15,6 +15,7 @@ echo $this->Html->script(
     [
         'AdminLTE./plugins/select2/select2.full.min',
         'Qobo/Utils.select2.init',
+        'RolesCapabilities.utils'
     ],
     [
         'block' => 'scriptBottom'
@@ -29,7 +30,7 @@ echo $this->Html->script(
     </div>
 </section>
 <section class="content">
-    <?= $this->Form->create($role) ?>
+    <?= $this->Form->create($role, ['id' => 'capabilities-form']) ?>
     <div class="box box-solid">
         <div class="box-body">
             <div class="row">
@@ -51,6 +52,8 @@ echo $this->Html->script(
             </div>
         </div>
     </div>
+    <?= $this->Form->hidden('capabilities', ['id' => 'capabilities-input']) ?>
+    <?= $this->Form->end() ?>
     <div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
@@ -106,9 +109,10 @@ echo $this->Html->script(
                                 });
                                 echo $this->Html->tag('h4', Inflector::humanize($type) . ' ' . __('Access'));
                                 foreach ($caps as $cap) {
-                                    echo $this->Form->input('capabilities[_names][' . $cap->getName() . ']', [
+                                    echo $this->Form->input($cap->getName(), [
                                         'type' => 'checkbox',
                                         'label' => $cap->getDescription(),
+                                        'class' => 'checkbox-capability',
                                         'div' => false
                                     ]);
                                 }
@@ -122,9 +126,7 @@ echo $this->Html->script(
             </div>
         </div>
         <div class="box-footer">
-            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary', 'id' => 'capabilities-submit']) ?>
         </div>
     </div>
-    <?= $this->Form->end() ?>
 </section>
-<?= $this->Html->script(['RolesCapabilities.utils'], ['block' => 'scriptBottom']); ?>
