@@ -626,9 +626,74 @@ class Utils
             return false;
         }
 
-        foreach ($actionCapabilities[$type] as $actionCapability) {
-            // user has access
-            if (static::hasAccessInCapabilities($actionCapability->getName(), $user['id'])) {
+        // @todo check if method exists
+        $methodName = 'hasTypeAccess' . ucfirst($type);
+        $result = static::$methodName($actionCapabilities[$type], $user, $url);
+
+        return $result;
+    }
+
+    /**
+     * Method that checks if user has full access on Controller's action.
+     *
+     * @param  array  $capabilities Action capabilities
+     * @param  array  $user               User info
+     * @param  array  $url                Controller url
+     * @return bool
+     */
+    protected static function hasTypeAccessFull(array $capabilities, array $user, array $url)
+    {
+        foreach ($capabilities as $capability) {
+            if (static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Method that checks if user has full access on Controller's action.
+     *
+     * @param  array  $capabilities Action capabilities
+     * @param  array  $user               User info
+     * @param  array  $url                Controller url
+     * @return bool
+     */
+    protected static function hasTypeAccessOwner(array $capabilities, array $user, array $url)
+    {
+        $id = null;
+        if (!empty($url['pass'][0])) {
+            $id = $url['pass'][0];
+        }
+
+        if (empty($id) && !empty($url['0'])) {
+            $id = $url['0'];
+        }
+
+        if (empty($id)) {
+            return false;
+        }
+
+        $entity = null;
+        try {
+            $tableName = $url['controller'];
+            if (!empty($url['plugin'])) {
+                $tableName = $url['plugin'] . '.' . $tableName;
+            }
+            $table = TableRegistry::get($tableName);
+            $entity = $table->get($id);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        foreach ($capabilities as $capability) {
+            if (!static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
+                continue;
+            }
+
+            $field = $capability->getField();
+            if ($entity->get($field) === $user['id']) {
                 return true;
             }
         }
