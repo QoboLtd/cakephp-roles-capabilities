@@ -49,6 +49,13 @@ class Utils
     protected static $capabilitiesTable = null;
 
     /**
+     * Cached user capabilities by user id.
+     *
+     * @var array
+     */
+    protected static $userCapabilities = [];
+
+    /**
      * Returns Controller's class name namespaced.
      *
      * @param array $url array of URL parameters.
@@ -546,6 +553,10 @@ class Utils
     {
         $entities = [];
 
+        if (array_key_exists($userId, static::$userCapabilities)) {
+            return static::$userCapabilities[$userId];
+        }
+
         $userGroups = static::_getCapabilitiesTable()->getUserGroups($userId);
         if (empty($userGroups)) {
             return $entities;
@@ -556,9 +567,9 @@ class Utils
             return $entities;
         }
 
-        $entities = static::_getCapabilitiesTable()->getUserRolesEntities($userRoles);
+        static::$userCapabilities[$userId] = static::_getCapabilitiesTable()->getUserRolesEntities($userRoles);
 
-        return $entities;
+        return static::$userCapabilities[$userId];
     }
 
     /**
