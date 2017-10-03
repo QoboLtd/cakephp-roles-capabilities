@@ -671,20 +671,19 @@ class Utils
             $id = $url['0'];
         }
 
-        if (empty($id)) {
-            return false;
-        }
-
-        $entity = null;
-        try {
-            $tableName = $url['controller'];
-            if (!empty($url['plugin'])) {
-                $tableName = $url['plugin'] . '.' . $tableName;
+        // if url includes an id, fetch relevant record
+        if (!empty($id)) {
+            $entity = null;
+            try {
+                $tableName = $url['controller'];
+                if (!empty($url['plugin'])) {
+                    $tableName = $url['plugin'] . '.' . $tableName;
+                }
+                $table = TableRegistry::get($tableName);
+                $entity = $table->get($id);
+            } catch (Exception $e) {
+                return false;
             }
-            $table = TableRegistry::get($tableName);
-            $entity = $table->get($id);
-        } catch (Exception $e) {
-            return false;
         }
 
         foreach ($capabilities as $capability) {
@@ -692,6 +691,14 @@ class Utils
                 continue;
             }
 
+            // if url does not include an id and user has owner capability
+            // access, to current module action, allow him access. (index action)
+            if (empty($id)) {
+                return true;
+            }
+
+            // if url includes an id, check capability's field value from the entity
+            // against current user id and if they match allow him access. (view, edit actions etc)
             $field = $capability->getField();
             if ($entity->get($field) === $user['id']) {
                 return true;
