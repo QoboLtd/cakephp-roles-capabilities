@@ -2,10 +2,18 @@
     "name": "qobo/cakephp-roles-capabilities",
     "description": "Roles and Capabilities plugin for CakePHP",
     "type": "cakephp-plugin",
-    "license": "GPL-2.0",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Qobo Ltd",
+			"email": "info@qobo.biz",
+			"homepage": "https://www.qobo.biz",
+			"role": "Developer"
+		}
+	],
     "require": {
-        "qobo/cakephp-utils": "^5.0",
-        "qobo/cakephp-groups": "^7.0"
+        "qobo/cakephp-utils": "^6.0",
+        "qobo/cakephp-groups": "^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.0",
