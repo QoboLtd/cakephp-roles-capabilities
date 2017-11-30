@@ -115,7 +115,7 @@ class ImportTask extends Shell
                 if (is_array($error)) {
                     $msg = implode(', ', $error);
                 } else {
-                    $msg = $errors;
+                    $msg = $error;
                 }
                 $result[] = $msg . ' [' . $field . ']';
             }
