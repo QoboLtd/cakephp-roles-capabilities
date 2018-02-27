@@ -48,6 +48,11 @@ class Utils
     const CAP_TYPE_PARENT = 'parent';
 
     /**
+     * Belongs to capability identifier
+     */
+    const CAP_TYPE_BELONGS_TO = 'belongs_to';
+
+    /**
      * Non-assigned actions
      *
      * @var array
@@ -116,6 +121,16 @@ class Utils
     public static function getTypeParent()
     {
         return static::CAP_TYPE_PARENT;
+    }
+
+    /**
+     * Get belongsTo capability identifier
+     *
+     * @return string
+     */
+    public static function getTypeBelongsTo()
+    {
+        return static::CAP_TYPE_BELONGS_TO;
     }
 
     /**
@@ -361,6 +376,11 @@ class Utils
             $result[static::CAP_TYPE_PARENT] = $parentCapabilities;
         }
 
+        $belongsToCapabilities = static::_generateBelongsToCapabilities($table, $contrName, $actions);
+        if (!empty($belongsToCapabilities)) {
+            $result[static::CAP_TYPE_BELONGS_TO] = $belongsToCapabilities;
+        }
+
         return $result;
     }
 
@@ -403,13 +423,43 @@ class Utils
      */
     protected static function _generateOwnerCapabilities(Table $table, $contrName, array $actions)
     {
+        $assignationFields = static::getTableAssignationFields($table);
+
+        return static::_generateCapabilities($table, $contrName, $actions, $assignationFields);
+    }
+
+    /**
+     * _generateBelongsToCapabilities method to generate controller belongs to capabilities
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @return array
+     */
+    protected static function _generateBelongsToCapabilities(Table $table, $contrName, array $actions)
+    {
+        $assignationFields = static::getTableBelongsToFields($table);
+
+        return static::_generateCapabilities($table, $contrName, $actions, $assignationFields);
+    }
+
+    /**
+     * _generateBelongsToCapabilities method to generate controller belongs to capabilities
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @param array $assignationFields list of assignation fields
+     * @return array
+     */
+    protected static function _generateCapabilities(Table $table, $contrName, array $actions, $assignationFields)
+    {
         $result = [];
 
         if (empty($contrName) || empty($actions)) {
             return $result;
         }
 
-        $assignationFields = static::getTableAssignationFields($table);
         if (empty($assignationFields)) {
             return $result;
         }
@@ -710,11 +760,26 @@ class Utils
             // if url includes an id, check capability's field value from the entity
             // against current user id and if they match allow him access. (view, edit actions etc)
             $field = $capability->getField();
+
             if ($entity->get($field) === $user['id']) {
                 return true;
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Method that checks if user has belongs to access on Controller's action.
+     *
+     * @param  array  $capabilities Action capabilities
+     * @param  array  $user               User info
+     * @param  array  $url                Controller url
+     * @return bool
+     */
+    protected static function hasTypeAccessBelongsTo(array $capabilities, array $user, array $url)
+    {
+        //TODO: add actual checking here!
         return false;
     }
 
@@ -751,7 +816,7 @@ class Utils
 
     /**
      * Method that retrieves and returns Table's assignation fields. These are fields
-     * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
+     * that dictate assigment, usually foreign key associated with Users tables. (example: assigned_to)
      *
      * @param  \Cake\ORM\Table $table Table instance
      * @return array
@@ -760,9 +825,34 @@ class Utils
     {
         $fields = [];
         $assignationModels = Configure::read('RolesCapabilities.accessCheck.assignationModels');
+
         foreach ($table->associations() as $association) {
             // skip non-assignation models
             if (!in_array($association->className(), $assignationModels)) {
+                continue;
+            }
+
+            $fields[] = $association->foreignKey();
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Method that retrieves and returns Table's belongs to fields. These are fields
+     * that dictate assigment, usually foreign key associated with Groups tables. (example: belongs_to)
+     *
+     * @param  \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    public static function getTableBelongsToFields(Table $table)
+    {
+        $fields = [];
+        $belongsToModels = Configure::read('RolesCapabilities.accessCheck.belongsToModels');
+
+        foreach ($table->associations() as $association) {
+            // skip non-assignation models
+            if (!in_array($association->className(), $belongsToModels)) {
                 continue;
             }
 
