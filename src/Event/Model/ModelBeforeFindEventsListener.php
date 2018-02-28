@@ -95,7 +95,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        $this->_filterQuery($query, $table, $user, $controllerName);
+        $this->filterQuery($query, $table, $user, $controllerName);
     }
 
     /**
@@ -113,7 +113,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param string $controllerName Namespaced controller name
      * @return void
      */
-    protected function _filterQuery(Query $query, Table $table, array $user, $controllerName)
+    protected function filterQuery(Query $query, Table $table, array $user, $controllerName)
     {
         $capAccess = new CapabilitiesAccess();
         // get current user capabilities
@@ -122,27 +122,27 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         // @todo currently we are always assume index action, this probably needs to change in the future
         $actionCaps = Utils::getCapabilities($controllerName, ['index']);
 
-        if ($this->_hasFullAccess($actionCaps, $userCaps)) {
+        if ($this->hasFullAccess($actionCaps, $userCaps)) {
             return;
         }
 
         $where = [];
-        $ownerFields = $this->_getOwnerFields($table, $actionCaps, $user, $userCaps);
+        $ownerFields = $this->getOwnerFields($table, $actionCaps, $user, $userCaps);
         if (!empty($ownerFields)) {
             $where = array_merge($where, $ownerFields);
         }
 
-        $belongsToFields = $this->_getBelongsToFields($table, $actionCaps, $user, $userCaps);
+        $belongsToFields = $this->getBelongsToFields($table, $actionCaps, $user, $userCaps);
         if (!empty($belongsToFields)) {
             $where = array_merge($where, $belongsToFields);
         }
 
-        $permissions = $this->_getPermissions($table, $user);
+        $permissions = $this->getPermissions($table, $user);
         if (!empty($permissions)) {
             $where = array_merge($where, $permissions);
         }
 
-        $joins = $this->_getParentJoins($table, $actionCaps, $user, $userCaps);
+        $joins = $this->getParentJoins($table, $actionCaps, $user, $userCaps);
         if (!empty($joins)) {
             foreach ($joins as $name => $conditions) {
                 $query->leftJoinWith($name, function ($q) {
@@ -173,7 +173,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $userCaps User capabilities
      * @return bool
      */
-    protected function _hasFullAccess(array $actionCaps, array $userCaps)
+    protected function hasFullAccess(array $actionCaps, array $userCaps)
     {
         $type = Utils::getTypeFull();
 
@@ -200,7 +200,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $user User capabilities
      * @return array
      */
-    protected function _getOwnerFields(Table $table, array $actionCaps, array $user, array $userCaps)
+    protected function getOwnerFields(Table $table, array $actionCaps, array $user, array $userCaps)
     {
         $result = [];
 
@@ -229,7 +229,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $user User capabilities
      * @return array
      */
-    protected function _getBelongsToFields(Table $table, array $actionCaps, array $user, array $userCaps)
+    protected function getBelongsToFields(Table $table, array $actionCaps, array $user, array $userCaps)
     {
         $result = [];
 
@@ -265,7 +265,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $user User info
      * @return array
      */
-    protected function _getPermissions(Table $table, array $user)
+    protected function getPermissions(Table $table, array $user)
     {
         $result = [];
 
@@ -311,7 +311,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $userCaps User capabilities
      * @return array
      */
-    protected function _getParentJoins(Table $table, array $actionCaps, array $user, array $userCaps)
+    protected function getParentJoins(Table $table, array $actionCaps, array $user, array $userCaps)
     {
         $result = [];
 
