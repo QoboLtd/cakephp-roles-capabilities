@@ -687,7 +687,7 @@ class Utils
         }
 
         // @todo check if method exists
-        $methodName = 'hasTypeAccess' . ucfirst($type);
+        $methodName = 'hasTypeAccess' . Inflector::camelize($type);
         $result = static::$methodName($actionCapabilities[$type], $user, $url);
 
         return $result;
@@ -722,29 +722,7 @@ class Utils
      */
     protected static function hasTypeAccessOwner(array $capabilities, array $user, array $url)
     {
-        $id = null;
-        if (!empty($url['pass'][0])) {
-            $id = $url['pass'][0];
-        }
-
-        if (empty($id) && !empty($url['0'])) {
-            $id = $url['0'];
-        }
-
-        // if url includes an id, fetch relevant record
-        if (!empty($id)) {
-            $entity = null;
-            try {
-                $tableName = $url['controller'];
-                if (!empty($url['plugin'])) {
-                    $tableName = $url['plugin'] . '.' . $tableName;
-                }
-                $table = TableRegistry::get($tableName);
-                $entity = $table->get($id);
-            } catch (Exception $e) {
-                return false;
-            }
-        }
+        $entity = static::getEntityFromUrl($url);
 
         foreach ($capabilities as $capability) {
             if (!static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
@@ -753,7 +731,7 @@ class Utils
 
             // if url does not include an id and user has owner capability
             // access, to current module action, allow him access. (index action)
-            if (empty($id)) {
+            if (empty($entity)) {
                 return true;
             }
 
@@ -770,6 +748,22 @@ class Utils
     }
 
     /**
+     * getUserGroups method
+     *
+     * @param array $user to get groups
+     * @return array with group ID and name
+     */
+    protected static function getUserGroups(array $user)
+    {
+        $groups = TableRegistry::get('Groups.Groups');
+
+        return $groups->getUserGroups($user['id'], [
+            'fields' => ['id'],
+            'contain' => [],
+        ]);
+    }
+
+    /**
      * Method that checks if user has belongs to access on Controller's action.
      *
      * @param  array  $capabilities Action capabilities
@@ -779,8 +773,68 @@ class Utils
      */
     protected static function hasTypeAccessBelongsTo(array $capabilities, array $user, array $url)
     {
-        //TODO: add actual checking here!
+        $entity = static::getEntityFromUrl($url);
+
+        $userGroups = static::getUserGroups($user);
+
+        foreach ($capabilities as $capability) {
+            if (!static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
+                continue;
+            }
+
+            // if url does not include an id and user has belongs to capability
+            // access, to current module action, allow him access. (index action)
+            if (empty($entity)) {
+                return true;
+            }
+
+            // if url includes an id, check capability's field value from the entity
+            // against current user id and if they match allow him access. (view, edit actions etc)
+            $field = $capability->getField();
+
+            foreach ($userGroups as $id => $name) {
+                if ($entity->get($field) === $id) {
+                    return true;
+                }
+            }
+        }
+
         return false;
+    }
+
+    /**
+     * getEntityFromUrl method gets entity ID from given URL if so
+     *
+     * @param array $url to get ID
+     * @return entity object or null
+     */
+    protected static function getEntityFromUrl(array $url)
+    {
+        $entity = null;
+
+        $id = null;
+        if (!empty($url['pass'][0])) {
+            $id = $url['pass'][0];
+        }
+
+        if (empty($id) && !empty($url['0'])) {
+            $id = $url['0'];
+        }
+
+        // if url includes an id, fetch relevant record
+        if (!empty($id)) {
+            try {
+                $tableName = $url['controller'];
+                if (!empty($url['plugin'])) {
+                    $tableName = $url['plugin'] . '.' . $tableName;
+                }
+                $table = TableRegistry::get($tableName);
+                $entity = $table->get($id);
+            } catch (Exception $e) {
+            }
+        }
+
+        return $entity;
     }
 
     /**

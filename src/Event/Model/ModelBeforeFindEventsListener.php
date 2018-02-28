@@ -132,6 +132,11 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             $where = array_merge($where, $ownerFields);
         }
 
+        $belongsToFields = $this->_getBelongsToFields($table, $actionCaps, $user, $userCaps);
+        if (!empty($belongsToFields)) {
+            $where = array_merge($where, $belongsToFields);
+        }
+
         $permissions = $this->_getPermissions($table, $user);
         if (!empty($permissions)) {
             $where = array_merge($where, $permissions);
@@ -211,6 +216,43 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             }
             // if user has owner capability for current action add appropriate conditions to where clause
             $result[$table->aliasField($capability->getField())] = $user['id'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return belongs to fields and value.
+     *
+     * @param array $table Action capabilities
+     * @param array $actionCaps User info
+     * @param array $user User capabilities
+     * @return array
+     */
+    protected function _getBelongsToFields(Table $table, array $actionCaps, array $user, array $userCaps)
+    {
+        $result = [];
+
+        $type = Utils::getTypeBelongsTo();
+        if (!isset($actionCaps[$type])) {
+            return $result;
+        }
+
+        // check user capabilities against action's owner capabilities
+        foreach ($actionCaps[$type] as $capability) {
+            if (!in_array($capability->getName(), $userCaps)) {
+                continue;
+            }
+            $groups = TableRegistry::get('Groups.Groups');
+            $userGroups = $groups->getUserGroups($user['id'], [
+                'fields' => ['id'],
+                'contain' => [],
+            ]);
+
+            foreach ($userGroups as $id => $name) {
+                // if user has owner capability for current action add appropriate conditions to where clause
+                $result[$table->aliasField($capability->getField())] = $id;
+            }
         }
 
         return $result;
