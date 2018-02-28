@@ -24,20 +24,20 @@ class NoAuthAccess extends BaseAccessClass
     /**
      *  Skip controllers
      */
-    protected $_skipControllers = [];
+    protected $skipControllers = [];
 
     /**
      *  Skip actions
      */
-    protected $_skipActions = [];
+    protected $skipActions = [];
 
     /**
      *  Constructor
      */
     public function __construct()
     {
-        $this->_skipControllers = (array)Configure::read('RolesCapabilities.accessCheck.skipControllers');
-        $this->_skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions');
+        $this->skipControllers = (array)Configure::read('RolesCapabilities.accessCheck.skipControllers');
+        $this->skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions');
     }
 
     /**
@@ -80,7 +80,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function getSkipActions($controller)
     {
-        return !empty($this->_skipActions[$controller]) ? $this->_skipActions[$controller] : [];
+        return !empty($this->skipActions[$controller]) ? $this->skipActions[$controller] : [];
     }
 
     /**
@@ -92,7 +92,7 @@ class NoAuthAccess extends BaseAccessClass
      */
     public function getSkipControllers()
     {
-        return $this->_skipControllers;
+        return $this->skipControllers;
     }
 
     /**
