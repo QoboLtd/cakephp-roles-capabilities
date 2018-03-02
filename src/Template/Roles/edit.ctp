@@ -42,7 +42,7 @@ echo $this->Html->script(
 </section>
 <section class="content">
     <?= $this->Form->create($role, ['id' => 'capabilities-form']) ?>
-    <div class="box box-solid">
+    <div class="box box-primary">
         <div class="box-body">
             <div class="row">
                 <div class="col-md-6">
@@ -65,7 +65,7 @@ echo $this->Html->script(
     </div>
     <?= $this->Form->hidden('capabilities', ['id' => 'capabilities-input']) ?>
     <?= $this->Form->end() ?>
-    <div class="box box-solid">
+    <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
             <div class="box-tools pull-right">
