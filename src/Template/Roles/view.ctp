@@ -27,7 +27,7 @@ use Cake\Utility\Inflector;
 <section class="content">
     <div class="row">
         <div class="col-md-6">
-            <div class="box box-solid">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <i class="fa fa-unlock"></i>
 
