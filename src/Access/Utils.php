@@ -353,7 +353,7 @@ class Utils
 
         $ownerCapabilities = static::_generateOwnerCapabilities($table, $contrName, $actions);
         if (!empty($ownerCapabilities)) {
-            $result[static::CAP_TYPE_OWNER] = $ownerCapabilities;
+            $result = array_merge($result, $ownerCapabilities);
         }
 
         $parentCapabilities = static::_generateParentCapabilities($table, $contrName, $actions);
@@ -438,7 +438,7 @@ class Utils
                     'field' => $field
                 ];
 
-                $result[] = new Cap($name, $options);
+                $result[static::CAP_TYPE_OWNER . '_' . $assignationField][] = new Cap($name, $options);
             }
         }
 

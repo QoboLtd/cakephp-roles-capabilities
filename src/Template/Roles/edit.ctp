@@ -83,14 +83,14 @@ echo $this->Html->script(
                     if (empty($groupCaps)) {
                         continue;
                     }
-                        $active = ++$count == 1 ? 'active' : '';
-                        $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
-                        $tabs .= '<div id="' . $tabId . '" class="tab-pane ' . $active . '">';
+                    $active = ++$count == 1 ? 'active' : '';
+                    $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
+                    $tabs .= '<div id="' . $tabId . '" class="tab-pane ' . $active . '">';
 
-                        $subtabs = '';
-                        $subtabs_menu = '<ul class="nav nav-tabs">';
+                    $subtabs = '';
+                    $subtabs_menu = '<ul class="nav nav-tabs">';
 
-                        $sCount = 0;
+                    $sCount = 0;
                     foreach ($groupCaps as $type => $caps) {
                         usort($caps, function ($a, $b) {
                             return strcmp($a->getDescription(), $b->getDescription());
@@ -114,9 +114,10 @@ echo $this->Html->script(
                         }
                         $subtabs .= '</div>';
                     }
-                        $subtabs_menu .= '</ul>';
-                        $tabs .= $subtabs_menu . '<div class="tab-content clearfix">' . $subtabs . "</div>";
-                        $tabs .= '</div>';
+
+                    $subtabs_menu .= '</ul>';
+                    $tabs .= $subtabs_menu . '<div class="tab-content clearfix">' . $subtabs . "</div>";
+                    $tabs .= '</div>';
                     ?>
                     <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></a></li>
                 <?php endforeach; ?>
