@@ -73,8 +73,8 @@ class RolesTableTest extends TestCase
         ]);
         $this->assertArraySubset([
             'name' => [
-		        '_required' => 'This field is required'
-	        ]
+                '_required' => 'This field is required'
+            ]
         ], $role->errors(), 'Missing required property *name* error');
     }
 
@@ -98,8 +98,8 @@ class RolesTableTest extends TestCase
         ]);
         $this->assertArraySubset([
             'name' => [
-		        'unique' => 'The provided value is invalid'
-	        ]
+                'unique' => 'The provided value is invalid'
+            ]
         ], $role2->errors(), 'Non unique role name');
 
         $role1 = $this->Roles->patchEntity($role1, ['description' => 'New description']);
