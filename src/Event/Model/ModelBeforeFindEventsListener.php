@@ -190,9 +190,9 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     /**
      * Return owner fields and value.
      *
-     * @param array $actionCaps Action capabilities
-     * @param array $user User info
-     * @param array $userCaps User capabilities
+     * @param array $table Action capabilities
+     * @param array $actionCaps User info
+     * @param array $user User capabilities
      * @return array
      */
     protected function _getOwnerFields(Table $table, array $actionCaps, array $user, array $userCaps)

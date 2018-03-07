@@ -42,7 +42,7 @@ echo $this->Html->script(
 </section>
 <section class="content">
     <?= $this->Form->create($role, ['id' => 'capabilities-form']) ?>
-    <div class="box box-primary">
+    <div class="box box-solid">
         <div class="box-body">
             <div class="row">
                 <div class="col-md-6">
@@ -65,80 +65,72 @@ echo $this->Html->script(
     </div>
     <?= $this->Form->hidden('capabilities', ['id' => 'capabilities-input']) ?>
     <?= $this->Form->end() ?>
-    <div class="box box-primary">
+    <div class="box box-solid">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
-            <div class="box-tools pull-right">
-                <?= $this->Form->input('collapse_all', [
-                    'id' => 'collapse_all',
-                    'type' => 'checkbox',
-                    'div' => false,
-                    'label' => __('Expand/Collapse All')
-                ]); ?>
-            </div>
         </div>
         <?php
+            $tabs = '';
             $count = 0;
-            $maxNum = 3;
         ?>
         <div class="box-body">
             <div class="row">
-            <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
-                <?php
-                if (empty($groupCaps)) {
-                    continue;
-                }
-                ?>
-                <?php if ($count > $maxNum) : ?>
-                    </div>
-                    <div class="row">
-                    <?php $count = 0; ?>
-                <?php endif; ?>
-                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="box box-default box-solid permission-box collapsed-box">
-                        <div class="box-header">
-                            <h3 class="box-title"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                            </div>
-                        </div>
-                        <div class="box-body">
-                            <?php
-                            $selectAllName = 'cap__' . preg_replace('/\\\/', '_', $groupName);
-                            echo $this->Form->input($selectAllName, [
-                                'id' => $selectAllName,
-                                'type' => 'checkbox',
-                                'class' => 'select_all',
-                                'div' => false,
-                                'label' => __('Select All'),
-                            ]);
-                            echo $this->Html->tag('hr');
+                <div class="col-md-2">
+                <div style="height: 500px; overflow-x:hidden; overflow-y:scroll;">
+                <ul class="nav nav-pills nav-stacked">
+                <?php ksort($capabilities); foreach ($capabilities as $groupName => $groupCaps) : ?>
+                    <?php
+                    if (empty($groupCaps)) {
+                        continue;
+                    }
+                        $active = ++$count == 1 ? 'active' : '';
+                        $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
+                        $tabs .= '<div id="' . $tabId . '" class="tab-pane ' . $active . '">';
 
-                            foreach ($groupCaps as $type => $caps) {
-                                usort($caps, function ($a, $b) {
-                                    return strcmp($a->getDescription(), $b->getDescription());
-                                });
-                                echo $this->Html->tag('h4', Inflector::humanize($type) . ' ' . __('Access'));
-                                foreach ($caps as $cap) {
-                                    echo $this->Form->input($cap->getName(), [
-                                        'type' => 'checkbox',
-                                        'label' => $cap->getDescription(),
-                                        'class' => 'checkbox-capability',
-                                        'div' => false,
-                                        'checked' => in_array($cap->getName(), $roleCaps)
-                                    ]);
-                                }
-                            }
-                            ?>
-                        </div>
+                        $subtabs = '';
+                        $subtabs_menu = '<ul class="nav nav-tabs">';
+
+                        $sCount = 0;
+                    foreach ($groupCaps as $type => $caps) {
+                        usort($caps, function ($a, $b) {
+                            return strcmp($a->getDescription(), $b->getDescription());
+                        });
+
+                        $title = Inflector::humanize($type) . ' ' . __('Access');
+                        $slug = $tabId . '_' . $type . '_' . 'access';
+
+                        $sActive = ++$sCount == 1 ? 'active' : '';
+                        $subtabs_menu .= '<li class="' . $sActive . '"><a href="#' . $slug . '" data-toggle="tab">' . $title . '</a>';
+                        $subtabs .= '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
+
+                        foreach ($caps as $cap) {
+                            $subtabs .= $this->Form->input($cap->getName(), [
+                                'type' => 'checkbox',
+                                'label' => $cap->getDescription(),
+                                'class' => 'checkbox-capability',
+                                'div' => false,
+                                'checked' => in_array($cap->getName(), $roleCaps)
+                            ]);
+                        }
+                        $subtabs .= '</div>';
+                    }
+                        $subtabs_menu .= '</ul>';
+                        $tabs .= $subtabs_menu . '<div class="tab-content clearfix">' . $subtabs . "</div>";
+                        $tabs .= '</div>';
+                    ?>
+                    <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></a></li>
+                <?php endforeach; ?>
+                </ul>
+                </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="tab-content clearfix">
+                        <?= $tabs ?>
                     </div>
                 </div>
-                <?php $count++; ?>
-            <?php endforeach; ?>
             </div>
         </div>
         <div class="box-footer">
             <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary', 'id' => 'capabilities-submit']) ?>
         </div>
-    </div>
 </section>
