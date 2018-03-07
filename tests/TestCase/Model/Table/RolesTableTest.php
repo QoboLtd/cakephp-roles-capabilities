@@ -85,7 +85,27 @@ class RolesTableTest extends TestCase
      */
     public function testBuildRules()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $role1 = $this->Roles->newEntity([
+            'name' => 'test',
+            'description' => 'Test description',
+            'deny_edit' => false,
+            'deny_delete' => false,
+        ]);
+        $this->Roles->save($role1);
+
+        $role2 = $this->Roles->newEntity([
+            'name' => 'test'
+        ]);
+        $this->assertArraySubset([
+            'name' => [
+		        'unique' => 'The provided value is invalid'
+	        ]
+        ], $role2->errors(), 'Non unique role name');
+
+        $role1 = $this->Roles->patchEntity($role1, ['description' => 'New description']);
+        $this->Roles->save($role1);
+        debug($role1->errors());
+        $this->assertArraySubset([], $role1->errors(), 'Non editable entity');
     }
 
     public function testPrepareCapabilities()
