@@ -346,17 +346,17 @@ class Utils
 
         $contrName = static::generateCapabilityControllerName($contrName);
 
-        $fullCapabilities = static::_generateFullCapabilities($contrName, $actions);
+        $fullCapabilities = static::generateFullCapabilities($contrName, $actions);
         if (!empty($fullCapabilities)) {
             $result[static::CAP_TYPE_FULL] = $fullCapabilities;
         }
 
-        $ownerCapabilities = static::_generateOwnerCapabilities($table, $contrName, $actions);
+        $ownerCapabilities = static::generateOwnerCapabilities($table, $contrName, $actions);
         if (!empty($ownerCapabilities)) {
             $result = array_merge($result, $ownerCapabilities);
         }
 
-        $parentCapabilities = static::_generateParentCapabilities($table, $contrName, $actions);
+        $parentCapabilities = static::generateParentCapabilities($table, $contrName, $actions);
         if (!empty($parentCapabilities)) {
             $result[static::CAP_TYPE_PARENT] = $parentCapabilities;
         }
@@ -371,7 +371,7 @@ class Utils
      * @param array $actions Controller actions
      * @return array
      */
-    protected static function _generateFullCapabilities($contrName, array $actions)
+    protected static function generateFullCapabilities($contrName, array $actions)
     {
         $result = [];
 
@@ -401,7 +401,7 @@ class Utils
      * @param array $actions Controller actions
      * @return array
      */
-    protected static function _generateOwnerCapabilities(Table $table, $contrName, array $actions)
+    protected static function generateOwnerCapabilities(Table $table, $contrName, array $actions)
     {
         $result = [];
 
@@ -453,7 +453,7 @@ class Utils
      * @param array $actions Controller actions
      * @return array
      */
-    protected static function _generateParentCapabilities(Table $table, $contrName, array $actions)
+    protected static function generateParentCapabilities(Table $table, $contrName, array $actions)
     {
         $result = [];
 
@@ -567,17 +567,17 @@ class Utils
             return static::$userCapabilities[$userId];
         }
 
-        $userGroups = static::_getCapabilitiesTable()->getUserGroups($userId);
+        $userGroups = static::getCapabilitiesTable()->getUserGroups($userId);
         if (empty($userGroups)) {
             return $entities;
         }
 
-        $userRoles = static::_getCapabilitiesTable()->getGroupsRoles($userGroups);
+        $userRoles = static::getCapabilitiesTable()->getGroupsRoles($userGroups);
         if (empty($userRoles)) {
             return $entities;
         }
 
-        static::$userCapabilities[$userId] = static::_getCapabilitiesTable()->getUserRolesEntities($userRoles);
+        static::$userCapabilities[$userId] = static::getCapabilitiesTable()->getUserRolesEntities($userRoles);
 
         return static::$userCapabilities[$userId];
     }
@@ -723,7 +723,7 @@ class Utils
      *
      * @return object Capabilities Table object
      */
-    protected static function _getCapabilitiesTable()
+    protected static function getCapabilitiesTable()
     {
         if (empty(static::$capabilitiesTable)) {
             static::$capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
