@@ -87,7 +87,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
         }
 
         if (in_array($url['action'], $this->parentAccessActions)) {
-            $hasAccess = $this->hasParentAccess($url, $user);
+            $hasAccess = $this->hasParentAccess($url);
             if ($hasAccess) {
                 return true;
             }
@@ -100,10 +100,9 @@ class CapabilitiesAccess extends AuthenticatedAccess
      *  hasParentAccess method
      *
      * @param array $url    request URL
-     * @param array $user   user's session data
      * @return bool         true or false
      */
-    protected function hasParentAccess($url, $user)
+    protected function hasParentAccess($url)
     {
         $config = new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($url['controller']));
         $moduleConfig = (array)json_decode(json_encode($config->parse()), true);

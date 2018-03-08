@@ -249,7 +249,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
                 'contain' => [],
             ]);
 
-            foreach ($userGroups as $id => $name) {
+            foreach (array_key($userGroups) as $id) {
                 // if user has owner capability for current action add appropriate conditions to where clause
                 $result[$table->aliasField($capability->getField())] = $id;
             }

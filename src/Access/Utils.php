@@ -376,9 +376,9 @@ class Utils
             $result[static::CAP_TYPE_PARENT] = $parentCapabilities;
         }
 
-        $belongsToCapabilities = static::generateBelongsToCapabilities($table, $contrName, $actions);
-        if (!empty($belongsToCapabilities)) {
-            $result[static::CAP_TYPE_BELONGS_TO] = $belongsToCapabilities;
+        $belongsToCaps = static::generateBelongsToCapabilities($table, $contrName, $actions);
+        if (!empty($belongsToCaps)) {
+            $result[static::CAP_TYPE_BELONGS_TO] = $belongsToCaps;
         }
 
         return $result;
@@ -425,7 +425,7 @@ class Utils
     {
         $assignationFields = static::getTableAssignationFields($table);
 
-        return static::generateCapabilities($table, $contrName, $actions, $assignationFields);
+        return static::generateCapabilities($contrName, $actions, $assignationFields);
     }
 
     /**
@@ -440,19 +440,18 @@ class Utils
     {
         $assignationFields = static::getTableBelongsToFields($table);
 
-        return static::generateCapabilities($table, $contrName, $actions, $assignationFields);
+        return static::generateCapabilities($contrName, $actions, $assignationFields);
     }
 
     /**
      * generateCapabilities method to generate controller belongs to capabilities
      *
-     * @param \Cake\ORM\Table $table Table instance
      * @param string $contrName Controller name
      * @param array $actions Controller actions
      * @param array $assignationFields list of assignation fields
      * @return array
      */
-    protected static function generateCapabilities(Table $table, $contrName, array $actions, $assignationFields)
+    protected static function generateCapabilities($contrName, array $actions, $assignationFields)
     {
         $result = [];
 
@@ -792,7 +791,7 @@ class Utils
             // against current user id and if they match allow him access. (view, edit actions etc)
             $field = $capability->getField();
 
-            foreach ($userGroups as $id => $name) {
+            foreach (array_key($userGroups) as $id) {
                 if ($entity->get($field) === $id) {
                     return true;
                 }
