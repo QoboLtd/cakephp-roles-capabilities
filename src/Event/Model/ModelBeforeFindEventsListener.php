@@ -95,7 +95,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        $this->filterQuery($query, $table, $user, $controllerName);
+        $this->_filterQuery($query, $table, $user, $controllerName);
     }
 
     /**
@@ -113,7 +113,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param string $controllerName Namespaced controller name
      * @return void
      */
-    protected function filterQuery(Query $query, Table $table, array $user, $controllerName)
+    protected function _filterQuery(Query $query, Table $table, array $user, $controllerName)
     {
         $capAccess = new CapabilitiesAccess();
         // get current user capabilities
@@ -122,27 +122,22 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         // @todo currently we are always assume index action, this probably needs to change in the future
         $actionCaps = Utils::getCapabilities($controllerName, ['index']);
 
-        if ($this->hasFullAccess($actionCaps, $userCaps)) {
+        if ($this->_hasFullAccess($actionCaps, $userCaps)) {
             return;
         }
 
         $where = [];
-        $ownerFields = $this->getOwnerFields($table, $actionCaps, $user, $userCaps);
+        $ownerFields = $this->_getOwnerFields($table, $actionCaps, $user, $userCaps);
         if (!empty($ownerFields)) {
             $where = array_merge($where, $ownerFields);
         }
 
-        $belongsToFields = $this->getBelongsToFields($table, $actionCaps, $user, $userCaps);
-        if (!empty($belongsToFields)) {
-            $where = array_merge($where, $belongsToFields);
-        }
-
-        $permissions = $this->getPermissions($table, $user);
+        $permissions = $this->_getPermissions($table, $user);
         if (!empty($permissions)) {
             $where = array_merge($where, $permissions);
         }
 
-        $joins = $this->getParentJoins($table, $actionCaps, $user, $userCaps);
+        $joins = $this->_getParentJoins($table, $actionCaps, $user, $userCaps);
         if (!empty($joins)) {
             foreach ($joins as $name => $conditions) {
                 $query->leftJoinWith($name, function ($q) {
@@ -173,7 +168,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $userCaps User capabilities
      * @return bool
      */
-    protected function hasFullAccess(array $actionCaps, array $userCaps)
+    protected function _hasFullAccess(array $actionCaps, array $userCaps)
     {
         $type = Utils::getTypeFull();
 
@@ -195,12 +190,13 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     /**
      * Return owner fields and value.
      *
-     * @param array $table Action capabilities
-     * @param array $actionCaps User info
-     * @param array $user User capabilities
+     * @param object $table to apply capabilities
+     * @param array $actionCaps Action capabilities
+     * @param array $user User info
+     * @param array $userCaps User capabilities
      * @return array
      */
-    protected function getOwnerFields(Table $table, array $actionCaps, array $user, array $userCaps)
+    protected function _getOwnerFields(Table $table, array $actionCaps, array $user, array $userCaps)
     {
         $result = [];
 
@@ -222,50 +218,13 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     }
 
     /**
-     * Return belongs to fields and value.
-     *
-     * @param array $table Action capabilities
-     * @param array $actionCaps User info
-     * @param array $user User capabilities
-     * @return array
-     */
-    protected function getBelongsToFields(Table $table, array $actionCaps, array $user, array $userCaps)
-    {
-        $result = [];
-
-        $type = Utils::getTypeBelongsTo();
-        if (!isset($actionCaps[$type])) {
-            return $result;
-        }
-
-        // check user capabilities against action's owner capabilities
-        foreach ($actionCaps[$type] as $capability) {
-            if (!in_array($capability->getName(), $userCaps)) {
-                continue;
-            }
-            $groups = TableRegistry::get('Groups.Groups');
-            $userGroups = $groups->getUserGroups($user['id'], [
-                'fields' => ['id'],
-                'contain' => [],
-            ]);
-
-            foreach (array_key($userGroups) as $id) {
-                // if user has owner capability for current action add appropriate conditions to where clause
-                $result[$table->aliasField($capability->getField())] = $id;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Return permissions.
      *
      * @param \Cake\ORM\Table $table Table instance
      * @param array $user User info
      * @return array
      */
-    protected function getPermissions(Table $table, array $user)
+    protected function _getPermissions(Table $table, array $user)
     {
         $result = [];
 
@@ -311,7 +270,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $userCaps User capabilities
      * @return array
      */
-    protected function getParentJoins(Table $table, array $actionCaps, array $user, array $userCaps)
+    protected function _getParentJoins(Table $table, array $actionCaps, array $user, array $userCaps)
     {
         $result = [];
 
