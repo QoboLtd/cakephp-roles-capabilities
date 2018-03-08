@@ -8,7 +8,7 @@ ksort($capabilities);
 ?>
 <div class="row">
     <div class="col-md-2">
-        <div style="height: 500px; overflow-x:hidden; overflow-y:scroll;">
+        <div class="fixed-height-box">
         <ul class="nav nav-pills nav-stacked">
         <?php foreach ($capabilities as $groupName => $groupCaps) : ?>
             <?php
@@ -33,54 +33,54 @@ ksort($capabilities);
             }
             $active = ++$count == 1 ? 'active' : '';
             $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
-            echo '<div id="' . $tabId . '" class="tab-pane ' . $active . '">';
-            echo '<ul class="nav nav-tabs">';
-
+        ?>
+        <div id="<?= $tabId ?>" class="tab-pane <?= $active ?>">
+        <ul class="nav nav-tabs">
+        <?php
             $sCount = 0;
-            foreach ($groupCaps as $type => $caps) {
-                usort($caps, function ($a, $b) {
-                    return strcmp($a->getDescription(), $b->getDescription());
-                });
+        foreach ($groupCaps as $type => $caps) {
+            usort($caps, function ($a, $b) {
+                return strcmp($a->getDescription(), $b->getDescription());
+            });
 
-                $title = Inflector::humanize($type) . ' ' . __('Access');
-                $slug = $tabId . '_' . $type . '_' . 'access';
+            $title = Inflector::humanize($type) . ' ' . __('Access');
+            $slug = $tabId . '_' . $type . '_' . 'access';
 
-                $sActive = ++$sCount == 1 ? 'active' : '';
-                echo '<li class="' . $sActive . '"><a href="#' . $slug . '" data-toggle="tab">' . $title . '</a>';
-            }
-            echo '</ul>';
-
-            echo '<div class="tab-content clearfix">';
+            $sActive = ++$sCount == 1 ? 'active' : '';
+            echo '<li class="' . $sActive . '"><a href="#' . $slug . '" data-toggle="tab">' . $title . '</a>';
+        }
+        ?>
+        </ul>
+        <div class="tab-content clearfix">
+        <?php
             $sCount = 0;
-            foreach ($groupCaps as $type => $caps) {
-                usort($caps, function ($a, $b) {
-                    return strcmp($a->getDescription(), $b->getDescription());
-                });
+        foreach ($groupCaps as $type => $caps) {
+            usort($caps, function ($a, $b) {
+                return strcmp($a->getDescription(), $b->getDescription());
+            });
 
-                $title = Inflector::humanize($type) . ' ' . __('Access');
-                $slug = $tabId . '_' . $type . '_' . 'access';
+            $title = Inflector::humanize($type) . ' ' . __('Access');
+            $slug = $tabId . '_' . $type . '_' . 'access';
 
-                $sActive = ++$sCount == 1 ? 'active' : '';
-                echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
+            $sActive = ++$sCount == 1 ? 'active' : '';
+            echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
 
-                foreach ($caps as $cap) {
-                    echo $this->Form->input($cap->getName(), [
-                        'type' => 'checkbox',
-                        'label' => $cap->getDescription(),
-                        'class' => 'checkbox-capability',
-                        'div' => false,
-                        'disabled' => $disabled,
-                        'checked' => in_array($cap->getName(), $roleCaps)
-                    ]);
-                }
-                echo '</div>';
+            foreach ($caps as $cap) {
+                echo $this->Form->input($cap->getName(), [
+                    'type' => 'checkbox',
+                    'label' => $cap->getDescription(),
+                    'class' => 'checkbox-capability',
+                    'div' => false,
+                    'disabled' => $disabled,
+                    'checked' => in_array($cap->getName(), $roleCaps)
+                ]);
             }
-            echo "</div>";
-
             echo '</div>';
-            ?>
+        }
+        ?>
+        </div>
+        </div>
         <?php endforeach; ?>
         </div>
     </div>
 </div>
-
