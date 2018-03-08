@@ -368,7 +368,7 @@ class Utils
 
         $ownerCapabilities = static::generateOwnerCapabilities($table, $contrName, $actions);
         if (!empty($ownerCapabilities)) {
-            $result[static::CAP_TYPE_OWNER] = $ownerCapabilities;
+            $result = array_merge($result, $ownerCapabilities);
         }
 
         $parentCapabilities = static::generateParentCapabilities($table, $contrName, $actions);
@@ -378,7 +378,7 @@ class Utils
 
         $belongsToCaps = static::generateBelongsToCapabilities($table, $contrName, $actions);
         if (!empty($belongsToCaps)) {
-            $result[static::CAP_TYPE_BELONGS_TO] = $belongsToCaps;
+            $result = array_merge($result, $belongsToCaps);
         }
 
         return $result;
@@ -425,7 +425,7 @@ class Utils
     {
         $assignationFields = static::getTableAssignationFields($table);
 
-        return static::generateCapabilities($contrName, $actions, $assignationFields);
+        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_OWNER);
     }
 
     /**
@@ -440,7 +440,7 @@ class Utils
     {
         $assignationFields = static::getTableBelongsToFields($table);
 
-        return static::generateCapabilities($contrName, $actions, $assignationFields);
+        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_BELONGS_TO);
     }
 
     /**
@@ -451,7 +451,7 @@ class Utils
      * @param array $assignationFields list of assignation fields
      * @return array
      */
-    protected static function generateCapabilities($contrName, array $actions, $assignationFields)
+    protected static function generateCapabilities($contrName, array $actions, $assignationFields, $assignationType = '')
     {
         $result = [];
 
@@ -487,7 +487,11 @@ class Utils
                     'field' => $field
                 ];
 
-                $result[] = new Cap($name, $options);
+                if (!empty($assignationType)) {
+                    $result[$assignationType . '_(_' . $assignationField . '_)'][] = new Cap($name, $options);
+                } else {
+                    $result[] = new Cap($name, $options);
+                }
             }
         }
 
