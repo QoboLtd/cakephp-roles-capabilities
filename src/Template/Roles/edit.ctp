@@ -20,12 +20,12 @@ echo $this->element('roles_scripts_css');
     </div>
 </section>
 <section class="content">
-    <div class="box box-solid">
+    <div class="box box-primary">
         <div class="box-body">
             <?= $this->element('role_form', ['role' => $role, 'groups' => $groups]) ?>
         </div>
     </div>
-    <div class="box box-solid">
+    <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title"><?= __('Capabilities') ?></h3>
         </div>

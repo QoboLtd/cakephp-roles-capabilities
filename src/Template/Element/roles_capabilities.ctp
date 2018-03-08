@@ -44,6 +44,7 @@ ksort($capabilities);
             });
 
             $title = Inflector::humanize($type) . ' ' . __('Access');
+            $type = preg_replace('/(\(|\))/', '', $type);
             $slug = $tabId . '_' . $type . '_' . 'access';
 
             $sActive = ++$sCount == 1 ? 'active' : '';
@@ -60,6 +61,7 @@ ksort($capabilities);
             });
 
             $title = Inflector::humanize($type) . ' ' . __('Access');
+            $type = preg_replace('/(\(|\))/', '', $type);
             $slug = $tabId . '_' . $type . '_' . 'access';
 
             $sActive = ++$sCount == 1 ? 'active' : '';

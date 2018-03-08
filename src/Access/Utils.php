@@ -438,7 +438,7 @@ class Utils
                     'field' => $field
                 ];
 
-                $result[static::CAP_TYPE_OWNER . '_(_' . $assignationField . ')'][] = new Cap($name, $options);
+                $result[static::CAP_TYPE_OWNER . '_(_' . $assignationField . '_)'][] = new Cap($name, $options);
             }
         }
 

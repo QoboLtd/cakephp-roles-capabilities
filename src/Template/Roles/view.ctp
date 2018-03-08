@@ -10,6 +10,14 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+echo $this->Html->css(
+    [
+        'RolesCapabilities.style'
+    ],
+    [
+        'block' => 'css'
+    ]
+);
 ?>
 <section class="content-header">
     <div class="row">
