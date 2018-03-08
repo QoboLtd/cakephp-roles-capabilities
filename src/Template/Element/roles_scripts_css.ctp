@@ -19,4 +19,3 @@ echo $this->Html->script(
         'block' => 'scriptBottom'
     ]
 );
-
