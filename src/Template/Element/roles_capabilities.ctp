@@ -67,6 +67,15 @@ ksort($capabilities);
             $sActive = ++$sCount == 1 ? 'active' : '';
             echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
 
+            echo $this->Form->input($slug, [
+                'type' => 'checkbox',
+                'label' => 'Select All',
+                'class' => 'select_all',
+                'div' => false,
+                'disabled' => $disabled,
+            ]);
+            echo '<hr/>';
+
             foreach ($caps as $cap) {
                 echo $this->Form->input($cap->getName(), [
                     'type' => 'checkbox',
