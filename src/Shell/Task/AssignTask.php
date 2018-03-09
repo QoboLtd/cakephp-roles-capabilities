@@ -28,38 +28,38 @@ class AssignTask extends Shell
      *
      * @var string
      */
-    protected $_role;
+    protected $role;
 
     /**
      * Output message.
      *
      * @var string
      */
-    protected $_msg = 'Task for assigning all capabilities to [%s] role has been completed';
+    protected $msg = 'Task for assigning all capabilities to [%s] role has been completed';
 
     /**
      * {@inheritDoc}
      */
     public function main()
     {
-        $this->_role = (string)Configure::read('RolesCapabilities.Roles.Admin.name');
+        $this->role = (string)Configure::read('RolesCapabilities.Roles.Admin.name');
 
-        if (empty($this->_role)) {
+        if (empty($this->role)) {
             $this->abort('[Admins] role is not defined');
         }
 
-        $this->out('Task: assign all capabilities to [' . $this->_role . '] role');
+        $this->out('Task: assign all capabilities to [' . $this->role . '] role');
         $this->hr();
 
         // get roles table
         $table = TableRegistry::get('RolesCapabilities.Roles');
 
-        $role = $this->_getAdminsRoleEntity($table);
+        $role = $this->getAdminsRoleEntity($table);
 
         $success = false;
         $count = 0;
         if ($role) {
-            $allCapabilities = $this->_getAllCapabilities($table);
+            $allCapabilities = $this->getAllCapabilities($table);
             if ($allCapabilities) {
                 $count = count($allCapabilities);
                 $role->capabilities = $allCapabilities;
@@ -73,10 +73,10 @@ class AssignTask extends Shell
         }
 
         if ($count) {
-            $this->out('<info>[' . $count . '] capabilities have been assigned to [' . $this->_role . '] role</info>');
+            $this->out('<info>[' . $count . '] capabilities have been assigned to [' . $this->role . '] role</info>');
         }
 
-        $msg = sprintf($this->_msg, $this->_role);
+        $msg = sprintf($this->msg, $this->role);
         if ($success) {
             $this->out('<success>' . $msg . '</success>');
         } else {
@@ -90,14 +90,14 @@ class AssignTask extends Shell
      * @param  \Cake\ORM\Table $table Table instance
      * @return \Cake\ORM\Entity|null
      */
-    protected function _getAdminsRoleEntity(Table $table)
+    protected function getAdminsRoleEntity(Table $table)
     {
         $result = $table
-            ->findByName($this->_role)
+            ->findByName($this->role)
             ->first();
 
         if (!$result) {
-            $this->err('[' . $this->_role . '] role was not found in the system, all following tasks are skipped');
+            $this->err('[' . $this->role . '] role was not found in the system, all following tasks are skipped');
         }
 
         return $result;
@@ -109,7 +109,7 @@ class AssignTask extends Shell
      * @param  \Cake\ORM\Table $table Table instance
      * @return array
      */
-    protected function _getAllCapabilities(Table $table)
+    protected function getAllCapabilities(Table $table)
     {
         $result = [];
 

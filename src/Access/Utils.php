@@ -48,6 +48,11 @@ class Utils
     const CAP_TYPE_PARENT = 'parent';
 
     /**
+     * Belongs to capability identifier
+     */
+    const CAP_TYPE_BELONGS_TO = 'belongs_to';
+
+    /**
      * Non-assigned actions
      *
      * @var array
@@ -116,6 +121,16 @@ class Utils
     public static function getTypeParent()
     {
         return static::CAP_TYPE_PARENT;
+    }
+
+    /**
+     * Get belongsTo capability identifier
+     *
+     * @return string
+     */
+    public static function getTypeBelongsTo()
+    {
+        return static::CAP_TYPE_BELONGS_TO;
     }
 
     /**
@@ -361,6 +376,11 @@ class Utils
             $result[static::CAP_TYPE_PARENT] = $parentCapabilities;
         }
 
+        $belongsToCaps = static::generateBelongsToCapabilities($table, $contrName, $actions);
+        if (!empty($belongsToCaps)) {
+            $result = array_merge($result, $belongsToCaps);
+        }
+
         return $result;
     }
 
@@ -403,13 +423,42 @@ class Utils
      */
     protected static function generateOwnerCapabilities(Table $table, $contrName, array $actions)
     {
+        $assignationFields = static::getTableAssignationFields($table);
+
+        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_OWNER);
+    }
+
+    /**
+     * generateBelongsToCapabilities method to generate controller belongs to capabilities
+     *
+     * @param \Cake\ORM\Table $table Table instance
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @return array
+     */
+    protected static function generateBelongsToCapabilities(Table $table, $contrName, array $actions)
+    {
+        $assignationFields = static::getTableBelongsToFields($table);
+
+        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_BELONGS_TO);
+    }
+
+    /**
+     * generateCapabilities method to generate controller belongs to capabilities
+     *
+     * @param string $contrName Controller name
+     * @param array $actions Controller actions
+     * @param array $assignationFields list of assignation fields
+     * @return array
+     */
+    protected static function generateCapabilities($contrName, array $actions, $assignationFields, $assignationType = '')
+    {
         $result = [];
 
         if (empty($contrName) || empty($actions)) {
             return $result;
         }
 
-        $assignationFields = static::getTableAssignationFields($table);
         if (empty($assignationFields)) {
             return $result;
         }
@@ -438,7 +487,11 @@ class Utils
                     'field' => $field
                 ];
 
-                $result[static::CAP_TYPE_OWNER . '_(_' . $assignationField . '_)'][] = new Cap($name, $options);
+                if (!empty($assignationType)) {
+                    $result[$assignationType . '_(_' . $assignationField . '_)'][] = new Cap($name, $options);
+                } else {
+                    $result[] = new Cap($name, $options);
+                }
             }
         }
 
@@ -637,7 +690,7 @@ class Utils
         }
 
         // @todo check if method exists
-        $methodName = 'hasTypeAccess' . ucfirst($type);
+        $methodName = 'hasTypeAccess' . Inflector::camelize($type);
         $result = static::$methodName($actionCapabilities[$type], $user, $url);
 
         return $result;
@@ -672,6 +725,96 @@ class Utils
      */
     protected static function hasTypeAccessOwner(array $capabilities, array $user, array $url)
     {
+        $entity = static::getEntityFromUrl($url);
+
+        foreach ($capabilities as $capability) {
+            if (!static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
+                continue;
+            }
+
+            // if url does not include an id and user has owner capability
+            // access, to current module action, allow him access. (index action)
+            if (empty($entity)) {
+                return true;
+            }
+
+            // if url includes an id, check capability's field value from the entity
+            // against current user id and if they match allow him access. (view, edit actions etc)
+            $field = $capability->getField();
+
+            if ($entity->get($field) === $user['id']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * getUserGroups method
+     *
+     * @param array $user to get groups
+     * @return array with group ID and name
+     */
+    protected static function getUserGroups(array $user)
+    {
+        $groups = TableRegistry::get('Groups.Groups');
+
+        return $groups->getUserGroups($user['id'], [
+            'fields' => ['id'],
+            'contain' => [],
+        ]);
+    }
+
+    /**
+     * Method that checks if user has belongs to access on Controller's action.
+     *
+     * @param  array  $capabilities Action capabilities
+     * @param  array  $user               User info
+     * @param  array  $url                Controller url
+     * @return bool
+     */
+    protected static function hasTypeAccessBelongsTo(array $capabilities, array $user, array $url)
+    {
+        $entity = static::getEntityFromUrl($url);
+
+        $userGroups = static::getUserGroups($user);
+
+        foreach ($capabilities as $capability) {
+            if (!static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
+                continue;
+            }
+
+            // if url does not include an id and user has belongs to capability
+            // access, to current module action, allow him access. (index action)
+            if (empty($entity)) {
+                return true;
+            }
+
+            // if url includes an id, check capability's field value from the entity
+            // against current user id and if they match allow him access. (view, edit actions etc)
+            $field = $capability->getField();
+
+            foreach (array_key($userGroups) as $id) {
+                if ($entity->get($field) === $id) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * getEntityFromUrl method gets entity ID from given URL if so
+     *
+     * @param array $url to get ID
+     * @return entity object or null
+     */
+    protected static function getEntityFromUrl(array $url)
+    {
+        $entity = null;
+
         $id = null;
         if (!empty($url['pass'][0])) {
             $id = $url['pass'][0];
@@ -683,7 +826,6 @@ class Utils
 
         // if url includes an id, fetch relevant record
         if (!empty($id)) {
-            $entity = null;
             try {
                 $tableName = $url['controller'];
                 if (!empty($url['plugin'])) {
@@ -692,30 +834,10 @@ class Utils
                 $table = TableRegistry::get($tableName);
                 $entity = $table->get($id);
             } catch (Exception $e) {
-                return false;
             }
         }
 
-        foreach ($capabilities as $capability) {
-            if (!static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
-                continue;
-            }
-
-            // if url does not include an id and user has owner capability
-            // access, to current module action, allow him access. (index action)
-            if (empty($id)) {
-                return true;
-            }
-
-            // if url includes an id, check capability's field value from the entity
-            // against current user id and if they match allow him access. (view, edit actions etc)
-            $field = $capability->getField();
-            if ($entity->get($field) === $user['id']) {
-                return true;
-            }
-        }
-
-        return false;
+        return $entity;
     }
 
     /**
@@ -751,7 +873,7 @@ class Utils
 
     /**
      * Method that retrieves and returns Table's assignation fields. These are fields
-     * that dictate assigment, usually foreign key associated with a Users tables. (example: assigned_to)
+     * that dictate assigment, usually foreign key associated with Users tables. (example: assigned_to)
      *
      * @param  \Cake\ORM\Table $table Table instance
      * @return array
@@ -760,9 +882,34 @@ class Utils
     {
         $fields = [];
         $assignationModels = Configure::read('RolesCapabilities.accessCheck.assignationModels');
+
         foreach ($table->associations() as $association) {
             // skip non-assignation models
             if (!in_array($association->className(), $assignationModels)) {
+                continue;
+            }
+
+            $fields[] = $association->foreignKey();
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Method that retrieves and returns Table's belongs to fields. These are fields
+     * that dictate assigment, usually foreign key associated with Groups tables. (example: belongs_to)
+     *
+     * @param  \Cake\ORM\Table $table Table instance
+     * @return array
+     */
+    public static function getTableBelongsToFields(Table $table)
+    {
+        $fields = [];
+        $belongsToModels = Configure::read('RolesCapabilities.accessCheck.belongsToModels');
+
+        foreach ($table->associations() as $association) {
+            // skip non-assignation models
+            if (!in_array($association->className(), $belongsToModels)) {
                 continue;
             }
 

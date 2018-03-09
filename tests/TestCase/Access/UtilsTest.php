@@ -27,6 +27,18 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('owner', $result, "Owner type capability is not 'owner'");
     }
 
+    public function testGetTypeBelongsTo()
+    {
+        $result = Utils::getTypeBelongsTo();
+        $this->assertEquals('belongs_to', $result, "Belongs to capability is not 'belongs_to'");
+    }
+
+    public function testGetTypeParent()
+    {
+        $result = Utils::getTypeParent();
+        $this->assertEquals('parent', $result, "Parent capability is not 'parent'");
+    }
+
     public function testGetCakeControllerActions()
     {
         /* Actions in the CakePHP's Controller class can vary,

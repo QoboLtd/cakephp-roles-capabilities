@@ -66,7 +66,7 @@ class AccessFactory
     public function hasAccess($url = [], $user = [])
     {
         foreach ($this->getCheckRules() as $rule) {
-            $result = $this->_getCheckRuleObject($rule)->hasAccess($url, $user);
+            $result = $this->getCheckRuleObject($rule)->hasAccess($url, $user);
             if ($result) {
                 return true;
             }
@@ -91,7 +91,7 @@ class AccessFactory
      * @param string $ruleName name of rule
      * @return object rule object or throw exception
      */
-    protected function _getCheckRuleObject($ruleName)
+    protected function getCheckRuleObject($ruleName)
     {
         $interface = __NAMESPACE__ . '\\' . static::CHECK_ACCESS_INTERFACE;
         $ruleClass = __NAMESPACE__ . '\\' . $ruleName . static::CHECKER_SUFFIX;

@@ -33,7 +33,7 @@ class ImportTask extends Shell
         // get roles table
         $table = TableRegistry::get('RolesCapabilities.Roles');
 
-        $roles = $this->_getSystemRoles();
+        $roles = $this->getSystemRoles();
         if ($roles) {
             foreach ($roles as $role) {
                 $entity = $table->newEntity();
@@ -41,7 +41,7 @@ class ImportTask extends Shell
                     $entity->{$k} = $v;
                 }
 
-                $group = $this->_getGroupByRoleName($entity->name);
+                $group = $this->getGroupByRoleName($entity->name);
                 if ($table->save($entity)) {
                     $msg = 'Role [' . $entity->name . '] imported';
                     // associate imported role with matching group
@@ -53,7 +53,7 @@ class ImportTask extends Shell
                     $this->out('<info>' . $msg . '</info>');
                 } else {
                     $this->err('Failed to import role [' . $entity->name . ']');
-                    $errors = $this->_getImportErrors($entity);
+                    $errors = $this->getImportErrors($entity);
                     if (!empty($errors)) {
                         $this->out(implode("\n", $errors));
                         $this->hr();
@@ -70,7 +70,7 @@ class ImportTask extends Shell
      *
      * @return string|null
      */
-    protected function _getSystemRoles()
+    protected function getSystemRoles()
     {
         $result = [
             (array)Configure::read('RolesCapabilities.Roles.Admin'),
@@ -90,7 +90,7 @@ class ImportTask extends Shell
      * @param  string $name Role name
      * @return \Cake\ORM\Entity
      */
-    protected function _getGroupByRoleName($name)
+    protected function getGroupByRoleName($name)
     {
         $result = TableRegistry::get('Groups.Groups')->findByName($name)->first();
 
@@ -107,7 +107,7 @@ class ImportTask extends Shell
      * @param  \Cake\ORM\Entity $entity Entity instance
      * @return array
      */
-    protected function _getImportErrors($entity)
+    protected function getImportErrors($entity)
     {
         $result = [];
         if (!empty($entity->errors())) {
