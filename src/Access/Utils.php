@@ -50,7 +50,7 @@ class Utils
     /**
      * Belongs to capability identifier
      */
-    const CAP_TYPE_BELONGS_TO = 'belongs_to';
+    const CAP_TYPE_BELONGS = 'belongs';
 
     /**
      * Non-assigned actions
@@ -128,9 +128,9 @@ class Utils
      *
      * @return string
      */
-    public static function getTypeBelongsTo()
+    public static function getTypeBelongs()
     {
-        return static::CAP_TYPE_BELONGS_TO;
+        return static::CAP_TYPE_BELONGS;
     }
 
     /**
@@ -440,7 +440,7 @@ class Utils
     {
         $assignationFields = static::getTableBelongsToFields($table);
 
-        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_BELONGS_TO);
+        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_BELONGS);
     }
 
     /**
@@ -473,7 +473,7 @@ class Utils
             // generate action's owner (assignment field) type capabilities
             foreach ($assignationFields as $assignationField) {
                 $label = static::generateCapabilityLabel($contrName, $action . '_' . $assignationField);
-                $suffix = ' if owner (' . Inflector::humanize($assignationField) . ')';
+                $suffix = ' if ' . (!empty($assignationType) ? $assignationType : 'owner') . ' (' . Inflector::humanize($assignationField) . ')';
                 $description = static::generateCapabilityDescription(
                     $contrName,
                     static::humanizeActionName($action) . $suffix

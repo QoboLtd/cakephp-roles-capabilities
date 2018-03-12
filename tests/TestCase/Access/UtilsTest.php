@@ -27,10 +27,10 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('owner', $result, "Owner type capability is not 'owner'");
     }
 
-    public function testGetTypeBelongsTo()
+    public function testGetTypeBelongs()
     {
-        $result = Utils::getTypeBelongsTo();
-        $this->assertEquals('belongs_to', $result, "Belongs to capability is not 'belongs_to'");
+        $result = Utils::getTypeBelongs();
+        $this->assertEquals('belongs', $result, "Belongs to capability is not 'belongs_to'");
     }
 
     public function testGetTypeParent()
