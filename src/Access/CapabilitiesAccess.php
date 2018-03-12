@@ -81,7 +81,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
             return true;
         }
 
-        $hasAccess = Utils::hasTypeAccess(Utils::getTypeBelongsTo(), $actionCapabilities, $user, $url);
+        $hasAccess = Utils::hasTypeAccess(Utils::getTypeBelongs(), $actionCapabilities, $user, $url);
         if ($hasAccess) {
             return true;
         }
