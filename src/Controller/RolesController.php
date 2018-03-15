@@ -158,7 +158,6 @@ class RolesController extends AppController
         foreach ($data as $controller => $list) {
             $newList = [];
             foreach ($list as $type => $caps) {
-                $newCaps = [];
                 foreach ($caps as $cap) {
                     $field = $cap->getField();
                     $key = !empty($field) ? "${type}_(_${field}_)" : $type;
