@@ -15,6 +15,7 @@ ksort($capabilities);
             if (empty($groupCaps)) {
                 continue;
             }
+
                 $active = ++$count == 1 ? 'active' : '';
                 $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
             ?>
@@ -31,28 +32,28 @@ ksort($capabilities);
             if (empty($groupCaps)) {
                 continue;
             }
-            $active = ++$count == 1 ? 'active' : '';
-            $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
-        ?>
-        <div id="<?= $tabId ?>" class="tab-pane <?= $active ?>">
-        <ul class="nav nav-tabs">
-        <?php
+                $active = ++$count == 1 ? 'active' : '';
+                $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
+            ?>
+            <div id="<?= $tabId ?>" class="tab-pane <?= $active ?>">
+            <ul class="nav nav-tabs">
+            <?php
             $sCount = 0;
-        foreach ($groupCaps as $type => $caps) {
-            usort($caps, function ($a, $b) {
-                return strcmp($a->getDescription(), $b->getDescription());
-            });
+            foreach ($groupCaps as $type => $caps) {
+                usort($caps, function ($a, $b) {
+                    return strcmp($a->getDescription(), $b->getDescription());
+                });
 
-            $title = Inflector::humanize($type) . ' ' . __('Access');
-            $type = preg_replace('/(\(|\))/', '', $type);
-            $slug = $tabId . '_' . $type . '_' . 'access';
+                $title = Inflector::humanize($type) . ' ' . __('Access');
+                $type = preg_replace('/(\(|\))/', '', $type);
+                $slug = $tabId . '_' . $type . '_' . 'access';
 
-            $sActive = ++$sCount == 1 ? 'active' : '';
-            echo '<li class="' . $sActive . '"><a href="#' . $slug . '" data-toggle="tab">' . $title . '</a>';
-        }
-        ?>
-        </ul>
-        <div class="tab-content clearfix">
+                $sActive = ++$sCount == 1 ? 'active' : '';
+                echo '<li class="' . $sActive . '"><a href="#' . $slug . '" data-toggle="tab">' . $title . '</a>';
+            }
+            ?>
+            </ul>
+            <div class="tab-content clearfix">
         <?php
             $sCount = 0;
         foreach ($groupCaps as $type => $caps) {

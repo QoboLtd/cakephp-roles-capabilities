@@ -95,7 +95,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        $this->_filterQuery($query, $table, $user, $controllerName);
+        $this->filterQuery($query, $table, $user, $controllerName);
     }
 
     /**
