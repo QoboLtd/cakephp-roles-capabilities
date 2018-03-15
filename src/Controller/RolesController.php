@@ -120,6 +120,8 @@ class RolesController extends AppController
         // fetch role capabilities
         $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
         $capabilities = $this->Capability->getAllCapabilities();
+
+        $capabilities = $this->formatCapabilities($capabilities);
         $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);
     }
@@ -142,5 +144,30 @@ class RolesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * formatCapabilities method
+     *
+     * @param array $data to process
+     * @return array
+     */
+    private function formatCapabilities(array $data)
+    {
+        $result = [];
+        foreach ($data as $controller => $list) {
+            $newList = [];
+            foreach ($list as $type => $caps) {
+                $newCaps = [];
+                foreach ($caps as $cap) {
+                    $field = $cap->getField();
+                    $key = !empty($field) ? "${type}_(_${field}_)" : $type;
+                    $newList[$key][] = $cap;
+                }
+            }
+            $result[$controller] = $newList;
+        }
+
+        return $result;
     }
 }

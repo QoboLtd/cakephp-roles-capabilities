@@ -368,7 +368,7 @@ class Utils
 
         $ownerCapabilities = static::generateOwnerCapabilities($table, $contrName, $actions);
         if (!empty($ownerCapabilities)) {
-            $result = array_merge($result, $ownerCapabilities);
+            $result[static::CAP_TYPE_OWNER] = $ownerCapabilities;
         }
 
         $parentCapabilities = static::generateParentCapabilities($table, $contrName, $actions);
@@ -378,7 +378,7 @@ class Utils
 
         $belongsToCaps = static::generateBelongsToCapabilities($table, $contrName, $actions);
         if (!empty($belongsToCaps)) {
-            $result = array_merge($result, $belongsToCaps);
+            $result[static::CAP_TYPE_BELONGS] = $belongsToCaps;
         }
 
         return $result;
@@ -425,7 +425,7 @@ class Utils
     {
         $assignationFields = static::getTableAssignationFields($table);
 
-        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_OWNER);
+        return static::generateCapabilities($contrName, $actions, $assignationFields);
     }
 
     /**
@@ -440,7 +440,7 @@ class Utils
     {
         $assignationFields = static::getTableBelongsToFields($table);
 
-        return static::generateCapabilities($contrName, $actions, $assignationFields, static::CAP_TYPE_BELONGS);
+        return static::generateCapabilities($contrName, $actions, $assignationFields);
     }
 
     /**
