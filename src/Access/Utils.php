@@ -14,6 +14,7 @@ namespace RolesCapabilities\Access;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -689,8 +690,18 @@ class Utils
             return false;
         }
 
-        // @todo check if method exists
         $methodName = 'hasTypeAccess' . Inflector::camelize($type);
+
+        if (! method_exists(get_called_class(), $methodName)) {
+            Log::warning(sprintf(
+                'Trying to check type access on non-existing method %s::%s',
+                get_called_class(),
+                $methodName
+            ));
+
+            return false;
+        }
+
         $result = static::$methodName($actionCapabilities[$type], $user, $url);
 
         return $result;
