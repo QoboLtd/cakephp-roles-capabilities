@@ -785,7 +785,7 @@ class Utils
      * @param  array  $url                Controller url
      * @return bool
      */
-    protected static function hasTypeAccessBelongsTo(array $capabilities, array $user, array $url)
+    protected static function hasTypeAccessBelongs(array $capabilities, array $user, array $url)
     {
         $entity = static::getEntityFromUrl($url);
 
