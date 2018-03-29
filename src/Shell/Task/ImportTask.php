@@ -13,79 +13,76 @@ namespace RolesCapabilities\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 /**
- * Task for importing system roles.
+ * Import Task
+ *
+ * Import system roles.
  */
 class ImportTask extends Shell
 {
     /**
-     * {@inheritDoc}
+     * Main task method
+     *
+     * @return bool True on success, false otherwise
      */
     public function main()
     {
-        $this->out('Task: import system role(s)');
+        $this->info('Task: import system roles');
         $this->hr();
+
+        $roles = Configure::read('RolesCapabilities.Roles');
+        if (empty($roles)) {
+            $this->warn("No roles configured for importing.  Nothing to do.");
+
+            return true;
+        }
 
         // get roles table
         $table = TableRegistry::get('RolesCapabilities.Roles');
 
-        $roles = $this->getSystemRoles();
-        if ($roles) {
-            foreach ($roles as $role) {
-                $entity = $table->newEntity();
-                foreach ($role as $k => $v) {
-                    $entity->{$k} = $v;
-                }
-
-                $group = $this->getGroupByRoleName($entity->name);
-                if ($table->save($entity)) {
-                    $msg = 'Role [' . $entity->name . '] imported';
-                    // associate imported role with matching group
-                    if ($table->Groups->link($entity, [$group])) {
-                        $msg .= ' and associated with group [' . $group->name . ']';
-                    }
-                    $msg .= ' successfully';
-
-                    $this->out('<info>' . $msg . '</info>');
-                } else {
-                    $this->err('Failed to import role [' . $entity->name . ']');
-                    $errors = $this->getImportErrors($entity);
-                    if (!empty($errors)) {
-                        $this->out(implode("\n", $errors));
-                        $this->hr();
-                    }
-                }
+        foreach ($roles as $role) {
+            if (empty($role['name'])) {
+                $this->warn("Skipping role without a name.");
+                continue;
             }
+
+            if ($table->exists(['name' => $role['name']])) {
+                $this->warn("Role [" . $role['name'] . "] already exists. Skipping.");
+                continue;
+            }
+
+            $this->info("Role [" . $role['name'] . "] does not exist. Creating.");
+            $entity = $table->newEntity();
+            $entity = $table->patchEntity($entity, $role);
+
+            $group = $this->getGroupByRoleName($entity->name);
+            if (empty($group)) {
+                $this->abort("Failed to fetch group [" . $entity->name . "]");
+            }
+
+            $result = $table->save($entity);
+            if (!$result) {
+                $this->err("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
+                $this->abort("Failed to create role [" . $entity->name . "]");
+            }
+
+            $msg = 'Role [' . $entity->name . '] imported';
+            // associate imported role with matching group
+            if ($table->Groups->link($entity, [$group])) {
+                $msg .= ' and associated with group [' . $group->name . ']';
+            }
+            $msg .= ' successfully';
+
+            $this->info($msg);
         }
 
-        $this->out('<success>System roles(s) importing task completed</success>');
+        $this->success('System roles imported successfully');
     }
 
     /**
-     * Get system roles.
-     *
-     * @return string|null
-     */
-    protected function getSystemRoles()
-    {
-        $result = [
-            (array)Configure::read('RolesCapabilities.Roles.Admin'),
-            (array)Configure::read('RolesCapabilities.Roles.Everyone')
-        ];
-
-        if (empty($result)) {
-            $this->err('System role(s) are not defined, all following tasks are skipped');
-        }
-
-        return $result;
-    }
-
-    /**
-     * Fetch group entity based on role name. Abort if not found.
+     * Fetch group entity based on role name
      *
      * @param  string $name Role name
      * @return \Cake\ORM\Entity
@@ -93,10 +90,6 @@ class ImportTask extends Shell
     protected function getGroupByRoleName($name)
     {
         $result = TableRegistry::get('Groups.Groups')->findByName($name)->first();
-
-        if (!$result) {
-            $this->abort('Failed fetching group [' . $name . '], please make sure it exists.');
-        }
 
         return $result;
     }
@@ -110,15 +103,18 @@ class ImportTask extends Shell
     protected function getImportErrors($entity)
     {
         $result = [];
-        if (!empty($entity->errors())) {
-            foreach ($entity->errors() as $field => $error) {
-                if (is_array($error)) {
-                    $msg = implode(', ', $error);
-                } else {
-                    $msg = $error;
-                }
-                $result[] = $msg . ' [' . $field . ']';
+
+        if (empty($entity->errors())) {
+            return $result;
+        }
+
+        foreach ($entity->errors() as $field => $error) {
+            if (is_array($error)) {
+                $msg = implode(', ', $error);
+            } else {
+                $msg = $error;
             }
+            $result[] = $msg . ' [' . $field . ']';
         }
 
         return $result;
