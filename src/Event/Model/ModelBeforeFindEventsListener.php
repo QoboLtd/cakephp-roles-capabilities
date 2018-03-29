@@ -190,6 +190,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     /**
      * Return owner fields and value.
      *
+     * @param \Cake\ORM\Table $table Table instance
      * @param array $actionCaps Action capabilities
      * @param array $user User info
      * @param array $userCaps User capabilities
