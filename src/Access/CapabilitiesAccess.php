@@ -29,25 +29,11 @@ use RolesCapabilities\Capability as Cap;
 class CapabilitiesAccess extends AuthenticatedAccess
 {
     /**
-     * User action specific capabilities
-     *
-     * @var array
-     */
-    protected $_userActionCapabilities = [];
-
-    /**
-     * Controller action(s) capabilities
-     *
-     * @var array
-     */
-    protected $_controllerActionCapabilites = [];
-
-    /**
      * All user capabilities
      *
      * @var array
      */
-    protected $_userCapabilities = [];
+    protected $userCapabilities = [];
 
     /**
      * Parent Access logic targeted actions.
@@ -55,7 +41,7 @@ class CapabilitiesAccess extends AuthenticatedAccess
      * @var array
      * @todo This is a temporary fix until proper model / controller specific capabilities are implemented.
      */
-    protected $_parentAccessActions = ['index', 'view'];
+    protected $parentAccessActions = ['index', 'view'];
 
     /**
      *  CheckAccess Capabilities
@@ -95,8 +81,13 @@ class CapabilitiesAccess extends AuthenticatedAccess
             return true;
         }
 
-        if (in_array($url['action'], $this->_parentAccessActions)) {
-            $hasAccess = $this->_hasParentAccess($url, $user);
+        $hasAccess = Utils::hasTypeAccess(Utils::getTypeBelongs(), $actionCapabilities, $user, $url);
+        if ($hasAccess) {
+            return true;
+        }
+
+        if (in_array($url['action'], $this->parentAccessActions)) {
+            $hasAccess = $this->hasParentAccess($url);
             if ($hasAccess) {
                 return true;
             }
@@ -106,13 +97,12 @@ class CapabilitiesAccess extends AuthenticatedAccess
     }
 
     /**
-     *  _hasParentAccess method
+     *  hasParentAccess method
      *
      * @param array $url    request URL
-     * @param array $user   user's session data
      * @return bool         true or false
      */
-    protected function _hasParentAccess($url, $user)
+    protected function hasParentAccess($url)
     {
         $config = new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($url['controller']));
         $moduleConfig = (array)json_decode(json_encode($config->parse()), true);
@@ -129,10 +119,10 @@ class CapabilitiesAccess extends AuthenticatedAccess
      */
     public function getUserCapabilities($userId)
     {
-        if (empty($this->_userCapabilities)) {
-            $this->_userCapabilities = Utils::fetchUserCapabilities($userId);
+        if (empty($this->userCapabilities)) {
+            $this->userCapabilities = Utils::fetchUserCapabilities($userId);
         }
 
-        return $this->_userCapabilities;
+        return $this->userCapabilities;
     }
 }

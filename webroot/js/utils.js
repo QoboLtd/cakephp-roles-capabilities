@@ -6,7 +6,7 @@
 (function ($) {
     // Find all checkboxes in the specific group and check/uncheck them
     $('.select_all').click(function () {
-        var checkboxes = $(this).closest('.permission-box').find(':checkbox');
+        var checkboxes = $(this).closest('.tab-pane').find(':checkbox');
         if ($(this).is(':checked')) {
             checkboxes.prop('checked', true);
         } else {

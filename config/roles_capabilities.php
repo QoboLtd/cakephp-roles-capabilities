@@ -52,9 +52,11 @@ return [
             ],
             'assignationModels' => [
                 'Users',
-                'CakeDC/Users.Users'
+                'CakeDC/Users.Users',
             ],
-
+            'belongsToModels' => [
+                'Groups'
+            ],
         ],
         'Roles' => [
             'Admin' => [

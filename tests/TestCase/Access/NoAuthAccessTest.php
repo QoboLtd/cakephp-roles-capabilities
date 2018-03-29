@@ -9,19 +9,16 @@ class NoAuthAccessTest extends \PHPUnit_Framework_TestCase
 {
     public function testSkipControllers()
     {
-        // TODO: add proper way to read config in test
-        //$skipControllers = (array)Configure::read('RolesCapabilities.ownerCheck.skipControllers');
-        //$noAuth = new NoAuthAccess();
-        //$this->assertArraySubset($noAuth->getSkipControllers(), $skipControllers);
-        $this->markTestIncomplete('Not implemented yet.');
+        $skipControllers = (array)Configure::read('RolesCapabilities.accessCheck.skipControllers');
+        $noAuth = new NoAuthAccess();
+        $this->assertArraySubset($noAuth->getSkipControllers(), $skipControllers);
     }
 
     public function testSkipActions()
     {
-        // TODO: add proper way to read config in test
-        //$skipActions = (array)Configure::read('RolesCapabilities.ownerCheck.skipActions');
-        //$noAuth = new NoAuthAccess();
-        //$this->assertArraySubset($noAuth->getSkipActions(), $skipActions);
-        $this->markTestIncomplete('Not implemented yet.');
+        $controller = 'CakeDC\Users\Controller\UsersController';
+        $skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions');
+        $noAuth = new NoAuthAccess();
+        $this->assertArraySubset($noAuth->getSkipActions($controller), $skipActions[$controller]);
     }
 }
