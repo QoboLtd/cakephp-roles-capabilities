@@ -13,75 +13,64 @@ namespace RolesCapabilities\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
-use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use RolesCapabilities\Access\Utils;
 
 /**
- * Task for assigning all capabilities to Admins role.
+ * Assign Task
+ *
+ * Assign all capabilities to given role, like Admins.
  */
 class AssignTask extends Shell
 {
     /**
-     * Target role name.
-     *
-     * @var string
+     * @var string $role Target role name
      */
-    protected $_role;
+    protected $role;
 
     /**
-     * Output message.
+     * Main task method
      *
-     * @var string
-     */
-    protected $_msg = 'Task for assigning all capabilities to [%s] role has been completed';
-
-    /**
-     * {@inheritDoc}
+     * @return bool True on success, false otherwise
      */
     public function main()
     {
-        $this->_role = (string)Configure::read('RolesCapabilities.Roles.Admin.name');
+        $this->info('Task: assign all capabilities to the admin role');
+        $this->hr();
 
-        if (empty($this->_role)) {
-            $this->abort('[Admins] role is not defined');
+        // Read admin role from configuration
+        $this->role = (string)Configure::read('RolesCapabilities.Roles.Admin.name');
+        if (empty($this->role)) {
+            $this->warn('[Admins] role is not configured.  Nothing to do.');
+
+            return true;
         }
 
-        $this->out('Task: assign all capabilities to [' . $this->_role . '] role');
-        $this->hr();
+        $this->info('Configured admin role is [' . $this->role . ']');
 
         // get roles table
         $table = TableRegistry::get('RolesCapabilities.Roles');
 
-        $role = $this->_getAdminsRoleEntity($table);
-
-        $success = false;
-        $count = 0;
-        if ($role) {
-            $allCapabilities = $this->_getAllCapabilities($table);
-            if ($allCapabilities) {
-                $count = count($allCapabilities);
-                $role->capabilities = $allCapabilities;
-                // delete existing role capabilities
-                $table->Capabilities->deleteAll(['role_id' => $role->id]);
-
-                // save role with all capabilities assigned to it.
-                // bypass validation rules as 'Admins' role is not editable by default.
-                $success = $table->save($role, ['checkRules' => false]);
-            }
+        $role = $this->getAdminsRoleEntity($table);
+        if (empty($role)) {
+            $this->abort('[' . $this->role . '] is not found in the system!');
         }
 
-        if ($count) {
-            $this->out('<info>[' . $count . '] capabilities have been assigned to [' . $this->_role . '] role</info>');
+        $allCapabilities = $this->getAllCapabilities($table);
+        $count = count($allCapabilities);
+        $role->capabilities = $allCapabilities;
+        // delete existing role capabilities
+        $table->Capabilities->deleteAll(['role_id' => $role->id]);
+
+        // save role with all capabilities assigned to it.
+        // bypass validation rules as 'Admins' role is not editable by default.
+        $success = $table->save($role, ['checkRules' => false]);
+        if (!$success) {
+            $this->abort("Failed to assign [$count] capabilities to role [" . $this->role . "]");
         }
 
-        $msg = sprintf($this->_msg, $this->_role);
-        if ($success) {
-            $this->out('<success>' . $msg . '</success>');
-        } else {
-            $this->out('<warning>' . $msg . '</warning>');
-        }
+        $this->info('[' . $count . '] capabilities have been assigned to [' . $this->role . '] role');
     }
 
     /**
@@ -90,15 +79,11 @@ class AssignTask extends Shell
      * @param  \Cake\ORM\Table $table Table instance
      * @return \Cake\ORM\Entity|null
      */
-    protected function _getAdminsRoleEntity(Table $table)
+    protected function getAdminsRoleEntity(Table $table)
     {
         $result = $table
-            ->findByName($this->_role)
+            ->findByName($this->role)
             ->first();
-
-        if (!$result) {
-            $this->err('[' . $this->_role . '] role was not found in the system, all following tasks are skipped');
-        }
 
         return $result;
     }
@@ -109,13 +94,13 @@ class AssignTask extends Shell
      * @param  \Cake\ORM\Table $table Table instance
      * @return array
      */
-    protected function _getAllCapabilities(Table $table)
+    protected function getAllCapabilities(Table $table)
     {
         $result = [];
 
         $allCapabilities = Utils::getAllCapabilities();
         if (empty($allCapabilities)) {
-            $this->err('No capabilities found in the system, all following tasks are skipped');
+            $this->abort('No capabilities at all found in the system!');
         }
 
         foreach ($allCapabilities as $groupName => $groupCaps) {
@@ -135,7 +120,7 @@ class AssignTask extends Shell
         $result = $table->prepareCapabilities($result);
 
         if (empty($result)) {
-            $this->err('No capabilities found in the system, all following tasks are skipped');
+            $this->abort('No capabilities found in the system!');
         }
 
         return $result;
