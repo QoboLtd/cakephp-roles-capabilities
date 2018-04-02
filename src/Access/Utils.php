@@ -22,6 +22,7 @@ use DirectoryIterator;
 use Exception;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\Utils\Utility;
 use ReflectionClass;
 use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
@@ -543,7 +544,7 @@ class Utils
     public static function getAllCapabilities()
     {
         $result = [];
-        foreach (self::getControllers() as $controller) {
+        foreach (Utility::getControllers() as $controller) {
             if (!is_callable([$controller, 'getCapabilities'])) {
                 continue;
             }
@@ -558,9 +559,15 @@ class Utils
      * Method that returns all controller names.
      * @param  bool  $includePlugins flag for including plugin controllers
      * @return array                 controller names
+     * @deprecated 14.2.5 use \Qobo\Utils\Utility::getControllers()
      */
     public static function getControllers($includePlugins = true)
     {
+        trigger_error(
+            get_called_class() . '::getControllers() is deprecated. Use \Qobo\Utils\Utility::getControllers() instead.',
+            E_USER_DEPRECATED
+        );
+
         $controllers = self::getDirControllers(APP . 'Controller' . DS);
 
         if (true === $includePlugins) {
@@ -582,9 +589,16 @@ class Utils
      * @param  string $plugin plugin name
      * @param  bool   $fqcn   flag for using fqcn
      * @return array          controller names
+     * @deprecated 14.2.5 use \Qobo\Utils\Utility::getDirControllers()
      */
     public static function getDirControllers($path, $plugin = null, $fqcn = true)
     {
+        trigger_error(
+            get_called_class() .
+                '::getDirControllers() is deprecated. Use \Qobo\Utils\Utility::getDirControllers() instead.',
+            E_USER_DEPRECATED
+        );
+
         $controllers = [];
         if (file_exists($path)) {
             $dir = new DirectoryIterator($path);
