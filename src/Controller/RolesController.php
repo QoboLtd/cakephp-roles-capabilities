@@ -44,9 +44,10 @@ class RolesController extends AppController
         $role = $this->Roles->get($id, [
             'contain' => ['Groups']
         ]);
+
         $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
-        $capabilities = $this->Capability->getAllCapabilities();
-        $capabilities = $this->formatCapabilities($capabilities);
+
+        $capabilities = $this->formatCapabilities($this->Capability->getAllCapabilities());
 
         $this->set('capabilities', $capabilities);
         $this->set('roleCaps', $roleCaps);
@@ -81,9 +82,8 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
-        $capabilities = $this->Capability->getAllCapabilities();
 
-        $capabilities = $this->formatCapabilities($capabilities);
+        $capabilities = $this->formatCapabilities($this->Capability->getAllCapabilities());
 
         $this->set(compact('role', 'groups', 'capabilities'));
         $this->set('_serialize', ['role']);
@@ -124,9 +124,9 @@ class RolesController extends AppController
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
         // fetch role capabilities
         $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
-        $capabilities = $this->Capability->getAllCapabilities();
 
-        $capabilities = $this->formatCapabilities($capabilities);
+        $capabilities = $this->formatCapabilities($this->Capability->getAllCapabilities());
+
         $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);
     }
