@@ -9,7 +9,7 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class CapabilitiesFixture extends TestFixture
 {
-
+    public $table = 'qobo_capabilities';
     /**
      * Fields
      *
