@@ -37,7 +37,7 @@ class RolesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('roles');
+        $this->table('qobo_roles');
         $this->displayField('name');
         $this->primaryKey('id');
 
