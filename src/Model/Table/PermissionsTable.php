@@ -44,7 +44,7 @@ class PermissionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('permissions');
+        $this->setTable('qobo_permissions');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 

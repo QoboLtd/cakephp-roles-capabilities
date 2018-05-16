@@ -58,7 +58,7 @@ class CapabilitiesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('capabilities');
+        $this->table('qobo_capabilities');
         $this->displayField('name');
         $this->primaryKey('id');
 

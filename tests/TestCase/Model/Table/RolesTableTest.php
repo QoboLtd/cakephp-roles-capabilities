@@ -52,7 +52,7 @@ class RolesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->assertEquals($this->Roles->table(), 'roles', 'Table name');
+        $this->assertEquals($this->Roles->table(), 'qobo_roles', 'Table name');
         $this->assertEquals($this->Roles->displayField(), 'name', 'Display field');
         $this->assertEquals($this->Roles->primaryKey(), 'id', 'Primary key');
     }
