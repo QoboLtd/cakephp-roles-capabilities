@@ -104,7 +104,6 @@ class RolesTableTest extends TestCase
 
         $role1 = $this->Roles->patchEntity($role1, ['description' => 'New description']);
         $this->Roles->save($role1);
-        debug($role1->errors());
         $this->assertArraySubset([], $role1->errors(), 'Non editable entity');
     }
 
