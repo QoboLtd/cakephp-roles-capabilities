@@ -54,43 +54,43 @@ ksort($capabilities);
             ?>
             </ul>
             <div class="tab-content clearfix">
-        <?php
+            <?php
             $sCount = 0;
-        foreach ($groupCaps as $type => $caps) {
-            usort($caps, function ($a, $b) {
-                return strcmp($a->getDescription(), $b->getDescription());
-            });
+            foreach ($groupCaps as $type => $caps) {
+                usort($caps, function ($a, $b) {
+                    return strcmp($a->getDescription(), $b->getDescription());
+                });
 
-            $title = Inflector::humanize($type) . ' ' . __('Access');
-            $type = preg_replace('/(\(|\))/', '', $type);
-            $slug = $tabId . '_' . $type . '_' . 'access';
+                $title = Inflector::humanize($type) . ' ' . __('Access');
+                $type = preg_replace('/(\(|\))/', '', $type);
+                $slug = $tabId . '_' . $type . '_' . 'access';
 
-            $sActive = ++$sCount == 1 ? 'active' : '';
-            echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
+                $sActive = ++$sCount == 1 ? 'active' : '';
+                echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
 
-            echo $this->Form->input($slug, [
-                'type' => 'checkbox',
-                'label' => 'Select All',
-                'class' => 'select_all',
-                'div' => false,
-                'disabled' => $disabled,
-            ]);
-            echo '<hr/>';
-
-            foreach ($caps as $cap) {
-                echo $this->Form->input($cap->getName(), [
+                echo $this->Form->input($slug, [
                     'type' => 'checkbox',
-                    'label' => $cap->getDescription(),
-                    'class' => 'checkbox-capability',
+                    'label' => 'Select All',
+                    'class' => 'select_all',
                     'div' => false,
                     'disabled' => $disabled,
-                    'checked' => in_array($cap->getName(), $roleCaps)
                 ]);
+                echo '<hr/>';
+
+                foreach ($caps as $cap) {
+                    echo $this->Form->input($cap->getName(), [
+                        'type' => 'checkbox',
+                        'label' => $cap->getDescription(),
+                        'class' => 'checkbox-capability',
+                        'div' => false,
+                        'disabled' => $disabled,
+                        'checked' => in_array($cap->getName(), $roleCaps)
+                    ]);
+                }
+                echo '</div>';
             }
-            echo '</div>';
-        }
-        ?>
-        </div>
+            ?>
+            </div>
         </div>
         <?php endforeach; ?>
         </div>
