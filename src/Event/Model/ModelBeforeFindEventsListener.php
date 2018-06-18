@@ -67,17 +67,24 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         // current table
         $table = $event->subject();
 
-        $skipTables = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables');
-        // skip if current table is in the list of skipped tables
-        if (in_array($table->table(), $skipTables)) {
+        $config = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables.byInstance');
+        if (in_array(get_class($table), $config)) {
             return;
         }
 
-        // get acl table
-        $aclTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        $config = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables.byRegistryAlias');
+        if (in_array($table->getRegistryAlias(), $config)) {
+            return;
+        }
+
+        $config = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables.byTableName');
+        if (in_array($table->getTable(), $config)) {
+            return;
+        }
 
         // get current user
-        $user = $aclTable->getCurrentUser();
+        $user = TableRegistry::get('RolesCapabilities.Capabilities')->getCurrentUser();
+
         // skip if user not set or if is a superuser
         if (empty($user) || (!empty($user['is_superuser']) && $user['is_superuser'])) {
             return;
