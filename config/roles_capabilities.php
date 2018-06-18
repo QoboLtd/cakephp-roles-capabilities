@@ -5,13 +5,17 @@ return [
         'ownerCheck' => [
             // List of tables that should be skipped during record access check, to avoid infinite recursion.
             'skipTables' => [
-                'roles',
-                'capabilities',
-                'users',
-                'groups',
-                'groups_roles',
-                'groups_users',
-                'languages',
+                'byInstance' => [
+                    CakeDC\Users\Model\Table\UsersTable::class,
+                    Groups\Model\Table\GroupsTable::class,
+                    RolesCapabilities\Model\Table\CapabilitiesTable::class,
+                    RolesCapabilities\Model\Table\RolesTable::class
+                ],
+                'byTableName' => [],
+                'byRegistryAlias' => [
+                    'GroupsRoles',
+                    'GroupsUsers'
+                ]
             ],
         ],
         'accessCheck' => [
