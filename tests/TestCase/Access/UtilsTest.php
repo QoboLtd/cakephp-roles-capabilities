@@ -181,4 +181,9 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $needle = Utils::generateCapabilityName($name, 'managePermissions');
         $this->assertContains($needle, $result);
     }
+
+    public function testGetReportToUsers()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
 }
