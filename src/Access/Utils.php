@@ -974,4 +974,23 @@ class Utils
 
         return $controllerName;
     }
+
+    /**
+     * getReportToUsers method
+     *
+     * @param string $id to find reported to users
+     * @return array
+     */
+    public static function getReportToUsers($id)
+    {
+        $table = TableRegistry::get('Users');
+        $users = $table->find()
+            ->where([
+                'reports_to' => $id
+            ])
+            ->all()
+            ->toArray();
+
+        return $users;
+    }
 }
