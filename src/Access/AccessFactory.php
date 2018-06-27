@@ -67,6 +67,7 @@ class AccessFactory
     {
         foreach ($this->getCheckRules() as $rule) {
             $result = $this->getCheckRuleObject($rule)->hasAccess($url, $user);
+
             if ($result) {
                 return true;
             }
