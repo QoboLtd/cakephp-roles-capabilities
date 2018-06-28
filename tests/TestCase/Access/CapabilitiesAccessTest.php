@@ -10,7 +10,7 @@ class CapabilitiesAccessTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->capabilitiesAccess = new CapabilitiesAccess();
+        $this->instance = new CapabilitiesAccess();
     }
 
     public function testHasAccess()
