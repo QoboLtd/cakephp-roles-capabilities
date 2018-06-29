@@ -978,15 +978,15 @@ class Utils
     /**
      * getReportToUsers method
      *
-     * @param string $id to find reported to users
+     * @param string $userId to find reported to users
      * @return array
      */
-    public static function getReportToUsers($id)
+    public static function getReportToUsers($userId)
     {
         $table = TableRegistry::get('Users');
         $users = $table->find()
             ->where([
-                'reports_to' => $id
+                'reports_to' => $userId
             ])
             ->all()
             ->toArray();
