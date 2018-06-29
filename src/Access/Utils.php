@@ -983,7 +983,7 @@ class Utils
      */
     public static function getReportToUsers($userId)
     {
-        $table = TableRegistry::get('Users');
+        $table = TableRegistry::get(Configure::read('Users.table'));
         $users = $table->find()
             ->where([
                 'reports_to' => $userId
