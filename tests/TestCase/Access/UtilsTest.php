@@ -3,10 +3,15 @@
 namespace RolesCapabilities\Test\TestCase\Access;
 
 use Cake\Core\Configure;
+use Cake\TestSuite\TestCase;
 use RolesCapabilities\Access\Utils;
 
-class UtilsTest extends \PHPUnit_Framework_TestCase
+class UtilsTest extends TestCase
 {
+    public $fixtures = [
+        'plugin.roles_capabilities.users',
+    ];
+
     public function testGetTypeFull()
     {
         // This returns a static constant.  But if the value of that constant
@@ -184,6 +189,12 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetReportToUsers()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $list = Utils::getReportToUsers('00000000-0000-0000-0000-000000000002');
+        $this->assertTrue(is_array($list), 'Return an aray');
+        $this->assertCount(2, $list, 'Count is 2');
+
+        $list = Utils::getReportToUsers('00000000-0000-0000-0000-000000000001');
+        $this->assertTrue(is_array($list), 'Return an array');
+        $this->assertCount(0, $list, 'Count is 0');
     }
 }
