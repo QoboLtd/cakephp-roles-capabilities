@@ -102,7 +102,17 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        $this->filterQuery($query, $table, $user, $controllerName);
+        // Check supervisor access
+        if (!empty($user['is_supervisor']) && $user['is_supervisor']) {
+            $users = Utils::getReportToUsers($user['id']);
+
+            $count = count($users);
+            foreach ($users as $rec) {
+                $this->filterQuery($query, $table, $rec->toArray(), $controllerName, $count--);
+            }
+        } else {
+            $this->filterQuery($query, $table, $user, $controllerName);
+        }
     }
 
     /**
@@ -120,7 +130,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param string $controllerName Namespaced controller name
      * @return void
      */
-    protected function filterQuery(Query $query, Table $table, array $user, $controllerName)
+    protected function filterQuery(Query $query, Table $table, array $user, $controllerName, $noNull = 0)
     {
         $capAccess = new CapabilitiesAccess();
         // get current user capabilities
@@ -163,9 +173,11 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        // if user has neither owner nor full capability on current action then filter out all records
-        $primaryKey = $table->primaryKey();
-        $query->where([$table->aliasField($primaryKey) => null]);
+        if (!$noNull) {
+            // if user has neither owner nor full capability on current action then filter out all records
+            $primaryKey = $table->primaryKey();
+            $query->where([$table->aliasField($primaryKey) => null]);
+        }
     }
 
     /**

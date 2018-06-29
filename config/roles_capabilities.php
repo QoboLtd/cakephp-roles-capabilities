@@ -52,7 +52,8 @@ return [
                 'NoAuth',
                 'SuperUser',
                 'Permissions',
-                'Capabilities'
+                'Capabilities',
+                'Supervisor'
             ],
             'assignationModels' => [
                 'Users',

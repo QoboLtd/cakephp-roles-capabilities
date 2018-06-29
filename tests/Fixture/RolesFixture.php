@@ -64,13 +64,24 @@ class RolesFixture extends TestFixture
         ],
         [
             'id' => '79928943-0016-4677-869a-e37728ff6564',
-            'name' => 'Lorem ipsum dolor sit amet',
+            'name' => 'Supervisor',
             'created' => '2016-02-09 13:35:11',
             'modified' => '2016-02-09 13:35:11',
             'trashed' => null,
-            'description' => 'Lorem ipsum dolor sit amet',
+            'description' => 'Supervisor role',
             'deny_edit' => 0,
             'deny_delete' => 0
         ],
+        [
+            'id' => '79628943-0016-4677-869a-e37728ff6564',
+            'name' => 'Sales',
+            'created' => '2016-02-09 13:35:11',
+            'modified' => '2016-02-09 13:35:11',
+            'trashed' => null,
+            'description' => 'Sales role',
+            'deny_edit' => 0,
+            'deny_delete' => 0
+        ],
+
     ];
 }
