@@ -820,7 +820,7 @@ class Utils
             // against current user id and if they match allow him access. (view, edit actions etc)
             $field = $capability->getField();
 
-            foreach (array_key($userGroups) as $id) {
+            foreach (array_keys($userGroups) as $id) {
                 if ($entity->get($field) === $id) {
                     return true;
                 }
