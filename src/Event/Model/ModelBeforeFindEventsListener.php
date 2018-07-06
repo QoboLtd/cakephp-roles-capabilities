@@ -102,16 +102,23 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
+        $result = 0;
+        $result |= $this->filterQuery($query, $table, $user, $controllerName);
+
         // Check supervisor access
         if (!empty($user['is_supervisor']) && $user['is_supervisor']) {
             $users = Utils::getReportToUsers($user['id']);
 
             $count = count($users);
             foreach ($users as $rec) {
-                $this->filterQuery($query, $table, $rec->toArray(), $controllerName, $count--);
+                $result |= $this->filterQuery($query, $table, $rec->toArray(), $controllerName, true);
             }
-        } else {
-            $this->filterQuery($query, $table, $user, $controllerName);
+        }
+
+        if (!$result) {
+            // if user has neither owner nor full capability on current action then filter out all records
+            $primaryKey = $table->primaryKey();
+            $query->where([$table->aliasField($primaryKey) => null]);
         }
     }
 
@@ -128,9 +135,10 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param \Cake\ORM\Table $table Table instance
      * @param array $user User info
      * @param string $controllerName Namespaced controller name
+     * @param bool $useOr specified how to connect where statements - via AND (default) or OR
      * @return void
      */
-    protected function filterQuery(Query $query, Table $table, array $user, $controllerName, $noNull = 0)
+    protected function filterQuery(Query $query, Table $table, array $user, $controllerName, $useOr = false)
     {
         $capAccess = new CapabilitiesAccess();
         // get current user capabilities
@@ -140,7 +148,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         $actionCaps = Utils::getCapabilities($controllerName, ['index']);
 
         if ($this->hasFullAccess($actionCaps, $userCaps)) {
-            return;
+            return true;
         }
 
         $where = [];
@@ -155,6 +163,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         }
 
         $joins = $this->getParentJoins($table, $actionCaps, $user, $userCaps);
+
         if (!empty($joins)) {
             foreach ($joins as $name => $conditions) {
                 $query->leftJoinWith($name, function ($q) {
@@ -166,18 +175,20 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         }
 
         if (!empty($where)) {
-            $query->where(['OR' => $where]);
+            $method = 'where';
+            if ($useOr) {
+                // FIXME: orWhere is deprecated in 3.6 - https://api.cakephp.org/3.6/class-Cake.Database.Query.html#_orWhere
+                $method = 'orWhere';
+            }
+
+            $query->$method(['OR' => $where]);
         }
 
         if (!empty($where) || !empty($joins)) {
-            return;
+            return true;
         }
 
-        if (!$noNull) {
-            // if user has neither owner nor full capability on current action then filter out all records
-            $primaryKey = $table->primaryKey();
-            $query->where([$table->aliasField($primaryKey) => null]);
-        }
+        return false;
     }
 
     /**
