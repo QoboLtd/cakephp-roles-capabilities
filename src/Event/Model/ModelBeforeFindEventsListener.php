@@ -102,20 +102,26 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        $result = 0;
-        $result |= $this->filterQuery($query, $table, $user, $controllerName);
+        $setNullStatement = true;
+        $result = $this->filterQuery($query, $table, $user, $controllerName);
 
+        if ($result) {
+            $setNullStatement = false;
+        }
         // Check supervisor access
         if (!empty($user['is_supervisor']) && $user['is_supervisor']) {
             $users = Utils::getReportToUsers($user['id']);
 
-            $count = count($users);
             foreach ($users as $rec) {
-                $result |= $this->filterQuery($query, $table, $rec->toArray(), $controllerName, true);
+                $result = $this->filterQuery($query, $table, $rec->toArray(), $controllerName, true);
+            }
+
+            if ($result) {
+                $setNullStatement = false;
             }
         }
 
-        if (!$result) {
+        if ($setNullStatement) {
             // if user has neither owner nor full capability on current action then filter out all records
             $primaryKey = $table->primaryKey();
             $query->where([$table->aliasField($primaryKey) => null]);
@@ -136,7 +142,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param array $user User info
      * @param string $controllerName Namespaced controller name
      * @param bool $useOr specified how to connect where statements - via AND (default) or OR
-     * @return void
+     * @return bool
      */
     protected function filterQuery(Query $query, Table $table, array $user, $controllerName, $useOr = false)
     {
