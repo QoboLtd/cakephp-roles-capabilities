@@ -200,7 +200,6 @@ final class FilterQuery
      * be applied to the sql where clause.
      *
      * @param array $user User info
-     * @param bool $useOr specified how to connect where statements - via AND (default) or OR
      * @return bool
      */
     private function filterQuery(array $user)
@@ -225,16 +224,6 @@ final class FilterQuery
                 $result = array_merge_recursive($result, $this->filterQuery($user->toArray()));
             }
         }
-
-        // if (! empty($where)) {
-        //     $method = 'where';
-        //     if ($useOr) {
-        //         // FIXME: orWhere is deprecated in 3.6 - https://api.cakephp.org/3.6/class-Cake.Database.Query.html#_orWhere
-        //         $method = 'orWhere';
-        //     }
-
-        //     $this->query->$method(['OR' => $where]);
-        // }
 
         return $result;
     }
