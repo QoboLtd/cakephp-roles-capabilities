@@ -71,7 +71,7 @@ final class FilterQuery
     private $filterable = false;
 
     /**
-     * [execute description]
+     * Constructor method.
      *
      * @param \Cake\Datasource\QueryInterface $query Query object
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
@@ -163,6 +163,14 @@ final class FilterQuery
     /**
      * Executes Query filtering functionality.
      *
+     * Filter Query results by applying where clause conditions based on current user capabilities. If current user has
+     * limited access, then the appropriate condition will be applied to the SQL where clause.
+     *
+     * Limited access includes:
+     * - Index or view records only assigned to him.
+     * - Index or view records assigned to users who report to him (supervisor access).
+     * - Index or view records related to a parent module which the user has one of the two conditions above applied.
+     *
      * @return \Cake\Datasource\QueryInterface
      */
     public function execute()
@@ -176,7 +184,7 @@ final class FilterQuery
             return $this->query;
         }
 
-        $where = $this->filterQuery($this->user);
+        $where = $this->getWhereClause($this->user);
 
         if (empty($where)) {
             // if user has neither owner nor full capability on current action then filter out all records
@@ -191,18 +199,12 @@ final class FilterQuery
     }
 
     /**
-     *
-     * Filter query results by applying where clause conditions
-     * based on current user capabilities.
-     *
-     * If current user has limited access to index or view records
-     * only assigned to him, then the appropriate condition will
-     * be applied to the sql where clause.
+     * Generates conditions for where clause.
      *
      * @param array $user User info
      * @return bool
      */
-    private function filterQuery(array $user)
+    private function getWhereClause(array $user)
     {
         $result = array_merge($this->getOwnerFields($user), $this->getPermissions($user));
 
@@ -220,8 +222,7 @@ final class FilterQuery
         // check supervisor access
         if ($this->isSupervisor()) {
             foreach (Utils::getReportToUsers($this->user['id']) as $user) {
-                $this->user = $user;
-                $result = array_merge_recursive($result, $this->filterQuery($user->toArray()));
+                $result = array_merge_recursive($result, $this->getWhereClause($user->toArray()));
             }
         }
 
