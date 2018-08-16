@@ -223,8 +223,8 @@ final class FilterQuery
 
         // check supervisor access
         if ($this->isSupervisor()) {
-            foreach (Utils::getReportToUsers($this->user['id']) as $user) {
-                $result = array_merge_recursive($result, $this->getWhereClause($user->toArray()));
+            foreach (Utils::getReportToUsers($user['id']) as $subordinate) {
+                $result = array_merge_recursive($result, $this->getWhereClause($subordinate->toArray()));
             }
         }
 
