@@ -37,7 +37,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         return [
             'Model.beforeFind' => [
                 'callable' => 'filterByUserCapabilities',
-                'priority' => 999999999999 // this callback should be executed as late as possible.
+                'priority' => PHP_INT_MAX - 1 // this callback should be executed as late as possible.
             ]
         ];
     }
