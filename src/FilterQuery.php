@@ -185,12 +185,14 @@ final class FilterQuery
         }
 
         $where = $this->getWhereClause($this->user);
+        if (! empty($where)) {
+            // apply all conditions using the OR operator
+            $where = ['OR' => $where];
+        }
 
         if (empty($where)) {
             // if user has neither owner nor full capability on current action then filter out all records
-            $this->query->where([$this->table->aliasField($this->table->primaryKey()) => null]);
-
-            return $this->query;
+            $where = [$this->table->aliasField($this->table->primaryKey()) => null];
         }
 
         $this->query->where($where);
