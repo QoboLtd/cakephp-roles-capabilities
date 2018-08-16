@@ -35,7 +35,10 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'Model.beforeFind' => 'filterByUserCapabilities',
+            'Model.beforeFind' => [
+                'callable' => 'filterByUserCapabilities',
+                'priority' => 999999999999 // this callback should be executed as late as possible.
+            ]
         ];
     }
 
