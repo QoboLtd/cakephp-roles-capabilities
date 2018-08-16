@@ -66,7 +66,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         $filterQuery = new FilterQuery(
             $query,
             $event->getSubject(),
-            TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')->getCurrentUser()
+            (array)TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')->getCurrentUser()
         );
 
         $filterQuery->execute();
