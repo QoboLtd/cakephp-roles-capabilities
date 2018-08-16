@@ -372,7 +372,7 @@ final class FilterQuery
 
         $result = [];
         foreach (Utils::getTableAssignationFields($targetTable) as $field) {
-            $result[$targetTable->aliasField($field)] = $user['id'];
+            $result[$targetTable->aliasField($field) . ' IN'] = $user['id'];
         }
 
         return $result;
