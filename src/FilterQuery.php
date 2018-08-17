@@ -84,7 +84,7 @@ final class FilterQuery
         $this->table = $table;
         $this->user = $user;
 
-        if (empty($user) || $this->isSuperuser() || $this->isSkipTable()) {
+        if (empty($this->user) || $this->isSuperuser() || $this->isSkipTable()) {
             return;
         }
 
@@ -98,7 +98,7 @@ final class FilterQuery
 
         $this->capabilities = [
             // get current user capabilities
-            'user' => Utils::fetchUserCapabilities($user['id']),
+            'user' => Utils::fetchUserCapabilities($this->user['id']),
             // @todo currently we are always assume index action, this probably needs to change in the future
             'action' => Utils::getCapabilities($controller, ['index'])
         ];
@@ -203,29 +203,61 @@ final class FilterQuery
     /**
      * Generates conditions for where clause.
      *
-     * @param array $user User info
      * @return array
      */
-    private function getWhereClause(array $user)
+    private function getWhereClause()
     {
-        $result = array_merge($this->getOwnerFields($user), $this->getPermissions($user));
+        $result = array_merge($this->getOwnerFields(), $this->getPermissions());
+        $result = array_merge($result, $this->getParentJoinsWhereClause());
+        $result = array_merge_recursive($result, $this->getSupervisorWhereClause());
 
-        $joins = $this->getParentJoins($user);
-        if (! empty($joins)) {
-            foreach ($joins as $name => $conditions) {
-                $result = array_merge($result, $conditions);
-                // disable access check on joins
-                $this->query->leftJoinWith($name, function ($q) {
-                    return $q->applyOptions(['accessCheck' => false]);
-                });
-            }
+        return $result;
+    }
+
+    /**
+     * Generates parent joins conditions for where clause.
+     *
+     * @return array
+     */
+    private function getParentJoinsWhereClause()
+    {
+        $joins = $this->getParentJoins();
+        if (empty($joins)) {
+            return [];
         }
 
-        // check supervisor access
-        if ($this->isSupervisor()) {
-            foreach (Utils::getReportToUsers($user['id']) as $subordinate) {
-                $result = array_merge_recursive($result, $this->getWhereClause($subordinate->toArray()));
-            }
+        $result = [];
+        foreach ($joins as $name => $conditions) {
+            $result = array_merge($result, $conditions);
+
+            $this->query->leftJoinWith($name, function ($q) {
+                return $q->applyOptions(['accessCheck' => false]); // disable access check on joins
+            });
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generates supervisor conditions for where clause.
+     *
+     * It recursively calls getWhereClause() method by re-instantiating \RolesCapabilities\FilterQuery
+     * and setting each subordinate as the instance $user property.
+     *
+     * @return array
+     */
+    private function getSupervisorWhereClause()
+    {
+        if (! $this->isSupervisor()) {
+            return [];
+        }
+
+        $result = [];
+        foreach (Utils::getReportToUsers($this->user['id']) as $subordinate) {
+            $result = array_merge_recursive(
+                $result,
+                (new FilterQuery($this->query, $this->table, $subordinate->toArray()))->getWhereClause()
+            );
         }
 
         return $result;
@@ -256,10 +288,9 @@ final class FilterQuery
     /**
      * Return owner fields and value.
      *
-     * @param array $user User info
      * @return array
      */
-    private function getOwnerFields(array $user)
+    private function getOwnerFields()
     {
         if (! isset($this->capabilities['action'][Utils::getTypeOwner()])) {
             return [];
@@ -270,7 +301,7 @@ final class FilterQuery
         foreach ($this->capabilities['action'][Utils::getTypeOwner()] as $capability) {
             if (in_array($capability->getName(), $this->capabilities['user'])) {
                 // if user has owner capability for current action add appropriate conditions to where clause
-                $result[$this->table->aliasField($capability->getField()) . ' IN'] = $user['id'];
+                $result[$this->table->aliasField($capability->getField()) . ' IN'] = $this->user['id'];
             }
         }
 
@@ -280,13 +311,12 @@ final class FilterQuery
     /**
      * Return permissions.
      *
-     * @param array $user User info
      * @return array
      */
-    private function getPermissions(array $user)
+    private function getPermissions()
     {
         $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
-            ->getUserGroups($user['id']);
+            ->getUserGroups($this->user['id']);
 
         $query = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions')
             ->find('all')
@@ -297,7 +327,7 @@ final class FilterQuery
                 'type IN ' => ['view'],
                 'OR' => [
                     ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
-                    ['owner_foreign_key' => $user['id'], 'owner_model' => 'Users']
+                    ['owner_foreign_key' => $this->user['id'], 'owner_model' => 'Users']
                 ]
             ])
             ->applyOptions(['accessCheck' => false]);
@@ -317,10 +347,9 @@ final class FilterQuery
     /**
      * Return parent association joins.
      *
-     * @param array $user User info
      * @return array
      */
-    private function getParentJoins(array $user)
+    private function getParentJoins()
     {
         if (! isset($this->capabilities['action'][Utils::getTypeParent()])) {
             return [];
@@ -339,7 +368,7 @@ final class FilterQuery
 
         $result = [];
         foreach ($this->table->associations() as $association) {
-            $conditions = $this->getParentJoin($association, $user, $modules);
+            $conditions = $this->getParentJoin($association, $modules);
             if (empty($conditions)) {
                 continue;
             }
@@ -354,11 +383,10 @@ final class FilterQuery
      * Return parent association join.
      *
      * @param \Cake\ORM\Association $association Association instance
-     * @param array $user User info
      * @param array $modules Parent modules
      * @return array
      */
-    private function getParentJoin(Association $association, array $user, array $modules)
+    private function getParentJoin(Association $association, array $modules)
     {
         if (! in_array($association->type(), $this->parentJoinAssocations)) {
             return [];
@@ -372,7 +400,7 @@ final class FilterQuery
 
         $result = [];
         foreach (Utils::getTableAssignationFields($targetTable) as $field) {
-            $result[$targetTable->aliasField($field) . ' IN'] = $user['id'];
+            $result[$targetTable->aliasField($field) . ' IN'] = $this->user['id'];
         }
 
         return $result;
