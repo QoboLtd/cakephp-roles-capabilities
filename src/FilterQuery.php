@@ -351,16 +351,7 @@ final class FilterQuery
      */
     private function getParentJoins()
     {
-        if (! isset($this->capabilities['action'][Utils::getTypeParent()])) {
-            return [];
-        }
-
-        $modules = [];
-        foreach ($this->capabilities['action'][Utils::getTypeParent()] as $capability) {
-            if (in_array($capability->getName(), $this->capabilities['user'])) {
-                $modules = $capability->getParentModules();
-            }
-        }
+        $modules = $this->getParentModules();
 
         if (empty($modules)) {
             return [];
@@ -374,6 +365,30 @@ final class FilterQuery
             }
 
             $result[$association->getName()] = $conditions;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Parent modules getter.
+     *
+     * Returns the list of parent modules based on current action parent capabilities,
+     * filtered by current user capabilities.
+     *
+     * @return array
+     */
+    private function getParentModules()
+    {
+        if (! isset($this->capabilities['action'][Utils::getTypeParent()])) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($this->capabilities['action'][Utils::getTypeParent()] as $capability) {
+            if (in_array($capability->getName(), $this->capabilities['user'])) {
+                $result = $capability->getParentModules();
+            }
         }
 
         return $result;
