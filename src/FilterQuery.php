@@ -204,7 +204,7 @@ final class FilterQuery
      * Generates conditions for where clause.
      *
      * @param array $user User info
-     * @return bool
+     * @return array
      */
     private function getWhereClause(array $user)
     {
