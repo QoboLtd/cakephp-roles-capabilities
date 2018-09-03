@@ -78,13 +78,13 @@ final class FilterQuery
      * @param array $user User info
      * @return void
      */
-    public function __construct(QueryInterface $query, RepositoryInterface $table, array $user = [])
+    public function __construct(QueryInterface $query, RepositoryInterface $table, array $user)
     {
         $this->query = $query;
         $this->table = $table;
         $this->user = $user;
 
-        if (empty($this->user) || $this->isSuperuser() || $this->isSkipTable()) {
+        if (empty($this->user) || ! array_key_exists('id', $this->user) || $this->isSuperuser() || $this->isSkipTable()) {
             $this->filterable = false;
         }
 
