@@ -92,7 +92,14 @@ final class FilterQuery
             App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
             'Controller'
         );
+
+        // skipping, not relevant controller found for specified table
         if (! $controller) {
+            return;
+        }
+
+        // skipping, table's relevant controller is cake's default controller, probably a many-to-many join table
+        if ('Cake\Controller\Controller' === $controller) {
             return;
         }
 
