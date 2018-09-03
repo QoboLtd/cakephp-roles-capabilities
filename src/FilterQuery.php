@@ -88,10 +88,7 @@ final class FilterQuery
             $this->filterable = false;
         }
 
-        $controller = App::className(
-            App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
-            'Controller'
-        );
+        $controller = $this->getControllerClassName();
 
         // skipping, not relevant controller found for specified table
         if (! $controller) {
@@ -111,6 +108,19 @@ final class FilterQuery
                 'action' => Utils::getCapabilities($controller, ['index'])
             ];
         }
+    }
+
+    /**
+     * Controller class name getter.
+     *
+     * @return false|string False if the class is not found or namespaced class name
+     */
+    private function getControllerClassName()
+    {
+        return App::className(
+            App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
+            'Controller'
+        );
     }
 
     /**
