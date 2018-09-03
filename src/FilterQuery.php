@@ -64,11 +64,11 @@ final class FilterQuery
     /**
      * Filterable flag
      *
-     * False by default and only set to true if specific conditions apply.
+     * True by default and only set to false if specific conditions apply.
      *
      * @var bool
      */
-    private $filterable = false;
+    private $filterable = true;
 
     /**
      * Constructor method.
@@ -78,21 +78,15 @@ final class FilterQuery
      * @param array $user User info
      * @return void
      */
-    public function __construct(QueryInterface $query, RepositoryInterface $table, array $user = [])
+    public function __construct(QueryInterface $query, RepositoryInterface $table, array $user)
     {
         $this->query = $query;
         $this->table = $table;
         $this->user = $user;
 
-        if (empty($this->user) || $this->isSuperuser() || $this->isSkipTable()) {
-            return;
-        }
+        if (! $this->isFilterable()) {
+            $this->filterable = false;
 
-        $controller = App::className(
-            App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
-            'Controller'
-        );
-        if (! $controller) {
             return;
         }
 
@@ -100,11 +94,59 @@ final class FilterQuery
             // get current user capabilities
             'user' => Utils::fetchUserCapabilities($this->user['id']),
             // @todo currently we are always assume index action, this probably needs to change in the future
-            'action' => Utils::getCapabilities($controller, ['index'])
+            'action' => Utils::getCapabilities($this->getControllerClassName(), ['index'])
         ];
+    }
 
-        // flag query as filterable
-        $this->filterable = true;
+    /**
+     * Controller class name getter.
+     *
+     * @return false|string False if the class is not found or namespaced class name
+     */
+    private function getControllerClassName()
+    {
+        return App::className(
+            App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
+            'Controller'
+        );
+    }
+
+    /**
+     * Validates if Query is filterable.
+     *
+     * @return bool
+     */
+    private function isFilterable()
+    {
+        if (empty($this->user)) {
+            return false;
+        }
+
+        if (! array_key_exists('id', $this->user)) {
+            return false;
+        }
+
+        if ($this->isSuperuser()) {
+            return false;
+        }
+
+        if ($this->isSkipTable()) {
+            return false;
+        }
+
+        $controllerName = $this->getControllerClassName();
+
+        // no relevant controller found for specified table
+        if (! $controllerName) {
+            return false;
+        }
+
+        // table's controller is cake's default controller, this is probably a many-to-many join table
+        if ('Cake\Controller\Controller' === $controllerName) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
