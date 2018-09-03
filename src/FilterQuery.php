@@ -64,11 +64,11 @@ final class FilterQuery
     /**
      * Filterable flag
      *
-     * False by default and only set to true if specific conditions apply.
+     * True by default and only set to false if specific conditions apply.
      *
      * @var bool
      */
-    private $filterable = false;
+    private $filterable = true;
 
     /**
      * Constructor method.
@@ -85,7 +85,7 @@ final class FilterQuery
         $this->user = $user;
 
         if (empty($this->user) || $this->isSuperuser() || $this->isSkipTable()) {
-            return;
+            $this->filterable = false;
         }
 
         $controller = App::className(
@@ -95,23 +95,22 @@ final class FilterQuery
 
         // skipping, not relevant controller found for specified table
         if (! $controller) {
-            return;
+            $this->filterable = false;
         }
 
         // skipping, table's relevant controller is cake's default controller, probably a many-to-many join table
         if ('Cake\Controller\Controller' === $controller) {
-            return;
+            $this->filterable = false;
         }
 
-        $this->capabilities = [
-            // get current user capabilities
-            'user' => Utils::fetchUserCapabilities($this->user['id']),
-            // @todo currently we are always assume index action, this probably needs to change in the future
-            'action' => Utils::getCapabilities($controller, ['index'])
-        ];
-
-        // flag query as filterable
-        $this->filterable = true;
+        if ($this->filterable) {
+            $this->capabilities = [
+                // get current user capabilities
+                'user' => Utils::fetchUserCapabilities($this->user['id']),
+                // @todo currently we are always assume index action, this probably needs to change in the future
+                'action' => Utils::getCapabilities($controller, ['index'])
+            ];
+        }
     }
 
     /**
