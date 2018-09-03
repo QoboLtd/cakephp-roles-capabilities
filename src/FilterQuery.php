@@ -88,15 +88,15 @@ final class FilterQuery
             $this->filterable = false;
         }
 
-        $controller = $this->getControllerClassName();
+        $controllerName = $this->getControllerClassName();
 
         // skipping, not relevant controller found for specified table
-        if (! $controller) {
+        if (! $controllerName) {
             $this->filterable = false;
         }
 
         // skipping, table's relevant controller is cake's default controller, probably a many-to-many join table
-        if ('Cake\Controller\Controller' === $controller) {
+        if ('Cake\Controller\Controller' === $controllerName) {
             $this->filterable = false;
         }
 
@@ -105,7 +105,7 @@ final class FilterQuery
                 // get current user capabilities
                 'user' => Utils::fetchUserCapabilities($this->user['id']),
                 // @todo currently we are always assume index action, this probably needs to change in the future
-                'action' => Utils::getCapabilities($controller, ['index'])
+                'action' => Utils::getCapabilities($controllerName, ['index'])
             ];
         }
     }
