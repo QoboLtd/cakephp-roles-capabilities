@@ -84,30 +84,18 @@ final class FilterQuery
         $this->table = $table;
         $this->user = $user;
 
-        if (empty($this->user) || ! array_key_exists('id', $this->user) || $this->isSuperuser() || $this->isSkipTable()) {
+        if (! $this->isFilterable()) {
             $this->filterable = false;
+
+            return;
         }
 
-        $controllerName = $this->getControllerClassName();
-
-        // skipping, not relevant controller found for specified table
-        if (! $controllerName) {
-            $this->filterable = false;
-        }
-
-        // skipping, table's relevant controller is cake's default controller, probably a many-to-many join table
-        if ('Cake\Controller\Controller' === $controllerName) {
-            $this->filterable = false;
-        }
-
-        if ($this->filterable) {
-            $this->capabilities = [
-                // get current user capabilities
-                'user' => Utils::fetchUserCapabilities($this->user['id']),
-                // @todo currently we are always assume index action, this probably needs to change in the future
-                'action' => Utils::getCapabilities($controllerName, ['index'])
-            ];
-        }
+        $this->capabilities = [
+            // get current user capabilities
+            'user' => Utils::fetchUserCapabilities($this->user['id']),
+            // @todo currently we are always assume index action, this probably needs to change in the future
+            'action' => Utils::getCapabilities($this->getControllerClassName(), ['index'])
+        ];
     }
 
     /**
@@ -121,6 +109,44 @@ final class FilterQuery
             App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
             'Controller'
         );
+    }
+
+    /**
+     * Validates if Query is filterable.
+     *
+     * @return bool
+     */
+    private function isFilterable()
+    {
+        if (empty($this->user)) {
+            return false;
+        }
+
+        if (! array_key_exists('id', $this->user)) {
+            return false;
+        }
+
+        if ($this->isSuperuser()) {
+            return false;
+        }
+
+        if ($this->isSkipTable()) {
+            return false;
+        }
+
+        $controllerName = $this->getControllerClassName();
+
+        // no relevant controller found for specified table
+        if (! $controllerName) {
+            return false;
+        }
+
+        // table's controller is cake's default controller, this is probably a many-to-many join table
+        if ('Cake\Controller\Controller' === $controllerName) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
