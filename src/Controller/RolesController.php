@@ -11,6 +11,7 @@
  */
 namespace RolesCapabilities\Controller;
 
+use RolesCapabilities\Access\Utils;
 use RolesCapabilities\Controller\AppController;
 
 /**
@@ -47,7 +48,7 @@ class RolesController extends AppController
 
         $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
 
-        $capabilities = $this->formatCapabilities($this->Capability->getAllCapabilities());
+        $capabilities = $this->formatCapabilities(Utils::getAllCapabilities());
 
         $this->set('capabilities', $capabilities);
         $this->set('roleCaps', $roleCaps);
@@ -83,7 +84,7 @@ class RolesController extends AppController
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
 
-        $capabilities = $this->formatCapabilities($this->Capability->getAllCapabilities());
+        $capabilities = $this->formatCapabilities(Utils::getAllCapabilities());
 
         $this->set(compact('role', 'groups', 'capabilities'));
         $this->set('_serialize', ['role']);
@@ -125,7 +126,7 @@ class RolesController extends AppController
         // fetch role capabilities
         $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
 
-        $capabilities = $this->formatCapabilities($this->Capability->getAllCapabilities());
+        $capabilities = $this->formatCapabilities(Utils::getAllCapabilities());
 
         $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);

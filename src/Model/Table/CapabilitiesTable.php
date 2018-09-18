@@ -101,9 +101,18 @@ class CapabilitiesTable extends Table
      * @param  string $roleId role id
      * @param  string $userId user id
      * @return bool
+     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
      */
     public function hasRoleAccess($roleId, $userId)
     {
+        trigger_error(
+            sprintf(
+                '%s::hasRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
+                __CLASS__
+            ),
+            E_USER_DEPRECATED
+        );
+
         if (is_null($roleId)) {
             return true;
         }
