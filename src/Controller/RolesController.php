@@ -12,7 +12,6 @@
 namespace RolesCapabilities\Controller;
 
 use RolesCapabilities\Access\Utils;
-use RolesCapabilities\Controller\AppController;
 
 /**
  * Roles Controller

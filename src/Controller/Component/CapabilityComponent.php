@@ -12,7 +12,6 @@
 namespace RolesCapabilities\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Core\App;
 use Cake\ORM\TableRegistry;
 use RolesCapabilities\Access\Utils;
 

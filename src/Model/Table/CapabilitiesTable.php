@@ -11,19 +11,9 @@
  */
 namespace RolesCapabilities\Model\Table;
 
-use Cake\Core\App;
-use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
-use RolesCapabilities\Access\AccessFactory;
-use RolesCapabilities\Access\Utils;
-use RolesCapabilities\Capability as Cap;
-use RolesCapabilities\Model\Entity\Capability;
 
 /**
  * Capabilities Model

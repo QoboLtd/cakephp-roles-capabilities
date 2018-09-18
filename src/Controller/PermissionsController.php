@@ -12,7 +12,6 @@
 namespace RolesCapabilities\Controller;
 
 use Cake\Utility\Inflector;
-use RolesCapabilities\Controller\AppController;
 
 /**
  * Permissions Controller
