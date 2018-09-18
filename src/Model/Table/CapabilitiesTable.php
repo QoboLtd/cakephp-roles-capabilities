@@ -33,14 +33,6 @@ use RolesCapabilities\Model\Entity\Capability;
  */
 class CapabilitiesTable extends Table
 {
-
-    /**
-     * Current user details - used to filter list queries
-     *
-     * @var array
-     */
-    protected $_currentUser = [];
-
     /**
      * Group(s) roles
      *
@@ -100,32 +92,6 @@ class CapabilitiesTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
-    }
-
-    /**
-     * Current user info setter.
-     *
-     * @param  array|null $user User information
-     * @return void
-     */
-    public function setCurrentUser($user)
-    {
-        $this->_currentUser = $user;
-    }
-
-    /**
-     * Current user info getter.
-     *
-     * @param  string|null       $key Specific field to retrieve
-     * @return array|string|null
-     */
-    public function getCurrentUser($key = null)
-    {
-        if (!is_null($key)) {
-            return isset($this->_currentUser[$key]) ? $this->_currentUser[$key] : null;
-        }
-
-        return $this->_currentUser;
     }
 
     /**

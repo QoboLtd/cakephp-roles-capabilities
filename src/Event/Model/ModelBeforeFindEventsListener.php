@@ -15,7 +15,7 @@ use ArrayObject;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
+use Qobo\Utils\Utility\User;
 use RolesCapabilities\FilterQuery;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
@@ -66,7 +66,7 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
         $filterQuery = new FilterQuery(
             $query,
             $event->getSubject(),
-            (array)TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')->getCurrentUser()
+            User::getCurrentUser()
         );
 
         $filterQuery->execute();
