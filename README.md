@@ -6,6 +6,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/qobo/cakephp-roles-capabilities/v/unstable)](https://packagist.org/packages/qobo/cakephp-roles-capabilities)
 [![License](https://poser.pugx.org/qobo/cakephp-roles-capabilities/license)](https://packagist.org/packages/qobo/cakephp-roles-capabilities)
 [![codecov](https://codecov.io/gh/QoboLtd/cakephp-roles-capabilities/branch/master/graph/badge.svg)](https://codecov.io/gh/QoboLtd/cakephp-roles-capabilities)
+[![BCH compliance](https://bettercodehub.com/edge/badge/QoboLtd/cakephp-roles-capabilitie?branch=master)](https://bettercodehub.com/)
 
 ## About
 
