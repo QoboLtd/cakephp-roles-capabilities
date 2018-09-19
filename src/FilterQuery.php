@@ -17,7 +17,6 @@ use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Access\CapabilitiesAccess;
 use RolesCapabilities\Access\Utils;
 
 /**

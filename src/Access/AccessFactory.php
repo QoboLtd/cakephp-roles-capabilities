@@ -12,7 +12,6 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
 
 /**
  *  AccessFactory Class

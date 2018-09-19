@@ -11,7 +11,6 @@
  */
 namespace RolesCapabilities\Shell;
 
-use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 
 class RoleShell extends Shell

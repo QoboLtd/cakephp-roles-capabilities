@@ -11,11 +11,9 @@
  */
 namespace RolesCapabilities;
 
-use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
-use Cake\ORM\TableRegistry;
 use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Access\Utils;
 

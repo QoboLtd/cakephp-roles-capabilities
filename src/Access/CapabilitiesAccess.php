@@ -11,15 +11,9 @@
  */
 namespace RolesCapabilities\Access;
 
-use Cake\Core\App;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use ReflectionClass;
-use ReflectionMethod;
-use RolesCapabilities\Access\Utils;
-use RolesCapabilities\Capability as Cap;
 
 /**
  *  CapabilitiesAccess class checks if user has access to specific entity

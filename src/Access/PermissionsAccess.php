@@ -11,7 +11,6 @@
  */
 namespace RolesCapabilities\Access;
 
-use Cake\Core\App;
 use Cake\ORM\TableRegistry;
 
 /**
