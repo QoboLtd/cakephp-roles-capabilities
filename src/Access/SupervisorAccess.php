@@ -11,9 +11,6 @@
  */
 namespace RolesCapabilities\Access;
 
-use Cake\Routing\Router;
-use RolesCapabilities\Access\Utils;
-
 /**
  *  SupervisorAccess Class
  *

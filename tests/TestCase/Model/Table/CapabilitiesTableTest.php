@@ -75,26 +75,4 @@ class CapabilitiesTableTest extends TestCase
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
-
-    public function testSetCurrentUser()
-    {
-        $data = [
-            'foo' => 'bar',
-            'blah' => true,
-        ];
-        $this->Capabilities->setCurrentUser($data);
-        $result = $this->Capabilities->getCurrentUser();
-        $this->assertEquals($data, $result, "Setting current user is broken");
-    }
-
-    public function testGetCurrentUser()
-    {
-        $data = [
-            'foo' => 'bar',
-            'blah' => true,
-        ];
-        $this->Capabilities->setCurrentUser($data);
-        $result = $this->Capabilities->getCurrentUser('foo');
-        $this->assertEquals('bar', $result, "Getting keys of current user is broken");
-    }
 }

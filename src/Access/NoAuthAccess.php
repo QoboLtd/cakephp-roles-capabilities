@@ -12,7 +12,6 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\Configure;
-use RolesCapabilities\Access\Utils;
 
 /**
  *  NoAuthAccess class

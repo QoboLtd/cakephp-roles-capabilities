@@ -11,11 +11,9 @@
  */
 namespace RolesCapabilities;
 
-use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
-use Cake\ORM\TableRegistry;
 use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Access\Utils;
 
@@ -70,9 +68,18 @@ trait CapabilityTrait
      * @param  bool    $handle handle
      * @return bool
      * @throws Cake\Network\Exception\ForbiddenException
+     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
      */
     protected function _checkRoleAccess($role, $handle = true)
     {
+        trigger_error(
+            sprintf(
+                '%s::_checkRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
+                __TRAIT__
+            ),
+            E_USER_DEPRECATED
+        );
+
         $hasAccess = false;
 
         if ($this->Capability->hasRoleAccess($role)) {

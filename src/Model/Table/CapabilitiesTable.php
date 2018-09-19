@@ -11,19 +11,9 @@
  */
 namespace RolesCapabilities\Model\Table;
 
-use Cake\Core\App;
-use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
-use RolesCapabilities\Access\AccessFactory;
-use RolesCapabilities\Access\Utils;
-use RolesCapabilities\Capability as Cap;
-use RolesCapabilities\Model\Entity\Capability;
 
 /**
  * Capabilities Model
@@ -33,14 +23,6 @@ use RolesCapabilities\Model\Entity\Capability;
  */
 class CapabilitiesTable extends Table
 {
-
-    /**
-     * Current user details - used to filter list queries
-     *
-     * @var array
-     */
-    protected $_currentUser = [];
-
     /**
      * Group(s) roles
      *
@@ -103,41 +85,24 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Current user info setter.
-     *
-     * @param  array|null $user User information
-     * @return void
-     */
-    public function setCurrentUser($user)
-    {
-        $this->_currentUser = $user;
-    }
-
-    /**
-     * Current user info getter.
-     *
-     * @param  string|null       $key Specific field to retrieve
-     * @return array|string|null
-     */
-    public function getCurrentUser($key = null)
-    {
-        if (!is_null($key)) {
-            return isset($this->_currentUser[$key]) ? $this->_currentUser[$key] : null;
-        }
-
-        return $this->_currentUser;
-    }
-
-    /**
      * Method that checks if specified role is allowed access.
      * Returns true if role has access, false otherwise.
      *
      * @param  string $roleId role id
      * @param  string $userId user id
      * @return bool
+     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
      */
     public function hasRoleAccess($roleId, $userId)
     {
+        trigger_error(
+            sprintf(
+                '%s::hasRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
+                __CLASS__
+            ),
+            E_USER_DEPRECATED
+        );
+
         if (is_null($roleId)) {
             return true;
         }
