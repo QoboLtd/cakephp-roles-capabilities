@@ -11,7 +11,6 @@
  */
 namespace RolesCapabilities\Access;
 
-
 /**
  *  SupervisorAccess Class
  *
