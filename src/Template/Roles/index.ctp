@@ -97,7 +97,7 @@ echo $this->Html->scriptBlock(
                                     '<i class="fa fa-trash"></i>',
                                     ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'delete', $role->id],
                                     [
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $role->id),
+                                        'confirm' => __('Are you sure you want to delete {0}?', $role->name),
                                         'title' => __('Delete'),
                                         'class' => 'btn btn-default btn-sm',
                                         'escape' => false
