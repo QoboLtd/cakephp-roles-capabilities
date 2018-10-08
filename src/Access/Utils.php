@@ -451,6 +451,7 @@ class Utils
      * @param string $contrName Controller name
      * @param array $actions Controller actions
      * @param array $assignationFields list of assignation fields
+     * @param string $assignationType Type of association
      * @return array
      */
     protected static function generateCapabilities($contrName, array $actions, $assignationFields, $assignationType = '')

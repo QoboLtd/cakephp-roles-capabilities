@@ -2,9 +2,10 @@
 
 namespace RolesCapabilities\Test\Access;
 
+use PHPUnit\Framework\TestCase;
 use RolesCapabilities\Access\SupervisorAccess;
 
-class SupervisorAccessTest extends \PHPUnit_Framework_TestCase
+class SupervisorAccessTest extends TestCase
 {
     public function setUp()
     {

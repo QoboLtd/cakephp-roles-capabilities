@@ -3,9 +3,10 @@
 namespace RolesCapabilities\Test\TestCase\Access;
 
 use Cake\Core\Configure;
+use PHPUnit\Framework\TestCase;
 use RolesCapabilities\Access\NoAuthAccess;
 
-class NoAuthAccessTest extends \PHPUnit_Framework_TestCase
+class NoAuthAccessTest extends TestCase
 {
     public function setUp()
     {

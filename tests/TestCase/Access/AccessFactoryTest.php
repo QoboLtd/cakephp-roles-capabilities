@@ -2,9 +2,11 @@
 
 namespace RolesCapabilities\Test\TestCase\Access;
 
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use RolesCapabilities\Access\AccessFactory;
 
-class AccessFactoryTest extends \PHPUnit_Framework_TestCase
+class AccessFactoryTest extends TestCase
 {
     public function testConstructorRules()
     {
@@ -81,7 +83,7 @@ class AccessFactoryTest extends \PHPUnit_Framework_TestCase
         ];
 
         $af = new AccessFactory(['blah', 'bar', 'foo']);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $result = $af->hasAccess($url, $user);
     }
 }
