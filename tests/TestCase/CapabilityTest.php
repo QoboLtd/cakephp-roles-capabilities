@@ -1,9 +1,10 @@
 <?php
 namespace RolesCapabilities\Test\TestCase;
 
+use PHPUnit\Framework\TestCase;
 use RolesCapabilities\Capability;
 
-class CapabilityTest extends \PHPUnit_Framework_TestCase
+class CapabilityTest extends TestCase
 {
     public function testConstructorOptions()
     {
