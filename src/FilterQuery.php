@@ -248,7 +248,7 @@ final class FilterQuery
      */
     private function getWhereClause()
     {
-        $result = array_merge($this->getOwnerFields(), $this->getPermissions());
+        $result = array_merge($this->getOwnerFields(), $this->getBelongTo(), $this->getPermissions());
         $result = array_merge($result, $this->getParentJoinsWhereClause());
         $result = array_merge_recursive($result, $this->getSupervisorWhereClause());
 
@@ -457,6 +457,33 @@ final class FilterQuery
         $result = [];
         foreach (Utils::getTableAssignationFields($targetTable) as $field) {
             $result[$targetTable->aliasField($field) . ' IN'] = $this->user['id'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return belong to statement.
+     *
+     * @return array
+     */
+    private function getBelongTo()
+    {
+        $result = [];
+
+        if (! isset($this->capabilities['action'][Utils::getTypeBelongs()])) {
+            return $result;
+        }
+
+        $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
+            ->getUserGroups($this->user['id']);
+
+        // check user capabilities against action's belongs capabilities
+        foreach ($this->capabilities['action'][Utils::getTypeBelongs()] as $capability) {
+            if (in_array($capability->getName(), $this->capabilities['user'])) {
+                // if user has owner capability for current action add appropriate conditions to where clause
+                $result[$this->table->aliasField($capability->getField()) . ' IN'] = array_keys($groups);
+            }
         }
 
         return $result;
