@@ -835,7 +835,7 @@ class Utils
      * getEntityFromUrl method gets entity ID from given URL if so
      *
      * @param array $url to get ID
-     * @return entity object or null
+     * @return \Cake\Datasource\EntityInterface $entity object or null
      */
     protected static function getEntityFromUrl(array $url)
     {
