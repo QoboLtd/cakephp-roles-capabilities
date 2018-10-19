@@ -15,8 +15,8 @@ use ArrayObject;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
-use Qobo\Utils\Utility\User;
 use Qobo\RolesCapabilities\FilterQuery;
+use Qobo\Utils\Utility\User;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {

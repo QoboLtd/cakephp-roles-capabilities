@@ -12,6 +12,7 @@
 namespace Qobo\RolesCapabilities;
 
 use InvalidArgumentException;
+
 /**
  * Capability Class
  */

@@ -12,9 +12,9 @@
 namespace Qobo\RolesCapabilities\Access;
 
 use Cake\Utility\Inflector;
+use Qobo\RolesCapabilities\Access\Utils;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
-use Qobo\RolesCapabilities\Access\Utils;
 
 /**
  *  CapabilitiesAccess class checks if user has access to specific entity
