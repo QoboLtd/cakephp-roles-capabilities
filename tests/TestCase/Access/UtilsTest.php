@@ -1,15 +1,15 @@
 <?php
 
-namespace RolesCapabilities\Test\TestCase\Access;
+namespace Qobo\RolesCapabilities\Test\TestCase\Access;
 
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Access\Utils;
+use Qobo\RolesCapabilities\Access\Utils;
 
 class UtilsTest extends TestCase
 {
     public $fixtures = [
-        'plugin.roles_capabilities.users',
+        'plugin.qobo/roles_capabilities.users',
     ];
 
     public function testGetTypeFull()

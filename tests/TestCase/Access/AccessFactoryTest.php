@@ -1,10 +1,10 @@
 <?php
 
-namespace RolesCapabilities\Test\TestCase\Access;
+namespace Qobo\RolesCapabilities\Test\TestCase\Access;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use RolesCapabilities\Access\AccessFactory;
+use Qobo\RolesCapabilities\Access\AccessFactory;
 
 class AccessFactoryTest extends TestCase
 {

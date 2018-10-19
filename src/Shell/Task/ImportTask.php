@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Shell\Task;
+namespace Qobo\RolesCapabilities\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
@@ -40,7 +40,7 @@ class ImportTask extends Shell
         }
 
         // get roles table
-        $table = TableRegistry::get('RolesCapabilities.Roles');
+        $table = TableRegistry::get('Qobo/RolesCapabilities.Roles');
 
         foreach ($roles as $role) {
             if (empty($role['name'])) {

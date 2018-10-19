@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities;
+namespace Qobo\RolesCapabilities;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
@@ -17,7 +17,7 @@ use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Access\Utils;
+use Qobo\RolesCapabilities\Access\Utils;
 
 /**
  * This class is responsible for filtering all application queries
@@ -356,10 +356,10 @@ final class FilterQuery
      */
     private function getPermissions()
     {
-        $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
+        $groups = TableRegistry::getTableLocator()->get('Qobo/RolesCapabilities.Capabilities')
             ->getUserGroups($this->user['id']);
 
-        $query = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions')
+        $query = TableRegistry::getTableLocator()->get('Qobo/RolesCapabilities.Permissions')
             ->find('all')
             ->select('foreign_key')
             ->where([
@@ -475,7 +475,7 @@ final class FilterQuery
             return $result;
         }
 
-        $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
+        $groups = TableRegistry::getTableLocator()->get('Qobo/RolesCapabilities.Capabilities')
             ->getUserGroups($this->user['id']);
 
         // check user capabilities against action's belongs capabilities

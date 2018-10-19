@@ -12,7 +12,7 @@
 
 echo $this->Html->css(
     [
-        'RolesCapabilities.style'
+        'Qobo/RolesCapabilities.style'
     ],
     [
         'block' => 'css'
@@ -23,7 +23,7 @@ echo $this->Html->css(
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4><?php echo $this->Html->link(__('Roles'), [
-                'plugin' => 'RolesCapabilities',
+                'plugin' => 'Qobo/RolesCapabilities',
                 'controller' => 'Roles',
                 'action' => 'index'
             ]) . ' &raquo; ' . h($role->name) ?>

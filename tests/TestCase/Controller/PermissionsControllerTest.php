@@ -1,8 +1,8 @@
 <?php
-namespace RolesCapabilities\Test\TestCase\Controller;
+namespace Qobo\RolesCapabilities\Test\TestCase\Controller;
 
 use Cake\TestSuite\IntegrationTestCase;
-use RolesCapabilities\Controller\PermissionsController;
+use Qobo\RolesCapabilities\Controller\PermissionsController;
 
 /**
  * RolesCapabilities\Controller\PermissionsController Test Case
@@ -16,8 +16,8 @@ class PermissionsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.permissions',
-        'plugin.roles_capabilities.users',
+        'plugin.qobo/roles_capabilities.permissions',
+        'plugin.qobo/roles_capabilities.users',
     ];
 
     /**

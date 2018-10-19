@@ -1,8 +1,8 @@
 <?php
-namespace RolesCapabilities\Test\App\Controller;
+namespace Qobo\RolesCapabilities\Test\App\Controller;
 
 use Cake\Controller\Controller;
-use RolesCapabilities\CapabilityTrait;
+use Qobo\RolesCapabilities\CapabilityTrait;
 
 class ArticlesController extends Controller
 {

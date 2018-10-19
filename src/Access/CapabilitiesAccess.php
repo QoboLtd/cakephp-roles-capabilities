@@ -9,11 +9,12 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Access;
+namespace Qobo\RolesCapabilities\Access;
 
 use Cake\Utility\Inflector;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
+use Qobo\RolesCapabilities\Access\Utils;
 
 /**
  *  CapabilitiesAccess class checks if user has access to specific entity

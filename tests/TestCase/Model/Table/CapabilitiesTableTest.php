@@ -1,10 +1,10 @@
 <?php
-namespace RolesCapabilities\Test\TestCase\Model\Table;
+namespace Qobo\RolesCapabilities\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Capability;
-use RolesCapabilities\Model\Table\CapabilitiesTable;
+use Qobo\RolesCapabilities\Capability;
+use Qobo\RolesCapabilities\Model\Table\CapabilitiesTable;
 
 /**
  * RolesCapabilities\Model\Table\CapabilitiesTable Test Case
@@ -18,8 +18,8 @@ class CapabilitiesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.capabilities',
-        'plugin.roles_capabilities.roles',
+        'plugin.qobo/roles_capabilities.capabilities',
+        'plugin.qobo/roles_capabilities.roles',
     ];
 
     /**
@@ -30,7 +30,7 @@ class CapabilitiesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Capabilities') ? [] : ['className' => 'RolesCapabilities\Model\Table\CapabilitiesTable'];
+        $config = TableRegistry::exists('Capabilities') ? [] : ['className' => 'Qobo\RolesCapabilities\Model\Table\CapabilitiesTable'];
         $this->Capabilities = TableRegistry::get('Capabilities', $config);
     }
 

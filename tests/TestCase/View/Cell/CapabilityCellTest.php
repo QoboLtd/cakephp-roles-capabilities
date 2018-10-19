@@ -1,8 +1,8 @@
 <?php
-namespace RolesCapabilities\Test\TestCase\View\Cell;
+namespace Qobo\RolesCapabilities\Test\TestCase\View\Cell;
 
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\View\Cell\CapabilityCell;
+use Qobo\RolesCapabilities\View\Cell\CapabilityCell;
 
 /**
  * RolesCapabilities\View\Cell\CapabilityCell Test Case

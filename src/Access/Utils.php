@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Access;
+namespace Qobo\RolesCapabilities\Access;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
@@ -20,12 +20,12 @@ use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use DirectoryIterator;
 use Exception;
+use Qobo\RolesCapabilities\Capability as Cap;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
 use ReflectionClass;
 use ReflectionMethod;
-use RolesCapabilities\Capability as Cap;
 
 /**
  *  Utils class with common methos for Capabilities
@@ -874,7 +874,7 @@ class Utils
     protected static function getCapabilitiesTable()
     {
         if (empty(static::$capabilitiesTable)) {
-            static::$capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+            static::$capabilitiesTable = TableRegistry::get('Qobo/RolesCapabilities.Capabilities');
         }
 
         return static::$capabilitiesTable;

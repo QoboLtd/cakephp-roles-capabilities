@@ -1,5 +1,5 @@
 <?php
-namespace RolesCapabilities\Test\Fixture;
+namespace Qobo\RolesCapabilities\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 

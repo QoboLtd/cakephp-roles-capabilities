@@ -9,18 +9,18 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Controller\Component;
+namespace Qobo\RolesCapabilities\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Access\Utils;
+use Qobo\RolesCapabilities\Access\Utils;
 
 trigger_error(
     sprintf(
         'Use %s directly for access checks and %s for retrieving capabilities, instead of %s.',
-        'RolesCapabilities\Access\AccessFactory',
-        'RolesCapabilities\Access\Utils',
-        'RolesCapabilities\Controller\Component\CapabilityComponent'
+        'Qobo\RolesCapabilities\Access\AccessFactory',
+        'Qobo\RolesCapabilities\Access\Utils',
+        'Qobo\RolesCapabilities\Controller\Component\CapabilityComponent'
     ),
     E_USER_DEPRECATED
 );
@@ -68,7 +68,7 @@ class CapabilityComponent extends Component
 
         $this->_controller = $this->_registry->getController();
         $this->_user = $this->Auth->user();
-        $this->_capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
+        $this->_capabilitiesTable = TableRegistry::get('Qobo/RolesCapabilities.Capabilities');
     }
 
     /**
@@ -80,7 +80,7 @@ class CapabilityComponent extends Component
     {
         trigger_error(
             sprintf(
-                '%s() is deprecated. Use RolesCapabilities\Access\Utils::getAllCapabilities() instead.',
+                '%s() is deprecated. Use Qobo\RolesCapabilities\Access\Utils::getAllCapabilities() instead.',
                 __METHOD__
             ),
             E_USER_DEPRECATED

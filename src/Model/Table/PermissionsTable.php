@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Model\Table;
+namespace Qobo\RolesCapabilities\Model\Table;
 
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;

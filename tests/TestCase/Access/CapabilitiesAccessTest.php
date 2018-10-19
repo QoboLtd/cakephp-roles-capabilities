@@ -1,17 +1,17 @@
 <?php
 
-namespace RolesCapabilities\Test\Access;
+namespace Qobo\RolesCapabilities\Test\Access;
 
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Access\CapabilitiesAccess;
-use RolesCapabilities\Capability;
+use Qobo\RolesCapabilities\Access\CapabilitiesAccess;
+use Qobo\RolesCapabilities\Capability;
 
 class CapabilitiesAccessTest extends TestCase
 {
     public $fixtures = [
-        'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.groups',
-        'plugin.roles_capabilities.groups_users',
+        'plugin.qobo/roles_capabilities.users',
+        'plugin.qobo/roles_capabilities.groups',
+        'plugin.qobo/roles_capabilities.groups_users',
     ];
 
     public function setUp()

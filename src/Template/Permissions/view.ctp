@@ -13,7 +13,7 @@
 <section class="content-header">
     <h1><?= $this->Html->link(
         __(' Permission'),
-        ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'index']
+        ['plugin' => 'Qobo/RolesCapabilities', 'controller' => 'Permissions', 'action' => 'index']
     ) . ' &raquo; ' . h($permission->model) ?></h1>
 </section>
 <section class="content">

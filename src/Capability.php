@@ -9,8 +9,9 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities;
+namespace Qobo\RolesCapabilities;
 
+use InvalidArgumentException;
 /**
  * Capability Class
  */
@@ -97,7 +98,7 @@ class Capability
     public function setName($name)
     {
         if (!is_string($name) || empty($name)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
         $this->name = $name;
 

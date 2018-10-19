@@ -9,9 +9,9 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Controller;
+namespace Qobo\RolesCapabilities\Controller;
 
-use RolesCapabilities\Access\Utils;
+use Qobo\RolesCapabilities\Access\Utils;
 
 /**
  * Roles Controller

@@ -9,13 +9,13 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Shell\Task;
+namespace Qobo\RolesCapabilities\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use RolesCapabilities\Access\Utils;
+use Qobo\RolesCapabilities\Access\Utils;
 
 /**
  * Assign Task
@@ -50,7 +50,7 @@ class AssignTask extends Shell
         $this->info('Configured admin role is [' . $this->role . ']');
 
         // get roles table
-        $table = TableRegistry::get('RolesCapabilities.Roles');
+        $table = TableRegistry::get('Qobo/RolesCapabilities.Roles');
 
         $role = $this->getAdminsRoleEntity($table);
         if (empty($role)) {

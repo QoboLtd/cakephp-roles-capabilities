@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\View\Cell;
+namespace Qobo\RolesCapabilities\View\Cell;
 
 use Cake\Utility\Inflector;
 use Cake\View\Cell;

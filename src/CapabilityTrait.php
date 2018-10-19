@@ -9,13 +9,13 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities;
+namespace Qobo\RolesCapabilities;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
-use RolesCapabilities\Access\AccessFactory;
-use RolesCapabilities\Access\Utils;
+use Qobo\RolesCapabilities\Access\AccessFactory;
+use Qobo\RolesCapabilities\Access\Utils;
 
 trait CapabilityTrait
 {

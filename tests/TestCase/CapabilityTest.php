@@ -1,8 +1,8 @@
 <?php
-namespace RolesCapabilities\Test\TestCase;
+namespace Qobo\RolesCapabilities\Test\TestCase;
 
 use PHPUnit\Framework\TestCase;
-use RolesCapabilities\Capability;
+use Qobo\RolesCapabilities\Capability;
 
 class CapabilityTest extends TestCase
 {

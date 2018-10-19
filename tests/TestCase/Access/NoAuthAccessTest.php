@@ -1,10 +1,10 @@
 <?php
 
-namespace RolesCapabilities\Test\TestCase\Access;
+namespace Qobo\RolesCapabilities\Test\TestCase\Access;
 
 use Cake\Core\Configure;
 use PHPUnit\Framework\TestCase;
-use RolesCapabilities\Access\NoAuthAccess;
+use Qobo\RolesCapabilities\Access\NoAuthAccess;
 
 class NoAuthAccessTest extends TestCase
 {

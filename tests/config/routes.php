@@ -1,5 +1,5 @@
 <?php
-namespace RolesCapabilities\Test\App\Config;
+namespace Qobo\RolesCapabilities\Test\App\Config;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;

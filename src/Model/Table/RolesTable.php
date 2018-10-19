@@ -9,12 +9,12 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Model\Table;
+namespace Qobo\RolesCapabilities\Model\Table;
 
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use RolesCapabilities\Model\Entity\Role;
+use Qobo\RolesCapabilities\Model\Entity\Role;
 
 /**
  * Roles Model
@@ -45,7 +45,7 @@ class RolesTable extends Table
 
         $this->hasMany('Capabilities', [
             'foreignKey' => 'role_id',
-            'className' => 'RolesCapabilities.Capabilities',
+            'className' => 'Qobo/RolesCapabilities.Capabilities',
             'dependent' => true
         ]);
         $this->belongsToMany('Groups', [

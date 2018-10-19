@@ -1,9 +1,9 @@
 <?php
 
-namespace RolesCapabilities\Test\Access;
+namespace Qobo\RolesCapabilities\Test\Access;
 
 use PHPUnit\Framework\TestCase;
-use RolesCapabilities\Access\SupervisorAccess;
+use Qobo\RolesCapabilities\Access\SupervisorAccess;
 
 class SupervisorAccessTest extends TestCase
 {

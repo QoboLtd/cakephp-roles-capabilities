@@ -9,14 +9,14 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Event\Model;
+namespace Qobo\RolesCapabilities\Event\Model;
 
 use ArrayObject;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
 use Qobo\Utils\Utility\User;
-use RolesCapabilities\FilterQuery;
+use Qobo\RolesCapabilities\FilterQuery;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {

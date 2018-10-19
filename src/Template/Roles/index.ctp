@@ -40,7 +40,7 @@ echo $this->Html->scriptBlock(
                 <div class="btn-group btn-group-sm" role="group">
                 <?= $this->Html->link(
                     '<i class="fa fa-plus"></i> ' . __('Add'),
-                    ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'add'],
+                    ['plugin' => 'Qobo/RolesCapabilities', 'controller' => 'Roles', 'action' => 'add'],
                     ['escape' => false, 'title' => __('Add'), 'class' => 'btn btn-default']
                 ); ?>
                 </div>
@@ -82,20 +82,20 @@ echo $this->Html->scriptBlock(
                             <div class="btn-group btn-group-xs" role="group">
                             <?= $this->Html->link(
                                 '<i class="fa fa-eye"></i>',
-                                ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'view', $role->id],
+                                ['plugin' => 'Qobo/RolesCapabilities', 'controller' => 'Roles', 'action' => 'view', $role->id],
                                 ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                             ); ?>
                             <?php if (!$role->deny_edit) : ?>
                                 <?= $this->Html->link(
                                     '<i class="fa fa-pencil"></i>',
-                                    ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'edit', $role->id],
+                                    ['plugin' => 'Qobo/RolesCapabilities', 'controller' => 'Roles', 'action' => 'edit', $role->id],
                                     ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ); ?>
                             <?php endif; ?>
                             <?php if (!$role->deny_delete) : ?>
                                 <?= $this->Form->postLink(
                                     '<i class="fa fa-trash"></i>',
-                                    ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'delete', $role->id],
+                                    ['plugin' => 'Qobo/RolesCapabilities', 'controller' => 'Roles', 'action' => 'delete', $role->id],
                                     [
                                         'confirm' => __('Are you sure you want to delete {0}?', $role->name),
                                         'title' => __('Delete'),
