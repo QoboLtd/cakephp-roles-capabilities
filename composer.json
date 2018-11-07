@@ -1,33 +1,58 @@
 {
     "name": "qobo/cakephp-roles-capabilities",
     "description": "Roles and Capabilities plugin for CakePHP",
+    "keywords": ["cakephp", "roles", "acl", "security"],
     "type": "cakephp-plugin",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Qobo Ltd",
-			"email": "info@qobo.biz",
-			"homepage": "https://www.qobo.biz",
-			"role": "Developer"
-		}
-	],
+    "license": "MIT",
+    "homepage": "https://www.qobo.biz",
+    "authors": [
+        {
+            "name": "Qobo Ltd",
+            "email": "support@qobo.biz",
+            "homepage": "https://www.qobo.biz",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/QoboLtd/cakephp-roles-capabilities/issues",
+        "source": "https://github.com/QoboLtd/cakephp-roles-capabilities"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
     "require": {
-        "qobo/cakephp-utils": "^9.0",
-        "qobo/cakephp-groups": "^10.0"
+        "qobo/cakephp-utils": "^10.0",
+        "qobo/cakephp-groups": "^11.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0",
-        "cakephp/cakephp-codesniffer": "^3.0"
+        "qobo/cakephp-composer-dev": "^v1.0"
     },
     "autoload": {
         "psr-4": {
-            "RolesCapabilities\\": "src"
+            "RolesCapabilities\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "RolesCapabilities\\Test\\": "tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+            "RolesCapabilities\\Test\\": "tests/",
+            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
-    }
+    },
+    "scripts": {
+        "test": [
+            "phpcs",
+            "phpunit --no-coverage"
+        ],
+        "test-coverage": [
+            "phpcs",
+            "phpunit"
+        ],
+        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
+    },
+    "scripts-descriptions": {
+        "test": "Runs phpcs and phpunit without coverage",
+        "test-coverage": "Runs phpcs and phpunit with coverage enabled"
+    },
+    "prefer-stable": true
 }
