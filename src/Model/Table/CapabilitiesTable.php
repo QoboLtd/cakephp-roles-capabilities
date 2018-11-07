@@ -40,9 +40,9 @@ class CapabilitiesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('qobo_capabilities');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('qobo_capabilities');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',

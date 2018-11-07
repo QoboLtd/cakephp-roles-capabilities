@@ -36,9 +36,9 @@ class RolesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('qobo_roles');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('qobo_roles');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');

@@ -52,9 +52,9 @@ class RolesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->assertEquals($this->Roles->table(), 'qobo_roles', 'Table name');
-        $this->assertEquals($this->Roles->displayField(), 'name', 'Display field');
-        $this->assertEquals($this->Roles->primaryKey(), 'id', 'Primary key');
+        $this->assertEquals($this->Roles->getTable(), 'qobo_roles', 'Table name');
+        $this->assertEquals($this->Roles->getDisplayField(), 'name', 'Display field');
+        $this->assertEquals($this->Roles->getPrimaryKey(), 'id', 'Primary key');
     }
 
     /**
@@ -67,7 +67,7 @@ class RolesTableTest extends TestCase
         $role = $this->Roles->newEntity([
             'name' => 'test',
         ]);
-        $this->assertCount(0, $role->errors(), 'No errors');
+        $this->assertCount(0, $role->getErrors(), 'No errors');
         $role = $this->Roles->newEntity([
             'created' => date('Y-m-d H:i:s'),
         ]);
@@ -75,7 +75,7 @@ class RolesTableTest extends TestCase
             'name' => [
                 '_required' => 'This field is required'
             ]
-        ], $role->errors(), 'Missing required property *name* error');
+        ], $role->getErrors(), 'Missing required property *name* error');
     }
 
     /**
@@ -100,11 +100,11 @@ class RolesTableTest extends TestCase
             'name' => [
                 'unique' => 'The provided value is invalid'
             ]
-        ], $role2->errors(), 'Non unique role name');
+        ], $role2->getErrors(), 'Non unique role name');
 
         $role1 = $this->Roles->patchEntity($role1, ['description' => 'New description']);
         $this->Roles->save($role1);
-        $this->assertArraySubset([], $role1->errors(), 'Non editable entity');
+        $this->assertArraySubset([], $role1->getErrors(), 'Non editable entity');
     }
 
     public function testPrepareCapabilities()
