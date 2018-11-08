@@ -13,14 +13,12 @@ namespace RolesCapabilities\Access;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
-use DirectoryIterator;
-use Exception;
+use InvalidArgumentException;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
@@ -605,7 +603,7 @@ class Utils
     {
         $result = [];
 
-        if (is_null($controllerName) || !is_string($controllerName)) {
+        if (empty($controllerName)) {
             return $result;
         }
 
@@ -803,6 +801,7 @@ class Utils
                 $table = TableRegistry::get($tableName);
                 $entity = $table->get($id);
             } catch (InvalidPrimaryKeyException $e) {
+                Log::warning("Failed to fetch record with id [$id] from table [$tableName]");
             }
         }
 
@@ -902,13 +901,18 @@ class Utils
      */
     public static function getTableParentModules(Table $table): array
     {
-        list(, $moduleName) = pluginSplit($table->registryAlias());
-
-        $config = new ModuleConfig(ConfigType::MODULE(), $moduleName);
-        $moduleConfig = $config->parse();
         $result = [];
-        if (!empty($moduleConfig->table->permissions_parent_modules)) {
-            $result = $moduleConfig->table->permissions_parent_modules;
+
+        list(, $moduleName) = pluginSplit($table->getRegistryAlias());
+
+        try {
+            $config = new ModuleConfig(ConfigType::MODULE(), $moduleName);
+            $moduleConfig = $config->parse();
+            if (!empty($moduleConfig->table->permissions_parent_modules)) {
+                $result = $moduleConfig->table->permissions_parent_modules;
+            }
+        } catch (InvalidArgumentException $e) {
+            return $result;
         }
 
         return $result;
