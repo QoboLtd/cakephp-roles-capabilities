@@ -12,6 +12,22 @@ class UtilsTest extends TestCase
         'plugin.roles_capabilities.users',
     ];
 
+    public function testGetControllerFullName(): void
+    {
+        // Empty URL
+        $result = Utils::getControllerFullName([]);
+        $this->assertTrue(is_null($result), "getControllerFullName() returns a non-null result for empty controller");
+
+        // Non-existing controller
+        $result = Utils::getControllerFullName(['controller' => 'NonExistingController']);
+        $this->assertTrue(is_null($result), "getControllerFullName() returns a non-null result for non-existing controller");
+
+        // Existing controller
+        $result = Utils::getControllerFullName(['controller' => 'App']);
+        $this->assertTrue(is_string($result), "getControllerFullName() returns a non-string result for existing controller");
+        $this->assertEquals('RolesCapabilities\\Test\\App\Controller\\AppController', $result, "getControllerFullName() returns a wrong name for existing controller");
+    }
+
     public function testGetTypeFull(): void
     {
         // This returns a static constant.  But if the value of that constant
@@ -154,11 +170,42 @@ class UtilsTest extends TestCase
     }
 
     /**
+     * @dataProvider getHumanizeActions
+     */
+    public function testHumanizeActionName(string $action, string $expected): void
+    {
+        $actual = Utils::humanizeActionName($action);
+        $this->assertTrue(is_string($actual), "humanizeActionName() returned a non-string result");
+        $this->assertEquals($expected, $actual, "humanizeActionName() is broken");
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getHumanizeActions(): array
+    {
+        return [
+            ['doNoEvil', 'do no evil'],
+            ['index', 'list'],
+            ['info', 'view info'],
+            ['changelog', 'view changelog'],
+        ];
+    }
+
+    public function testGetControllerPublicMethodsBadController(): void
+    {
+        $result = Utils::getControllerPublicMethods('Foobar');
+        $this->assertTrue(is_array($result), "getControllerPublicMethods() returned a non-array result");
+        $this->assertTrue(empty($result), "getControllerMethods() returned a non-empty result for non-existing controller");
+    }
+
+    /**
      * @dataProvider getControllerMethods
      */
     public function testGetControllerPublicMethods(string $controller, string $expected): void
     {
         $result = Utils::getControllerPublicMethods($controller);
+        $this->assertTrue(is_array($result), "getControllerPublicMethods() returned a non-array result");
         $this->assertTrue(in_array($expected, $result));
     }
 
@@ -174,32 +221,37 @@ class UtilsTest extends TestCase
 
     public function testFilterSkippedActions(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $result = Utils::filterSkippedActions('Foobar', ['blah']);
+        $this->assertTrue(is_array($result), "filterSkippedActions() returned a non-array result");
+    }
+
+    public function testGetActions(): void
+    {
+        $result = Utils::getActions('Foobar', ['blah']);
+        $this->assertTrue(is_array($result), "getActions() returned a non-array result");
     }
 
     public function testGetAllCapabilities(): void
     {
-        // Info: this test fails when run on the application level, since the $result is way different.
-        $this->markTestSkipped();
-
         Configure::write('CsvMigrations.modules.path', '');
 
-        $result = [];
-        foreach (Utils::getAllCapabilities() as $groupName => $groupCaps) {
-            foreach ($groupCaps as $type => $caps) {
-                foreach ($caps as $cap) {
-                    $result = array_merge($result, [$cap->getName()]);
-                }
-            }
-        }
+        $result = Utils::getAllCapabilities();
+        $this->assertTrue(is_array($result), "getAllCapabilities() returned a non-array result");
+        $this->assertFalse(empty($result), "getAllCapabilities() returned an empty result");
+    }
 
-        $name = Utils::generateCapabilityControllerName('RolesCapabilities\Test\App\Controller\ArticlesController');
+    public function testFetchUserCapabilities(): void
+    {
+        $result = Utils::fetchUserCapabilities('00000000-0000-0000-0000-000000000001');
+        $this->assertTrue(is_array($result), "fetchUserCapabilities() returned a non-array result");
+        $this->assertTrue(empty($result), "fetchUserCapabilities() returned a non-empty result");
+    }
 
-        $needle = Utils::generateCapabilityName($name, 'index');
-        $this->assertContains($needle, $result);
-
-        $needle = Utils::generateCapabilityName($name, 'managePermissions');
-        $this->assertContains($needle, $result);
+    public function testGetCapabilities(): void
+    {
+        $result = Utils::getCapabilities('');
+        $this->assertTrue(is_array($result), "getCapabilities() returned a non-array result for empty controller");
+        $this->assertTrue(empty($result), "getCapabilities() returned a non-empty result for empty controller");
     }
 
     public function testGetReportToUsers(): void
