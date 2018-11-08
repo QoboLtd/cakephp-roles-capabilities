@@ -40,11 +40,11 @@ class CapabilitiesAccess extends AuthenticatedAccess
     /**
      *  CheckAccess Capabilities
      *
-     * @param array $url    request URL
-     * @param array $user   user's session data
+     * @param mixed[] $url    request URL
+     * @param mixed[] $user   user's session data
      * @return bool         true or false
      */
-    public function hasAccess($url, $user)
+    public function hasAccess(array $url, array $user): bool
     {
         $result = parent::hasAccess($url, $user);
         if (!$result) {
@@ -93,13 +93,13 @@ class CapabilitiesAccess extends AuthenticatedAccess
     /**
      *  hasParentAccess method
      *
-     * @param array $url    request URL
+     * @param mixed[] $url    request URL
      * @return bool         true or false
      */
-    protected function hasParentAccess($url)
+    protected function hasParentAccess(array $url): bool
     {
         $config = new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($url['controller']));
-        $moduleConfig = (array)json_decode(json_encode($config->parse()), true);
+        $moduleConfig = $config->parseToArray();
 
         $parents = $moduleConfig['table']['permissions_parent_modules'];
 
@@ -109,9 +109,9 @@ class CapabilitiesAccess extends AuthenticatedAccess
     /**
      * Method that retrieves specified user's capabilities
      * @param  string $userId user id
-     * @return array
+     * @return mixed[]
      */
-    public function getUserCapabilities($userId)
+    public function getUserCapabilities(string $userId): array
     {
         if (empty($this->userCapabilities)) {
             $this->userCapabilities = Utils::fetchUserCapabilities($userId);

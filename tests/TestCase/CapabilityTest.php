@@ -6,7 +6,7 @@ use RolesCapabilities\Capability;
 
 class CapabilityTest extends TestCase
 {
-    public function testConstructorOptions()
+    public function testConstructorOptions(): void
     {
         $options = [
             'label' => 'Foobar',
@@ -19,7 +19,7 @@ class CapabilityTest extends TestCase
         $this->assertEquals('some_field', $cap->getField(), "Constructor option for field is broken");
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $cap = new Capability('Foobar');
         $result = (string)$cap;
@@ -29,20 +29,20 @@ class CapabilityTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testSetNameException()
+    public function testSetNameException(): void
     {
         $cap = new Capability('foobar');
         $cap->setName('');
     }
 
-    public function testSetName()
+    public function testSetName(): void
     {
         $cap = new Capability('Blah');
         $cap->setName('Foobar');
         $this->assertEquals('Foobar', $cap->getName(), "Capability name setting is broken");
     }
 
-    public function testSetlabel()
+    public function testSetlabel(): void
     {
         $cap = new Capability('Awesome_Capability');
         $cap->setLabel('My Capability');
@@ -52,14 +52,14 @@ class CapabilityTest extends TestCase
         $this->assertEquals('Awesome Capability', $cap->getLabel(), "Capability label fallback is broken");
     }
 
-    public function testSetDescription()
+    public function testSetDescription(): void
     {
         $cap = new Capability('Foobar');
         $cap->setDescription('Blah');
         $this->assertEquals('Blah', $cap->getDescription(), "Capability description setting is broken");
     }
 
-    public function testSetField()
+    public function testSetField(): void
     {
         $cap = new Capability('Foobar');
         $cap->setField('some_field');

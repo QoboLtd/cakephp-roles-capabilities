@@ -49,7 +49,9 @@ class AssignTask extends Shell
 
         $this->info('Configured admin role is [' . $this->role . ']');
 
-        // get roles table
+        /**
+         * @var \RolesCapabilities\Model\Table\RolesTable
+         */
         $table = TableRegistry::get('RolesCapabilities.Roles');
 
         $role = $this->getAdminsRoleEntity($table);
@@ -92,9 +94,9 @@ class AssignTask extends Shell
      * Get all capabilities.
      *
      * @param  \Cake\ORM\Table $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    protected function getAllCapabilities(Table $table)
+    protected function getAllCapabilities(Table $table): array
     {
         $result = [];
 

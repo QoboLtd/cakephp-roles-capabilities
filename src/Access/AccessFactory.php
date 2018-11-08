@@ -42,7 +42,7 @@ class AccessFactory
     /**
      *  Constructor
      *
-     * @param array $rules  list of rules to override defalt ones
+     * @param mixed[] $rules  list of rules to override defalt ones
      */
     public function __construct(array $rules = [])
     {
@@ -58,11 +58,11 @@ class AccessFactory
      *
      *  Implement basic logic to check user's access
      *
-     * @param array $url    URL user tries to access for
-     * @param array $user   user's session data
+     * @param mixed[] $url    URL user tries to access for
+     * @param mixed[] $user   user's session data
      * @return bool         true in case of access is granted and false otherwise
      */
-    public function hasAccess($url = [], $user = [])
+    public function hasAccess(array $url = [], array $user = []): bool
     {
         foreach ($this->getCheckRules() as $rule) {
             $result = $this->getCheckRuleObject($rule)->hasAccess($url, $user);
@@ -78,9 +78,9 @@ class AccessFactory
     /**
      *  Return a list of rules to check access
      *
-     * @return array    list of rules
+     * @return mixed[]    list of rules
      */
-    public function getCheckRules()
+    public function getCheckRules(): array
     {
         return $this->checkRules;
     }
@@ -89,9 +89,9 @@ class AccessFactory
      *  Return rule object based on its name
      *
      * @param string $ruleName name of rule
-     * @return object rule object or throw exception
+     * @return \RolesCapabilities\Access\AccessInterface rule object or throw exception
      */
-    protected function getCheckRuleObject($ruleName)
+    protected function getCheckRuleObject(string $ruleName): \RolesCapabilities\Access\AccessInterface
     {
         $interface = __NAMESPACE__ . '\\' . static::CHECK_ACCESS_INTERFACE;
         $ruleClass = __NAMESPACE__ . '\\' . $ruleName . static::CHECKER_SUFFIX;

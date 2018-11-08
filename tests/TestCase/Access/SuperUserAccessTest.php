@@ -5,6 +5,9 @@ namespace RolesCapabilities\Test\Access;
 use PHPUnit\Framework\TestCase;
 use RolesCapabilities\Access\SuperUserAccess;
 
+/**
+ * @property \RolesCapabilities\Access\SuperUserAccess $instance
+ */
 class SuperUserAccessTest extends TestCase
 {
     public function setUp()
@@ -13,7 +16,7 @@ class SuperUserAccessTest extends TestCase
         $this->instance = new SuperUserAccess();
     }
 
-    public function testHasAccess()
+    public function testHasAccess(): void
     {
         $user = [
             'id' => '00000000-0000-0000-0000-000000000002',

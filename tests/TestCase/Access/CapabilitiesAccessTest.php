@@ -6,6 +6,9 @@ use Cake\TestSuite\TestCase;
 use RolesCapabilities\Access\CapabilitiesAccess;
 use RolesCapabilities\Capability;
 
+/**
+ * @property \RolesCapabilities\Access\CapabilitiesAccess $instance
+ */
 class CapabilitiesAccessTest extends TestCase
 {
     public $fixtures = [
@@ -20,7 +23,7 @@ class CapabilitiesAccessTest extends TestCase
         $this->instance = new CapabilitiesAccess();
     }
 
-    public function testHasAccess()
+    public function testHasAccess(): void
     {
         $url = [
             'plugin' => null,
@@ -39,7 +42,7 @@ class CapabilitiesAccessTest extends TestCase
         $this->assertTrue($this->instance->hasAccess($url, $user));
     }
 
-    public function testGetUserCapabilities()
+    public function testGetUserCapabilities(): void
     {
         $list = $this->instance->getUserCapabilities('00000000-0000-0000-0000-000000000002');
 
@@ -47,7 +50,7 @@ class CapabilitiesAccessTest extends TestCase
         $this->assertCount(0, $list);
     }
 
-    public function testHasParentAccess()
+    public function testHasParentAccess(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

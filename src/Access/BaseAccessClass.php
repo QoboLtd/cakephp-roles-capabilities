@@ -19,9 +19,9 @@ abstract class BaseAccessClass implements AccessInterface
     /**
      *  Abstract method to check user's access for specified URL
      *
-     * @param array $url    URL client tries to access
-     * @param array $user   user's session
+     * @param mixed[] $url    URL client tries to access
+     * @param mixed[] $user   user's session
      * @return bool         true in case of user has access to URL and false if not
      */
-    abstract public function hasAccess($url, $user);
+    abstract public function hasAccess(array $url, array $user): bool;
 }

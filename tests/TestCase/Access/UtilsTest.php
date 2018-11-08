@@ -12,7 +12,7 @@ class UtilsTest extends TestCase
         'plugin.roles_capabilities.users',
     ];
 
-    public function testGetTypeFull()
+    public function testGetTypeFull(): void
     {
         // This returns a static constant.  But if the value of that constant
         // changes accidentally, the reprecussions may include an incorrectly
@@ -22,7 +22,7 @@ class UtilsTest extends TestCase
         $this->assertEquals('full', $result, "Full type capability is not 'full'");
     }
 
-    public function testGetTypeOwner()
+    public function testGetTypeOwner(): void
     {
         // This returns a static constant.  But if the value of that constant
         // changes accidentally, the reprecussions may include an incorrectly
@@ -32,19 +32,19 @@ class UtilsTest extends TestCase
         $this->assertEquals('owner', $result, "Owner type capability is not 'owner'");
     }
 
-    public function testGetTypeBelongs()
+    public function testGetTypeBelongs(): void
     {
         $result = Utils::getTypeBelongs();
         $this->assertEquals('belongs', $result, "Belongs to capability is not 'belongs_to'");
     }
 
-    public function testGetTypeParent()
+    public function testGetTypeParent(): void
     {
         $result = Utils::getTypeParent();
         $this->assertEquals('parent', $result, "Parent capability is not 'parent'");
     }
 
-    public function testGetCakeControllerActions()
+    public function testGetCakeControllerActions(): void
     {
         /* Actions in the CakePHP's Controller class can vary,
          * depending on the version of CakePHP, installed plugins,
@@ -72,13 +72,16 @@ class UtilsTest extends TestCase
     /**
      * @dataProvider getCapabilityControllers
      */
-    public function testGenerateCapabilityControllerName($controller, $expected)
+    public function testGenerateCapabilityControllerName(string $controller, string $expected): void
     {
         $result = Utils::generateCapabilityControllerName($controller);
         $this->assertEquals($expected, $result);
     }
 
-    public function getCapabilityControllers()
+    /**
+     * @return mixed[]
+     */
+    public function getCapabilityControllers(): array
     {
         return [
             ['App\Controller\AppController', 'App_Controller_AppController'],
@@ -87,7 +90,10 @@ class UtilsTest extends TestCase
         ];
     }
 
-    public function getCapabilityNames()
+    /**
+     * @return mixed[]
+     */
+    public function getCapabilityNames(): array
     {
         return [
             ['AppController', 'index', 'cap__AppController__index'],
@@ -99,13 +105,16 @@ class UtilsTest extends TestCase
     /**
      * @dataProvider getCapabilityNames
      */
-    public function testGenerateCapabilityName($controller, $action, $expected)
+    public function testGenerateCapabilityName(string $controller, string $action, string $expected): void
     {
         $result = Utils::generateCapabilityName($controller, $action);
         $this->assertEquals($expected, $result);
     }
 
-    public function getCapabilityLabels()
+    /**
+     * @return mixed[]
+     */
+    public function getCapabilityLabels(): array
     {
         return [
             ['AppController', 'index', 'Cap AppController index'],
@@ -117,13 +126,16 @@ class UtilsTest extends TestCase
     /**
      * @dataProvider getCapabilityLabels
      */
-    public function testGenerateCapabilityLabel($controller, $action, $expected)
+    public function testGenerateCapabilityLabel(string $controller, string $action, string $expected): void
     {
         $result = Utils::generateCapabilityLabel($controller, $action);
         $this->assertEquals($expected, $result);
     }
 
-    public function getCapabilityDescriptions()
+    /**
+     * @return mixed[]
+     */
+    public function getCapabilityDescriptions(): array
     {
         return [
             ['AppController', 'index', 'Allow index'],
@@ -135,7 +147,7 @@ class UtilsTest extends TestCase
     /**
      * @dataProvider getCapabilityDescriptions
      */
-    public function testGenerateCapabilityDescription($controller, $action, $expected)
+    public function testGenerateCapabilityDescription(string $controller, string $action, string $expected): void
     {
         $result = Utils::generateCapabilityDescription($controller, $action);
         $this->assertEquals($expected, $result);
@@ -144,25 +156,28 @@ class UtilsTest extends TestCase
     /**
      * @dataProvider getControllerMethods
      */
-    public function getControllerPublicMethodsTest($controller, $expected)
+    public function testGetControllerPublicMethods(string $controller, string $expected): void
     {
         $result = Utils::getControllerPublicMethods($controller);
-        $this->assertArrayHasKey($expected, $result);
+        $this->assertTrue(in_array($expected, $result));
     }
 
-    public function getControllerMethods()
+    /**
+     * @return mixed[]
+     */
+    public function getControllerMethods(): array
     {
         return [
-            ['AppControllerdddd', 'beforeFilter444']
+            [__CLASS__, __FUNCTION__]
         ];
     }
 
-    public function filterSkippedActionsTest()
+    public function testFilterSkippedActions(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
 
-    public function testGetAllCapabilities()
+    public function testGetAllCapabilities(): void
     {
         // Info: this test fails when run on the application level, since the $result is way different.
         $this->markTestSkipped();
@@ -187,7 +202,7 @@ class UtilsTest extends TestCase
         $this->assertContains($needle, $result);
     }
 
-    public function testGetReportToUsers()
+    public function testGetReportToUsers(): void
     {
         $list = Utils::getReportToUsers('00000000-0000-0000-0000-000000000002');
         $this->assertTrue(is_array($list), 'Return an aray');

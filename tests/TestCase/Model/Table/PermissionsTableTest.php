@@ -37,7 +37,11 @@ class PermissionsTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::exists('Permissions') ? [] : ['className' => 'RolesCapabilities\Model\Table\PermissionsTable'];
-        $this->Permissions = TableRegistry::get('Permissions', $config);
+        /**
+         * @var \RolesCapabilities\Model\Table\PermissionsTable $table
+         */
+        $table = TableRegistry::get('Permissions', $config);
+        $this->Permissions = $table;
     }
 
     /**
@@ -57,7 +61,7 @@ class PermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -67,7 +71,7 @@ class PermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -77,7 +81,7 @@ class PermissionsTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testBuildRules(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

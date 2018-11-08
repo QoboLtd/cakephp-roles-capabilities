@@ -23,11 +23,11 @@ class SupervisorAccess extends AuthenticatedAccess
     /**
      *  hasAccess for superviser user
      *
-     * @param array $url    URL user tries to access for
-     * @param array $user   user's session data
-     * @return true in case of superuser and false if not
+     * @param mixed[] $url    URL user tries to access for
+     * @param mixed[] $user   user's session data
+     * @return bool true in case of superuser and false if not
      */
-    public function hasAccess($url, $user)
+    public function hasAccess(array $url, array $user): bool
     {
         $result = parent::hasAccess($url, $user);
 

@@ -12,6 +12,7 @@
 namespace RolesCapabilities\Controller;
 
 use Cake\Utility\Inflector;
+use InvalidArgumentException;
 
 /**
  * Permissions Controller
@@ -21,14 +22,14 @@ use Cake\Utility\Inflector;
 class PermissionsController extends AppController
 {
     /**
-     * @var allowedActions
+     * @var array allowedActions
      */
     protected $allowedActions = ['view', 'edit', 'delete'];
 
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|void
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
@@ -54,10 +55,10 @@ class PermissionsController extends AppController
      * View method
      *
      * @param string|null $id Permission id.
-     * @return \Cake\Network\Response|void
+     * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(string $id = null)
     {
         $permission = $this->Permissions->get($id);
 
@@ -68,7 +69,8 @@ class PermissionsController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @throws \InvalidArgumentException when neither 'group_id', nor 'user_id' are present in request data
+     * @return \Cake\Http\Response|void|null Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -80,7 +82,7 @@ class PermissionsController extends AppController
             $data['owner_model'] = 'Users';
             $data['owner_foreign_key'] = $data['user_id'];
         } else {
-            throw new \InvalidArgumentException("Missing user or group!");
+            throw new InvalidArgumentException("Missing user or group!");
         }
 
         $data['creator'] = $this->Auth->user('id');
@@ -88,11 +90,11 @@ class PermissionsController extends AppController
         if ($this->request->is('post')) {
             $permission = $this->Permissions->patchEntity($permission, $data);
             if ($this->Permissions->save($permission)) {
-                $this->Flash->success(__('The  permission has been saved.'));
+                $this->Flash->success((string)__('The  permission has been saved.'));
 
                 return $this->redirect($this->referer());
             }
-            $this->Flash->error(__('The  permission could not be saved. Please, try again.'));
+            $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
         }
         $users[''] = '';
         asort($users);
@@ -108,22 +110,21 @@ class PermissionsController extends AppController
      * Edit method
      *
      * @param string|null $id  Permission id.
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects on successful edit, renders view otherwise.
      */
-    public function edit($id = null)
+    public function edit(string $id = null)
     {
         $permission = $this->Permissions->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $permission = $this->Permissions->patchEntity($Permission, $this->request->getData());
+            $permission = $this->Permissions->patchEntity($permission, $this->request->getData());
             if ($this->Permissions->save($permission)) {
-                $this->Flash->success(__('The  permission has been saved.'));
+                $this->Flash->success((string)__('The  permission has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The  permission could not be saved. Please, try again.'));
+            $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
         }
         $this->set(compact('permission'));
         $this->set('_serialize', ['permission']);
@@ -133,18 +134,17 @@ class PermissionsController extends AppController
      * Delete method
      *
      * @param string|null $id  Permission id.
-     * @return \Cake\Network\Response|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects to index.
      */
-    public function delete($id = null)
+    public function delete(string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $data = $this->request->getData();
         $permission = $this->Permissions->get($id);
         if ($this->Permissions->delete($permission)) {
-            $this->Flash->success(__('The  permission has been deleted.'));
+            $this->Flash->success((string)__('The  permission has been deleted.'));
         } else {
-            $this->Flash->error(__('The  permission could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__('The  permission could not be deleted. Please, try again.'));
         }
 
         $this->redirect($this->referer());

@@ -13,6 +13,7 @@ namespace RolesCapabilities\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -39,7 +40,9 @@ class ImportTask extends Shell
             return true;
         }
 
-        // get roles table
+        /**
+         * @var \RolesCapabilities\Model\Table\RolesTable $table
+         */
         $table = TableRegistry::get('RolesCapabilities.Roles');
 
         foreach ($roles as $role) {
@@ -55,6 +58,9 @@ class ImportTask extends Shell
 
             $this->info("Role [" . $role['name'] . "] does not exist. Creating.");
             $entity = $table->newEntity();
+            /**
+             * @var \RolesCapabilities\Model\Entity\Role $entity
+             */
             $entity = $table->patchEntity($entity, $role);
 
             $group = $this->getGroupByRoleName($entity->name);
@@ -85,9 +91,9 @@ class ImportTask extends Shell
      * Fetch group entity based on role name
      *
      * @param  string $name Role name
-     * @return \Cake\ORM\Entity
+     * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function getGroupByRoleName($name)
+    protected function getGroupByRoleName(string $name)
     {
         $result = TableRegistry::get('Groups.Groups')->findByName($name)->first();
 
@@ -97,18 +103,18 @@ class ImportTask extends Shell
     /**
      * Get import errors from entity object.
      *
-     * @param  \Cake\ORM\Entity $entity Entity instance
-     * @return array
+     * @param  \Cake\Datasource\EntityInterface $entity Entity instance
+     * @return mixed[]
      */
-    protected function getImportErrors($entity)
+    protected function getImportErrors(EntityInterface $entity): array
     {
         $result = [];
 
-        if (empty($entity->errors())) {
+        if (empty($entity->getErrors())) {
             return $result;
         }
 
-        foreach ($entity->errors() as $field => $error) {
+        foreach ($entity->getErrors() as $field => $error) {
             if (is_array($error)) {
                 $msg = implode(', ', $error);
             } else {

@@ -24,6 +24,10 @@ trigger_error(
     ),
     E_USER_DEPRECATED
 );
+
+/**
+ * @property \Cake\Controller\Component\AuthComponent $Auth
+ */
 class CapabilityComponent extends Component
 {
     /**
@@ -59,10 +63,10 @@ class CapabilityComponent extends Component
 
     /**
      * Initialize method
-     * @param  array  $config configuration array
+     * @param  mixed[]  $config configuration array
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -74,9 +78,9 @@ class CapabilityComponent extends Component
     /**
      * @see \RolesCapabilities\Access\Utils::getAllCapabilities()
      * @deprecated 16.3.1 use \RolesCapabilities\Access\Utils::getAllCapabilities()
-     * @return array
+     * @return mixed[]
      */
-    public function getAllCapabilities()
+    public function getAllCapabilities(): array
     {
         trigger_error(
             sprintf(
@@ -97,7 +101,7 @@ class CapabilityComponent extends Component
      * @return bool
      * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
      */
-    public function hasAccess($capability, $userId = '')
+    public function hasAccess(string $capability, string $userId = ''): bool
     {
         trigger_error(
             sprintf(
@@ -124,7 +128,7 @@ class CapabilityComponent extends Component
      * @return bool
      * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
      */
-    public function hasRoleAccess($roleId, $userId = '')
+    public function hasRoleAccess(string $roleId, string $userId = ''): bool
     {
         trigger_error(
             sprintf(

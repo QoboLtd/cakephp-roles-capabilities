@@ -57,17 +57,17 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
      * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function filterByUserCapabilities(Event $event, Query $query, ArrayObject $options)
+    public function filterByUserCapabilities(Event $event, Query $query, ArrayObject $options): void
     {
         if (isset($options['accessCheck']) && ! $options['accessCheck']) {
             return;
         }
 
-        $filterQuery = new FilterQuery(
-            $query,
-            $event->getSubject(),
-            User::getCurrentUser()
-        );
+        /**
+         * @var \Cake\Datasource\RepositoryInterface $subject
+         */
+        $subject = $event->getSubject();
+        $filterQuery = new FilterQuery($query, $subject, User::getCurrentUser());
 
         $filterQuery->execute();
     }

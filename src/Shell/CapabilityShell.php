@@ -13,6 +13,9 @@ namespace RolesCapabilities\Shell;
 
 use Cake\Console\Shell;
 
+/**
+ * @property \RolesCapabilities\Shell\Task\AssignTask $Assign
+ */
 class CapabilityShell extends Shell
 {
     /**

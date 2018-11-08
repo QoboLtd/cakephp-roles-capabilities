@@ -44,12 +44,11 @@ class NoAuthAccess extends BaseAccessClass
      *
      *  check if access is allowed for that action and user
      *
-     * @param array $url    URL accessed by user
-     * @param array $user   user's session data
-     * @return array        true in case of action should be skip or false otherwise
-     *
+     * @param mixed[] $url    URL accessed by user
+     * @param mixed[] $user   user's session data
+     * @return bool        true in case of action should be skip or false otherwise
      */
-    public function hasAccess($url, $user)
+    public function hasAccess(array $url, array $user): bool
     {
         if (!empty($url['action']) && !empty($url['controller'])) {
             $controllerName = Utils::normalizeControllerName($url);
@@ -75,9 +74,9 @@ class NoAuthAccess extends BaseAccessClass
      *  returns a list of actions which should be skipped
      *
      * @param string $controller the user tried to access
-     * @return array    list of skipped actions
+     * @return mixed[]    list of skipped actions
      */
-    public function getSkipActions($controller)
+    public function getSkipActions(string $controller): array
     {
         return !empty($this->skipActions[$controller]) ? $this->skipActions[$controller] : [];
     }
@@ -87,9 +86,9 @@ class NoAuthAccess extends BaseAccessClass
      *
      *  returns a list of skipped controllers
      *
-     * @return array    list of skipped controllers
+     * @return mixed[]    list of skipped controllers
      */
-    public function getSkipControllers()
+    public function getSkipControllers(): array
     {
         return $this->skipControllers;
     }
@@ -102,7 +101,7 @@ class NoAuthAccess extends BaseAccessClass
      * @param string $controller    controller the user tries to access
      * @return bool                 true if controller should be skipped, false otherwise
      */
-    protected function isSkipController($controller)
+    protected function isSkipController(string $controller): bool
     {
         if (in_array($controller, $this->getSkipControllers())) {
             return true;
@@ -119,9 +118,8 @@ class NoAuthAccess extends BaseAccessClass
      * @param string $controller    the user tries to access
      * @param string $action        the user tries to access
      * @return bool                 true if action is empty or in the list of skip actions, false if not
-     *
      */
-    protected function isSkipAction($controller, $action)
+    protected function isSkipAction(string $controller, string $action): bool
     {
         if (in_array($action, $this->getSkipActions($controller))) {
             return true;
@@ -139,7 +137,7 @@ class NoAuthAccess extends BaseAccessClass
      * @param string $action            Action the user tries to access for
      * @return bool                     true in case of action is in controller's skip action list and false if not
      */
-    protected function isSkipControllerActions($controllerName, $action)
+    protected function isSkipControllerActions(string $controllerName, string $action): bool
     {
         $skipActions = [];
         if (is_callable([$controllerName, 'getSkipActions'])) {

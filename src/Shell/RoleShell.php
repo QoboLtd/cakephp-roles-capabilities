@@ -13,6 +13,9 @@ namespace RolesCapabilities\Shell;
 
 use Cake\Console\Shell;
 
+/**
+ * @property \RolesCapabilities\Shell\Task\ImportTask $Import
+ */
 class RoleShell extends Shell
 {
     /**

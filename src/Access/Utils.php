@@ -14,6 +14,7 @@ namespace RolesCapabilities\Access;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -75,10 +76,10 @@ class Utils
     /**
      * Returns Controller's class name namespaced.
      *
-     * @param array $url array of URL parameters.
-     * @return string
+     * @param mixed[] $url array of URL parameters.
+     * @return string|null
      */
-    public static function getControllerFullName(array $url)
+    public static function getControllerFullName(array $url): ?string
     {
         $result = null;
 
@@ -91,6 +92,9 @@ class Utils
             $class = $url['plugin'] . '.' . $class;
         }
         $result = App::className($class . 'Controller', 'Controller');
+        if (empty($result)) {
+            return null;
+        }
 
         return $result;
     }
@@ -100,7 +104,7 @@ class Utils
      *
      * @return string
      */
-    public static function getTypeFull()
+    public static function getTypeFull(): string
     {
         return static::CAP_TYPE_FULL;
     }
@@ -110,7 +114,7 @@ class Utils
      *
      * @return string
      */
-    public static function getTypeOwner()
+    public static function getTypeOwner(): string
     {
         return static::CAP_TYPE_OWNER;
     }
@@ -120,7 +124,7 @@ class Utils
      *
      * @return string
      */
-    public static function getTypeParent()
+    public static function getTypeParent(): string
     {
         return static::CAP_TYPE_PARENT;
     }
@@ -130,7 +134,7 @@ class Utils
      *
      * @return string
      */
-    public static function getTypeBelongs()
+    public static function getTypeBelongs(): string
     {
         return static::CAP_TYPE_BELONGS;
     }
@@ -139,11 +143,16 @@ class Utils
      * Method that retrieves and returns Controller public methods.
      *
      * @param  string $controllerName Controller name
-     * @return array
+     * @return mixed[]
      */
-    public static function getControllerPublicMethods($controllerName)
+    public static function getControllerPublicMethods(string $controllerName): array
     {
         $actions = [];
+
+        if (!class_exists($controllerName)) {
+            return $actions;
+        }
+
         $refClass = new ReflectionClass($controllerName);
         foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $actions[] = $method->name;
@@ -155,9 +164,9 @@ class Utils
     /**
      * Get list of Cake's Controller class methods.
      *
-     * @return array
+     * @return mixed[]
      */
-    public static function getCakeControllerActions()
+    public static function getCakeControllerActions(): array
     {
         $result = get_class_methods('Cake\Controller\Controller');
 
@@ -168,10 +177,10 @@ class Utils
      * Method that filter's out skipped actions from Controller's actions list.
      *
      * @param  string $controllerName Controller name
-     * @param  array  $actions        Controller actions
-     * @return array
+     * @param  mixed[]  $actions        Controller actions
+     * @return mixed[]
      */
-    public static function filterSkippedActions($controllerName, array $actions)
+    public static function filterSkippedActions(string $controllerName, array $actions): array
     {
         $skipActions = [];
         if (is_callable([$controllerName, 'getSkipActions'])) {
@@ -208,10 +217,10 @@ class Utils
      * Method that filters and returns Controller action(s) that can be used for generating access capabilities.
      *
      * @param  string $controllerName Controller name
-     * @param  array  $actions        Action(s) to filter. If not specified all controller's public methods will be used.
-     * @return array
+     * @param  mixed[]  $actions        Action(s) to filter. If not specified all controller's public methods will be used.
+     * @return mixed[]
      */
-    public static function getActions($controllerName, array $actions = [])
+    public static function getActions(string $controllerName, array $actions = []): array
     {
         $publicMethods = static::getControllerPublicMethods($controllerName);
         // return if controller has no public methods
@@ -242,7 +251,7 @@ class Utils
      * @param  string          $controllerName Controller name
      * @return \Cake\ORM\Table
      */
-    public static function getControllerTableInstance($controllerName)
+    public static function getControllerTableInstance(string $controllerName): \Cake\ORM\Table
     {
         $tableName = App::shortName($controllerName, 'Controller', 'Controller');
 
@@ -260,7 +269,7 @@ class Utils
      * @param  string $controllerName Controller name
      * @return string
      */
-    public static function generateCapabilityControllerName($controllerName)
+    public static function generateCapabilityControllerName(string $controllerName): string
     {
         $result = str_replace('\\', '_', $controllerName);
 
@@ -274,7 +283,7 @@ class Utils
      * @param  string $action         Action name
      * @return string
      */
-    public static function generateCapabilityName($controllerName, $action)
+    public static function generateCapabilityName(string $controllerName, string $action): string
     {
         $result = 'cap__' . $controllerName . '__' . $action;
 
@@ -288,7 +297,7 @@ class Utils
      * @param  string $action         Action name
      * @return string
      */
-    public static function generateCapabilityLabel($controllerName, $action)
+    public static function generateCapabilityLabel(string $controllerName, string $action): string
     {
         $result = 'Cap ' . $controllerName . ' ' . $action;
 
@@ -302,7 +311,7 @@ class Utils
      * @param  string $action         Action name
      * @return string
      */
-    public static function generateCapabilityDescription($controllerName, $action)
+    public static function generateCapabilityDescription(string $controllerName, string $action): string
     {
         $result = 'Allow ' . $action;
 
@@ -326,7 +335,7 @@ class Utils
      * @param string $action Action/method name to humanize
      * @return string
      */
-    public static function humanizeActionName($action)
+    public static function humanizeActionName(string $action): string
     {
         // cameCaseMethod -> under_score -> Human Form -> lowercase
         $result = strtolower(Inflector::humanize(Inflector::underscore($action)));
@@ -350,10 +359,10 @@ class Utils
      *
      * @param \Cake\ORM\Table $table Table instance
      * @param string $contrName Controller name
-     * @param array $actions Controller actions
-     * @return array
+     * @param mixed[] $actions Controller actions
+     * @return mixed[]
      */
-    public static function getCapabilitiesForAction(Table $table, $contrName, array $actions)
+    public static function getCapabilitiesForAction(Table $table, string $contrName, array $actions): array
     {
         $result = [];
 
@@ -390,10 +399,10 @@ class Utils
      * Generate controller full capabilities.
      *
      * @param string $contrName Controller name
-     * @param array $actions Controller actions
-     * @return array
+     * @param mixed[] $actions Controller actions
+     * @return mixed[]
      */
-    protected static function generateFullCapabilities($contrName, array $actions)
+    protected static function generateFullCapabilities(string $contrName, array $actions): array
     {
         $result = [];
 
@@ -420,10 +429,10 @@ class Utils
      *
      * @param \Cake\ORM\Table $table Table instance
      * @param string $contrName Controller name
-     * @param array $actions Controller actions
-     * @return array
+     * @param mixed[] $actions Controller actions
+     * @return mixed[]
      */
-    protected static function generateOwnerCapabilities(Table $table, $contrName, array $actions)
+    protected static function generateOwnerCapabilities(Table $table, string $contrName, array $actions): array
     {
         $assignationFields = static::getTableAssignationFields($table);
 
@@ -435,10 +444,10 @@ class Utils
      *
      * @param \Cake\ORM\Table $table Table instance
      * @param string $contrName Controller name
-     * @param array $actions Controller actions
-     * @return array
+     * @param mixed[] $actions Controller actions
+     * @return mixed[]
      */
-    protected static function generateBelongsToCapabilities(Table $table, $contrName, array $actions)
+    protected static function generateBelongsToCapabilities(Table $table, string $contrName, array $actions): array
     {
         $assignationFields = static::getTableBelongsToFields($table);
 
@@ -449,12 +458,12 @@ class Utils
      * generateCapabilities method to generate controller belongs to capabilities
      *
      * @param string $contrName Controller name
-     * @param array $actions Controller actions
-     * @param array $assignationFields list of assignation fields
+     * @param mixed[] $actions Controller actions
+     * @param mixed[] $assignationFields list of assignation fields
      * @param string $assignationType Type of association
-     * @return array
+     * @return mixed[]
      */
-    protected static function generateCapabilities($contrName, array $actions, $assignationFields, $assignationType = '')
+    protected static function generateCapabilities(string $contrName, array $actions, array $assignationFields, string $assignationType = ''): array
     {
         $result = [];
 
@@ -506,10 +515,10 @@ class Utils
      *
      * @param \Cake\ORM\Table $table Table instance
      * @param string $contrName Controller name
-     * @param array $actions Controller actions
-     * @return array
+     * @param mixed[] $actions Controller actions
+     * @return mixed[]
      */
-    protected static function generateParentCapabilities(Table $table, $contrName, array $actions)
+    protected static function generateParentCapabilities(Table $table, string $contrName, array $actions): array
     {
         $result = [];
 
@@ -540,9 +549,9 @@ class Utils
     /**
      * Method that retrieves all capabilities.
      *
-     * @return array capabilities
+     * @return mixed[] capabilities
      */
-    public static function getAllCapabilities()
+    public static function getAllCapabilities(): array
     {
         $result = [];
         foreach (Utility::getControllers() as $controller) {
@@ -558,11 +567,12 @@ class Utils
 
     /**
      * Method that returns all controller names.
+     *
      * @param  bool  $includePlugins flag for including plugin controllers
-     * @return array                 controller names
+     * @return mixed[]                 controller names
      * @deprecated 14.2.5 use \Qobo\Utils\Utility::getControllers()
      */
-    public static function getControllers($includePlugins = true)
+    public static function getControllers(bool $includePlugins = true): array
     {
         trigger_error(
             get_called_class() . '::getControllers() is deprecated. Use \Qobo\Utils\Utility::getControllers() instead.',
@@ -584,15 +594,15 @@ class Utils
     }
 
     /**
-     * Method that retrieves controller names
-     * found on the provided directory path.
+     * Method that retrieves controller names found on the provided directory path.
+     *
      * @param  string $path   directory path
      * @param  string $plugin plugin name
      * @param  bool   $fqcn   flag for using fqcn
-     * @return array          controller names
+     * @return mixed[]          controller names
      * @deprecated 14.2.5 use \Qobo\Utils\Utility::getDirControllers()
      */
-    public static function getDirControllers($path, $plugin = null, $fqcn = true)
+    public static function getDirControllers(string $path, string $plugin = null, bool $fqcn = true): array
     {
         trigger_error(
             get_called_class() .
@@ -626,9 +636,9 @@ class Utils
      *  fetchUserCapabilities() fetches user capabilities list
      *
      * @param string $userId    ID of user
-     * @return array            list of user's capabilities or empty array
+     * @return mixed[]          list of user's capabilities or empty array
      */
-    public static function fetchUserCapabilities($userId)
+    public static function fetchUserCapabilities(string $userId): array
     {
         $entities = [];
 
@@ -655,10 +665,10 @@ class Utils
      * Returns Controller permission capabilities.
      *
      * @param  string $controllerName Controller name
-     * @param  array  $actions        Controller actions
-     * @return array
+     * @param  mixed[]  $actions        Controller actions
+     * @return mixed[]
      */
-    public static function getCapabilities($controllerName = null, array $actions = [])
+    public static function getCapabilities(string $controllerName = null, array $actions = []): array
     {
         $result = [];
 
@@ -693,12 +703,12 @@ class Utils
      * Method that checks if user has full access on Controller's action.
      *
      * @param  string $type               Capability type
-     * @param  array  $actionCapabilities Action capabilities
-     * @param  array  $user               User info
-     * @param  array  $url                Controller url
+     * @param  mixed[]  $actionCapabilities Action capabilities
+     * @param  mixed[]  $user               User info
+     * @param  mixed[]  $url                Controller url
      * @return bool
      */
-    public static function hasTypeAccess($type, array $actionCapabilities, array $user, array $url)
+    public static function hasTypeAccess(string $type, array $actionCapabilities, array $user, array $url): bool
     {
         // skip if action has no access capabilities for specified type
         if (!isset($actionCapabilities[$type])) {
@@ -725,12 +735,12 @@ class Utils
     /**
      * Method that checks if user has full access on Controller's action.
      *
-     * @param  array  $capabilities Action capabilities
-     * @param  array  $user               User info
-     * @param  array  $url                Controller url
+     * @param  mixed[]  $capabilities Action capabilities
+     * @param  mixed[]  $user               User info
+     * @param  mixed[]  $url                Controller url
      * @return bool
      */
-    protected static function hasTypeAccessFull(array $capabilities, array $user, array $url)
+    protected static function hasTypeAccessFull(array $capabilities, array $user, array $url): bool
     {
         foreach ($capabilities as $capability) {
             if (static::hasAccessInCapabilities($capability->getName(), $user['id'])) {
@@ -744,12 +754,12 @@ class Utils
     /**
      * Method that checks if user has full access on Controller's action.
      *
-     * @param  array  $capabilities Action capabilities
-     * @param  array  $user               User info
-     * @param  array  $url                Controller url
+     * @param  mixed[]  $capabilities Action capabilities
+     * @param  mixed[]  $user               User info
+     * @param  mixed[]  $url                Controller url
      * @return bool
      */
-    protected static function hasTypeAccessOwner(array $capabilities, array $user, array $url)
+    protected static function hasTypeAccessOwner(array $capabilities, array $user, array $url): bool
     {
         $entity = static::getEntityFromUrl($url);
 
@@ -779,10 +789,10 @@ class Utils
     /**
      * getUserGroups method
      *
-     * @param array $user to get groups
-     * @return array with group ID and name
+     * @param mixed[] $user to get groups
+     * @return mixed[] with group ID and name
      */
-    protected static function getUserGroups(array $user)
+    protected static function getUserGroups(array $user): array
     {
         $groups = TableRegistry::get('Groups.Groups');
 
@@ -795,12 +805,12 @@ class Utils
     /**
      * Method that checks if user has belongs to access on Controller's action.
      *
-     * @param  array  $capabilities Action capabilities
-     * @param  array  $user               User info
-     * @param  array  $url                Controller url
+     * @param  mixed[]  $capabilities Action capabilities
+     * @param  mixed[]  $user               User info
+     * @param  mixed[]  $url                Controller url
      * @return bool
      */
-    protected static function hasTypeAccessBelongs(array $capabilities, array $user, array $url)
+    protected static function hasTypeAccessBelongs(array $capabilities, array $user, array $url): bool
     {
         $entity = static::getEntityFromUrl($url);
 
@@ -834,8 +844,8 @@ class Utils
     /**
      * getEntityFromUrl method gets entity ID from given URL if so
      *
-     * @param array $url to get ID
-     * @return entity object or null
+     * @param mixed[] $url to get ID
+     * @return object|null object or null
      */
     protected static function getEntityFromUrl(array $url)
     {
@@ -859,7 +869,7 @@ class Utils
                 }
                 $table = TableRegistry::get($tableName);
                 $entity = $table->get($id);
-            } catch (Exception $e) {
+            } catch (InvalidPrimaryKeyException $e) {
             }
         }
 
@@ -882,12 +892,14 @@ class Utils
 
     /**
      * Method that checks if current user is allowed access.
+     *
      * Returns true if current user has access, false otherwise.
+     *
      * @param  string $capability capability name
      * @param  string $userId     user id
      * @return bool
      */
-    public static function hasAccessInCapabilities($capability, $userId)
+    public static function hasAccessInCapabilities(string $capability, string $userId): bool
     {
         $userCaps = static::fetchUserCapabilities($userId);
         if (in_array($capability, $userCaps)) {
@@ -898,13 +910,15 @@ class Utils
     }
 
     /**
-     * Method that retrieves and returns Table's assignation fields. These are fields
-     * that dictate assigment, usually foreign key associated with Users tables. (example: assigned_to)
+     * Method that retrieves and returns Table's assignation fields.
+     *
+     * These are fields that dictate assigment, usually foreign key
+     * associated with Users tables. (example: assigned_to)
      *
      * @param  \Cake\ORM\Table $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    public static function getTableAssignationFields(Table $table)
+    public static function getTableAssignationFields(Table $table): array
     {
         $fields = [];
         $assignationModels = Configure::read('RolesCapabilities.accessCheck.assignationModels');
@@ -922,13 +936,15 @@ class Utils
     }
 
     /**
-     * Method that retrieves and returns Table's belongs to fields. These are fields
-     * that dictate assigment, usually foreign key associated with Groups tables. (example: belongs_to)
+     * Method that retrieves and returns Table's belongs to fields.
+     *
+     * These are fields that dictate assigment, usually foreign key
+     * associated with Groups tables. (example: belongs_to)
      *
      * @param  \Cake\ORM\Table $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    public static function getTableBelongsToFields(Table $table)
+    public static function getTableBelongsToFields(Table $table): array
     {
         $fields = [];
         $belongsToModels = Configure::read('RolesCapabilities.accessCheck.belongsToModels');
@@ -949,28 +965,38 @@ class Utils
      * Get table parent modules from module configuration.
      *
      * @param \Cake\ORM\Table $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    public static function getTableParentModules(Table $table)
+    public static function getTableParentModules(Table $table): array
     {
         list(, $moduleName) = pluginSplit($table->registryAlias());
 
         $config = new ModuleConfig(ConfigType::MODULE(), $moduleName);
         $moduleConfig = $config->parse();
+        $result = [];
+        if (!empty($moduleConfig->table->permissions_parent_modules)) {
+            $result = $moduleConfig->table->permissions_parent_modules;
+        }
 
-        return $moduleConfig->table->permissions_parent_modules;
+        return $result;
     }
 
     /**
      * normalizeControllerName method
      *
-     * @param array $url including plugin if so, controller and action
+     * @param mixed[] $url including plugin if so, controller and action
      * @return string full controller name including App or Plugin
      */
-    public static function normalizeControllerName(array $url)
+    public static function normalizeControllerName(array $url): string
     {
         $plugin = !empty($url['plugin']) ? $url['plugin'] : 'App';
+        /**
+         * @var string $plugin
+         */
         $plugin = preg_replace('/\//', '\\', $plugin);
+        if (empty($plugin)) {
+            $plugin = '';
+        }
         $controllerName = $plugin . '\\Controller\\' . $url['controller'] . 'Controller';
 
         return $controllerName;
@@ -980,9 +1006,9 @@ class Utils
      * getReportToUsers method
      *
      * @param string $userId to find reported to users
-     * @return array
+     * @return mixed[]
      */
-    public static function getReportToUsers($userId)
+    public static function getReportToUsers(string $userId): array
     {
         $table = TableRegistry::get(Configure::read('Users.table'));
         $users = $table->find()

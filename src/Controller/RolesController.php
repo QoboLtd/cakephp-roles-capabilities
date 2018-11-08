@@ -24,7 +24,7 @@ class RolesController extends AppController
     /**
      * Index method
      *
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
     public function index()
     {
@@ -36,10 +36,9 @@ class RolesController extends AppController
      * View method
      *
      * @param string|null $id Role id.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null
      */
-    public function view($id = null)
+    public function view(string $id = null)
     {
         $role = $this->Roles->get($id, [
             'contain' => ['Groups']
@@ -58,13 +57,16 @@ class RolesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void|null Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
         $role = $this->Roles->newEntity();
         if ($this->request->is('post')) {
-            $data = $this->request->data;
+            $data = $this->request->getData();
+            /**
+             * @var \RolesCapabilities\Model\Entity\Role $role
+             */
             $role = $this->Roles->patchEntity($role, $data);
             // prepare associated capability records for creation
             if (!empty($data['capabilities'])) {
@@ -74,11 +76,11 @@ class RolesController extends AppController
             }
 
             if ($this->Roles->save($role)) {
-                $this->Flash->success(__('The role has been saved.'));
+                $this->Flash->success((string)__('The role has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The role could not be saved. Please, try again.'));
+                $this->Flash->error((string)__('The role could not be saved. Please, try again.'));
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
@@ -93,16 +95,18 @@ class RolesController extends AppController
      * Edit method
      *
      * @param string|null $id Role id.
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects on successful edit, renders view otherwise.
      */
-    public function edit($id = null)
+    public function edit(string $id = null)
     {
         $role = $this->Roles->get($id, [
             'contain' => ['Groups']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $data = $this->request->data;
+            $data = $this->request->getData();
+            /**
+             * @var \RolesCapabilities\Model\Entity\Role
+             */
             $role = $this->Roles->patchEntity($role, $data);
             // prepare associated capability records for creation
             if (!empty($data['capabilities'])) {
@@ -114,11 +118,11 @@ class RolesController extends AppController
             $this->Roles->Capabilities->deleteAll(['role_id' => $id]);
 
             if ($this->Roles->save($role)) {
-                $this->Flash->success(__('The role has been saved.'));
+                $this->Flash->success((string)__('The role has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('The role could not be saved. Please, try again.'));
+                $this->Flash->error((string)__('The role could not be saved. Please, try again.'));
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
@@ -135,17 +139,16 @@ class RolesController extends AppController
      * Delete method
      *
      * @param string|null $id Role id.
-     * @return \Cake\Network\Response|null Redirects to index.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects to index.
      */
-    public function delete($id = null)
+    public function delete(string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $role = $this->Roles->get($id);
         if ($this->Roles->delete($role)) {
-            $this->Flash->success(__('The role has been deleted.'));
+            $this->Flash->success((string)__('The role has been deleted.'));
         } else {
-            $this->Flash->error(__('The role could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__('The role could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);
@@ -154,10 +157,10 @@ class RolesController extends AppController
     /**
      * formatCapabilities method
      *
-     * @param array $data to process
-     * @return array
+     * @param mixed[] $data to process
+     * @return mixed[]
      */
-    private function formatCapabilities(array $data)
+    private function formatCapabilities(array $data): array
     {
         $result = [];
         foreach ($data as $controller => $list) {

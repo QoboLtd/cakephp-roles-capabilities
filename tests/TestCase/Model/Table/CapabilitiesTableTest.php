@@ -8,6 +8,8 @@ use RolesCapabilities\Model\Table\CapabilitiesTable;
 
 /**
  * RolesCapabilities\Model\Table\CapabilitiesTable Test Case
+ *
+ * @property \RolesCapabilities\Model\Table\CapabilitiesTable $Capabilities
  */
 class CapabilitiesTableTest extends TestCase
 {
@@ -31,7 +33,11 @@ class CapabilitiesTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::exists('Capabilities') ? [] : ['className' => 'RolesCapabilities\Model\Table\CapabilitiesTable'];
-        $this->Capabilities = TableRegistry::get('Capabilities', $config);
+        /**
+         * @var \RolesCapabilities\Model\Table\CapabilitiesTable $table
+         */
+        $table = TableRegistry::get('Capabilities', $config);
+        $this->Capabilities = $table;
     }
 
     /**
@@ -51,7 +57,7 @@ class CapabilitiesTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -61,7 +67,7 @@ class CapabilitiesTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -71,7 +77,7 @@ class CapabilitiesTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testBuildRules(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

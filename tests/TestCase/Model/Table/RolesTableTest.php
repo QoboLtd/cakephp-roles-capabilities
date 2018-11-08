@@ -7,6 +7,8 @@ use RolesCapabilities\Model\Table\RolesTable;
 
 /**
  * RolesCapabilities\Model\Table\RolesTable Test Case
+ *
+ * @property \RolesCapabilities\Model\Table\RolesTable $Roles
  */
 class RolesTableTest extends TestCase
 {
@@ -30,7 +32,11 @@ class RolesTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::exists('Roles') ? [] : ['className' => 'RolesCapabilities\Model\Table\RolesTable'];
-        $this->Roles = TableRegistry::get('Roles', $config);
+        /**
+         * @var \RolesCapabilities\Model\Table\RolesTable $table
+         */
+        $table = TableRegistry::get('Roles', $config);
+        $this->Roles = $table;
     }
 
     /**
@@ -50,7 +56,7 @@ class RolesTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->assertEquals($this->Roles->getTable(), 'qobo_roles', 'Table name');
         $this->assertEquals($this->Roles->getDisplayField(), 'name', 'Display field');
@@ -62,7 +68,7 @@ class RolesTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault(): void
     {
         $role = $this->Roles->newEntity([
             'name' => 'test',
@@ -75,7 +81,7 @@ class RolesTableTest extends TestCase
             'name' => [
                 '_required' => 'This field is required'
             ]
-        ], $role->getErrors(), 'Missing required property *name* error');
+        ], $role->getErrors(), true, 'Missing required property *name* error');
     }
 
     /**
@@ -83,7 +89,7 @@ class RolesTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testBuildRules(): void
     {
         $role1 = $this->Roles->newEntity([
             'name' => 'test',
@@ -100,14 +106,14 @@ class RolesTableTest extends TestCase
             'name' => [
                 'unique' => 'The provided value is invalid'
             ]
-        ], $role2->getErrors(), 'Non unique role name');
+        ], $role2->getErrors(), true, 'Non unique role name');
 
         $role1 = $this->Roles->patchEntity($role1, ['description' => 'New description']);
         $this->Roles->save($role1);
-        $this->assertArraySubset([], $role1->getErrors(), 'Non editable entity');
+        $this->assertArraySubset([], $role1->getErrors(), true, 'Non editable entity');
     }
 
-    public function testPrepareCapabilities()
+    public function testPrepareCapabilities(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
