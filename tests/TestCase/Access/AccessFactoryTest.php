@@ -8,7 +8,7 @@ use RolesCapabilities\Access\AccessFactory;
 
 class AccessFactoryTest extends TestCase
 {
-    public function testConstructorRules()
+    public function testConstructorRules(): void
     {
         $rules = [
             'MyRule1', 'MyRule2'
@@ -17,7 +17,7 @@ class AccessFactoryTest extends TestCase
         $this->assertArraySubset($af->getCheckRules(), $rules);
     }
 
-    public function testSkipAction()
+    public function testSkipAction(): void
     {
         $user = [
             'id' => '00000000-0000-0000-0000-000000000001',
@@ -33,7 +33,7 @@ class AccessFactoryTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testIsAuthenticated()
+    public function testIsAuthenticated(): void
     {
         $user = [
             'id' => '00000000-0000-0000-0000-000000000001',
@@ -52,7 +52,7 @@ class AccessFactoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testHasAccessSuperUser()
+    public function testHasAccessSuperUser(): void
     {
         $user = [
             'id' => '00000000-0000-0000-0000-000000000001',
@@ -70,7 +70,7 @@ class AccessFactoryTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testUnknownRule()
+    public function testUnknownRule(): void
     {
         $user = [
             'id' => '00000000-0000-0000-0000-000000000001',

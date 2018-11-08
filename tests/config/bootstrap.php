@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
-use RolesCapabilities\Event\ModelBeforeFindEventsListener;
+use RolesCapabilities\Event\Model\ModelBeforeFindEventsListener;
 
 EventManager::instance()->on(new ModelBeforeFindEventsListener());
 

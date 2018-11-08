@@ -36,9 +36,9 @@ class RolesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('qobo_roles');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('qobo_roles');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');
@@ -103,10 +103,10 @@ class RolesTable extends Table
     /**
      * Method that prepares associated
      * Capabilities records to be created.
-     * @param  array  $capabilities Capabilities to be created
-     * @return array                Capability objects
+     * @param  mixed[]  $capabilities Capabilities to be created
+     * @return mixed[]                Capability objects
      */
-    public function prepareCapabilities(array $capabilities = [])
+    public function prepareCapabilities(array $capabilities = []): array
     {
         if (empty($capabilities)) {
             return [];

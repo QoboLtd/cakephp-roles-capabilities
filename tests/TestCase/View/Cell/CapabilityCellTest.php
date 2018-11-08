@@ -6,6 +6,8 @@ use RolesCapabilities\View\Cell\CapabilityCell;
 
 /**
  * RolesCapabilities\View\Cell\CapabilityCell Test Case
+ *
+ * @property \RolesCapabilities\View\Cell\CapabilityCell $Capability
  */
 class CapabilityCellTest extends TestCase
 {
@@ -18,8 +20,8 @@ class CapabilityCellTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->request = $this->getMockBuilder('Cake\Network\Request')->getMock();
-        $this->response = $this->getMockBuilder('Cake\Network\Response')->getMock();
+        $this->request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
+        $this->response = $this->getMockBuilder('Cake\Http\Response')->getMock();
         $this->Capability = new CapabilityCell($this->request, $this->response);
     }
 
@@ -40,7 +42,7 @@ class CapabilityCellTest extends TestCase
      *
      * @return void
      */
-    public function testDisplay()
+    public function testDisplay(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

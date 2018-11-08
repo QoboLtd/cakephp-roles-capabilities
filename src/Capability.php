@@ -11,6 +11,8 @@
  */
 namespace RolesCapabilities;
 
+use InvalidArgumentException;
+
 /**
  * Capability Class
  */
@@ -58,9 +60,9 @@ class Capability
     /**
      * Constructor method
      * @param string $name    Capability name
-     * @param array  $options Capability options
+     * @param mixed[]  $options Capability options
      */
-    public function __construct($name, array $options = [])
+    public function __construct(string $name, array $options = [])
     {
         $this->setName($name);
 
@@ -91,13 +93,15 @@ class Capability
 
     /**
      * Set name
+     *
+     * @throws \InvalidArgumentException if the name is empty
      * @param string $name Capability name
-     * @return Capability
+     * @return \RolesCapabilities\Capability
      */
-    public function setName($name)
+    public function setName(string $name): \RolesCapabilities\Capability
     {
-        if (!is_string($name) || empty($name)) {
-            throw new \InvalidArgumentException();
+        if (empty($name)) {
+            throw new InvalidArgumentException("Name cannot be empty");
         }
         $this->name = $name;
 
@@ -106,19 +110,21 @@ class Capability
 
     /**
      * Get name
+     *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
      * Set label
+     *
      * @param string $label Capability label
-     * @return Capability
+     * @return \RolesCapabilities\Capability
      */
-    public function setLabel($label = '')
+    public function setLabel(string $label = ''): \RolesCapabilities\Capability
     {
         $this->label = '' !== trim($label) ? $label : ucwords(str_replace('_', ' ', $this->name));
 
@@ -127,19 +133,21 @@ class Capability
 
     /**
      * Get label
+     *
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
     /**
      * Set description
+     *
      * @param string $description Capability description
-     * @return Capability
+     * @return \RolesCapabilities\Capability
      */
-    public function setDescription($description)
+    public function setDescription(string $description): \RolesCapabilities\Capability
     {
         $this->description = $description;
 
@@ -148,9 +156,10 @@ class Capability
 
     /**
      * Get description
+     *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -159,9 +168,9 @@ class Capability
      * Set field
      *
      * @param string $field Capability field
-     * @return Capability
+     * @return \RolesCapabilities\Capability
      */
-    public function setField($field)
+    public function setField(string $field): \RolesCapabilities\Capability
     {
         $this->field = $field;
 
@@ -173,7 +182,7 @@ class Capability
      *
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
@@ -181,12 +190,12 @@ class Capability
     /**
      * Set parent module(s)
      *
-     * @param string $parentModules Capability parent module(s)
-     * @return Capability
+     * @param mixed $parentModules Capability parent module(s)
+     * @return \RolesCapabilities\Capability
      */
-    public function setParentModules($parentModules)
+    public function setParentModules($parentModules): \RolesCapabilities\Capability
     {
-        $this->parentModules = $parentModules;
+        $this->parentModules = is_array($parentModules) ? $parentModules : [$parentModules];
 
         return $this;
     }
@@ -194,9 +203,9 @@ class Capability
     /**
      * Get parent module(s)
      *
-     * @return array
+     * @return mixed[]
      */
-    public function getParentModules()
+    public function getParentModules(): array
     {
         return $this->parentModules;
     }

@@ -74,7 +74,7 @@ final class FilterQuery
      *
      * @param \Cake\Datasource\QueryInterface $query Query object
      * @param \Cake\Datasource\RepositoryInterface $table Table instance
-     * @param array $user User info
+     * @param mixed[] $user User info
      * @return void
      */
     public function __construct(QueryInterface $query, RepositoryInterface $table, array $user)
@@ -115,7 +115,7 @@ final class FilterQuery
      *
      * @return bool
      */
-    private function isFilterable()
+    private function isFilterable(): bool
     {
         if (empty($this->user)) {
             return false;
@@ -153,7 +153,7 @@ final class FilterQuery
      *
      * @return bool
      */
-    private function isSuperuser()
+    private function isSuperuser(): bool
     {
         if (! isset($this->user['is_superuser'])) {
             return false;
@@ -167,7 +167,7 @@ final class FilterQuery
      *
      * @return bool
      */
-    private function isSupervisor()
+    private function isSupervisor(): bool
     {
         if (! isset($this->user['is_supervisor'])) {
             return false;
@@ -181,7 +181,7 @@ final class FilterQuery
      *
      * @return bool
      */
-    private function isSkipTable()
+    private function isSkipTable(): bool
     {
         $config = (array)Configure::read('RolesCapabilities.ownerCheck.skipTables.byInstance');
         if (in_array(get_class($this->table), $config)) {
@@ -214,7 +214,7 @@ final class FilterQuery
      *
      * @return \Cake\Datasource\QueryInterface
      */
-    public function execute()
+    public function execute(): \Cake\Datasource\QueryInterface
     {
         // query is not filterable, return it as is.
         if (! $this->filterable) {
@@ -225,7 +225,7 @@ final class FilterQuery
             return $this->query;
         }
 
-        $where = $this->getWhereClause($this->user);
+        $where = $this->getWhereClause();
         if (! empty($where)) {
             // apply all conditions using the OR operator
             $where = ['OR' => $where];
@@ -244,9 +244,9 @@ final class FilterQuery
     /**
      * Generates conditions for where clause.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getWhereClause()
+    private function getWhereClause(): array
     {
         $result = array_merge($this->getOwnerFields(), $this->getBelongTo(), $this->getPermissions());
         $result = array_merge($result, $this->getParentJoinsWhereClause());
@@ -258,9 +258,9 @@ final class FilterQuery
     /**
      * Generates parent joins conditions for where clause.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getParentJoinsWhereClause()
+    private function getParentJoinsWhereClause(): array
     {
         $joins = $this->getParentJoins();
         if (empty($joins)) {
@@ -285,9 +285,9 @@ final class FilterQuery
      * It recursively calls getWhereClause() method by re-instantiating \RolesCapabilities\FilterQuery
      * and setting each subordinate as the instance $user property.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getSupervisorWhereClause()
+    private function getSupervisorWhereClause(): array
     {
         if (! $this->isSupervisor()) {
             return [];
@@ -309,7 +309,7 @@ final class FilterQuery
      *
      * @return bool
      */
-    private function hasFullAccess()
+    private function hasFullAccess(): bool
     {
         if (! isset($this->capabilities['action'][Utils::getTypeFull()])) {
             return false;
@@ -329,9 +329,9 @@ final class FilterQuery
     /**
      * Return owner fields and value.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getOwnerFields()
+    private function getOwnerFields(): array
     {
         if (! isset($this->capabilities['action'][Utils::getTypeOwner()])) {
             return [];
@@ -352,9 +352,9 @@ final class FilterQuery
     /**
      * Return permissions.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getPermissions()
+    private function getPermissions(): array
     {
         $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
             ->getUserGroups($this->user['id']);
@@ -388,9 +388,9 @@ final class FilterQuery
     /**
      * Return parent association joins.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getParentJoins()
+    private function getParentJoins(): array
     {
         $modules = $this->getParentModules();
 
@@ -417,9 +417,9 @@ final class FilterQuery
      * Returns the list of parent modules based on current action parent capabilities,
      * filtered by current user capabilities.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getParentModules()
+    private function getParentModules(): array
     {
         if (! isset($this->capabilities['action'][Utils::getTypeParent()])) {
             return [];
@@ -439,10 +439,10 @@ final class FilterQuery
      * Return parent association join.
      *
      * @param \Cake\ORM\Association $association Association instance
-     * @param array $modules Parent modules
-     * @return array
+     * @param mixed[] $modules Parent modules
+     * @return mixed[]
      */
-    private function getParentJoin(Association $association, array $modules)
+    private function getParentJoin(Association $association, array $modules): array
     {
         if (! in_array($association->type(), $this->parentJoinAssocations)) {
             return [];
@@ -465,9 +465,9 @@ final class FilterQuery
     /**
      * Return belong to statement.
      *
-     * @return array
+     * @return mixed[]
      */
-    private function getBelongTo()
+    private function getBelongTo(): array
     {
         $result = [];
 

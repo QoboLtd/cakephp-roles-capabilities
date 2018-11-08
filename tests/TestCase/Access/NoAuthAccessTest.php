@@ -6,6 +6,9 @@ use Cake\Core\Configure;
 use PHPUnit\Framework\TestCase;
 use RolesCapabilities\Access\NoAuthAccess;
 
+/**
+ * @property \RolesCapabilities\Access\NoAuthAccess $instance
+ */
 class NoAuthAccessTest extends TestCase
 {
     public function setUp()
@@ -14,14 +17,14 @@ class NoAuthAccessTest extends TestCase
         $this->instance = new NoAuthAccess();
     }
 
-    public function testSkipControllers()
+    public function testSkipControllers(): void
     {
         $skipControllers = (array)Configure::read('RolesCapabilities.accessCheck.skipControllers');
         $noAuth = new NoAuthAccess();
         $this->assertArraySubset($noAuth->getSkipControllers(), $skipControllers);
     }
 
-    public function testSkipActions()
+    public function testSkipActions(): void
     {
         $controller = 'CakeDC\Users\Controller\UsersController';
         $skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions');
@@ -29,7 +32,7 @@ class NoAuthAccessTest extends TestCase
         $this->assertArraySubset($noAuth->getSkipActions($controller), $skipActions[$controller]);
     }
 
-    public function testHasAccess()
+    public function testHasAccess(): void
     {
         $user = [];
         $url = [

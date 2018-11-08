@@ -33,7 +33,7 @@ class CapabilityCell extends Cell
      *
      * @return void
      */
-    public function display()
+    public function display(): void
     {
     }
 
@@ -43,7 +43,7 @@ class CapabilityCell extends Cell
      * @param  string $name Controller full name
      * @return void
      */
-    public function groupName($name)
+    public function groupName(string $name): void
     {
         $parts = array_map(
             function ($n) {

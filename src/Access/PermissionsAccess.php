@@ -23,11 +23,11 @@ class PermissionsAccess extends AuthenticatedAccess
     /**
      *  hasAccess method
      *
-     * @param array $url    request URL
-     * @param array $user   user's session data
+     * @param mixed[] $url    request URL
+     * @param mixed[] $user   user's session data
      * @return bool         true or false
      */
-    public function hasAccess($url, $user)
+    public function hasAccess(array $url, array $user): bool
     {
         $result = parent::hasAccess($url, $user);
         if (!$result) {

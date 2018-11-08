@@ -13,7 +13,7 @@ namespace RolesCapabilities;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Access\Utils;
 
@@ -24,10 +24,10 @@ trait CapabilityTrait
      * Returns permission capabilities.
      *
      * @param  string $controllerName Controller Name
-     * @param  array  $actions        Controller actions
-     * @return array
+     * @param  mixed[]  $actions        Controller actions
+     * @return mixed[]
      */
-    public static function getCapabilities($controllerName = null, array $actions = [])
+    public static function getCapabilities(string $controllerName = null, array $actions = []): array
     {
         return Utils::getCapabilities($controllerName, $actions);
     }
@@ -35,13 +35,12 @@ trait CapabilityTrait
     /**
      * Check if current user has access to perform action.
      *
-     * @param Event $url Event object
-     * @param array $user User info
+     * @param mixed[] $url URL
+     * @param mixed[] $user User info
      * @return bool result of hasAccess method
-     * @throws Cake\Network\Exception\ForbiddenException
      * @todo this needs re-thinking
      */
-    protected function _checkAccess($url, $user)
+    protected function _checkAccess(array $url, array $user): bool
     {
         $accessFactory = new AccessFactory();
 
@@ -51,55 +50,15 @@ trait CapabilityTrait
     /**
      *  _getSkipActions method
      *
-     * @param array $url user tries to access for
-     * @return array list of actions to skip
+     * @param mixed[] $url user tries to access for
+     * @return mixed[] list of actions to skip
      */
-    protected function _getSkipActions($url)
+    protected function _getSkipActions(array $url): array
     {
         $controller = Utils::normalizeControllerName($url);
         $skipActions = (array)Configure::read('RolesCapabilities.accessCheck.skipActions.' . $controller);
 
         return $skipActions;
-    }
-    /**
-     * Check if specified role has access to perform action.
-     *
-     * @param  string  $role role uuid
-     * @param  bool    $handle handle
-     * @return bool
-     * @throws Cake\Network\Exception\ForbiddenException
-     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
-     */
-    protected function _checkRoleAccess($role, $handle = true)
-    {
-        trigger_error(
-            sprintf(
-                '%s::_checkRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
-                __TRAIT__
-            ),
-            E_USER_DEPRECATED
-        );
-
-        $hasAccess = false;
-
-        if ($this->Capability->hasRoleAccess($role)) {
-            $hasAccess = true;
-        }
-
-        /*
-        superuser has access everywhere
-         */
-        if ($this->Auth->user('is_superuser')) {
-            $hasAccess = true;
-        }
-
-        if (!$handle) {
-            return $hasAccess;
-        }
-
-        if (!$hasAccess) {
-            throw new ForbiddenException();
-        }
     }
 
     /**
@@ -109,7 +68,7 @@ trait CapabilityTrait
      *
      * @return void
      */
-    public function managePermissions()
+    public function managePermissions(): void
     {
     }
 }

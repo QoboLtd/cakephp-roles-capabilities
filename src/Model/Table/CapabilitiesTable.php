@@ -33,16 +33,16 @@ class CapabilitiesTable extends Table
     /**
      * Initialize method
      *
-     * @param array $config The configuration for the Table.
+     * @param mixed[] $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('qobo_capabilities');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('qobo_capabilities');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
@@ -57,7 +57,7 @@ class CapabilitiesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): \Cake\Validation\Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'uuid'])
@@ -77,7 +77,7 @@ class CapabilitiesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
     {
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
@@ -85,48 +85,12 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Method that checks if specified role is allowed access.
-     * Returns true if role has access, false otherwise.
-     *
-     * @param  string $roleId role id
-     * @param  string $userId user id
-     * @return bool
-     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
-     */
-    public function hasRoleAccess($roleId, $userId)
-    {
-        trigger_error(
-            sprintf(
-                '%s::hasRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
-                __CLASS__
-            ),
-            E_USER_DEPRECATED
-        );
-
-        if (is_null($roleId)) {
-            return true;
-        }
-
-        $userGroups = $this->Roles->Groups->getUserGroups($userId);
-        $userRoles = [];
-        if (!empty($userGroups)) {
-            $userRoles = $this->getGroupsRoles($userGroups);
-        }
-
-        if (in_array($roleId, array_keys($userRoles))) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Method that retrieves specified group(s) roles.
      *
-     * @param  array  $userGroups group(s) id(s)
-     * @return array
+     * @param  mixed[]  $userGroups group(s) id(s)
+     * @return mixed[]
      */
-    public function getGroupsRoles(array $userGroups = [])
+    public function getGroupsRoles(array $userGroups = []): array
     {
         $key = implode('.', $userGroups);
 
@@ -155,10 +119,10 @@ class CapabilitiesTable extends Table
     /**
      *  getUserRolesEntities()
      *
-     * @param array $userRoles  roles assigned to specified user
-     * @return array            list of user's roles entities
+     * @param mixed[] $userRoles  roles assigned to specified user
+     * @return mixed[]            list of user's roles entities
      */
-    public function getUserRolesEntities($userRoles)
+    public function getUserRolesEntities(array $userRoles): array
     {
         $query = $this->find('list')->where(['role_id IN' => array_keys($userRoles)]);
         $entities = $query->all();
@@ -174,9 +138,9 @@ class CapabilitiesTable extends Table
      *
      * @param string $userId    ID of checked user
      * @param bool $accessCheck flag indicated to check permissions or not
-     * @return array            user's groups
+     * @return mixed[]            user's groups
      */
-    public function getUserGroups($userId, $accessCheck = false)
+    public function getUserGroups(string $userId, bool $accessCheck = false): array
     {
         $userGroups = $this->Roles->Groups->getUserGroups($userId, ['accessCheck' => $accessCheck]);
 
