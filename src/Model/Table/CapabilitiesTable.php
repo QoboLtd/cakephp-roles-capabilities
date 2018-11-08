@@ -85,42 +85,6 @@ class CapabilitiesTable extends Table
     }
 
     /**
-     * Method that checks if specified role is allowed access.
-     * Returns true if role has access, false otherwise.
-     *
-     * @param  string $roleId role id
-     * @param  string $userId user id
-     * @return bool
-     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
-     */
-    public function hasRoleAccess(string $roleId, string $userId): bool
-    {
-        trigger_error(
-            sprintf(
-                '%s::hasRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
-                __CLASS__
-            ),
-            E_USER_DEPRECATED
-        );
-
-        if (empty($roleId)) {
-            return true;
-        }
-
-        $userGroups = $this->Roles->Groups->getUserGroups($userId);
-        $userRoles = [];
-        if (!empty($userGroups)) {
-            $userRoles = $this->getGroupsRoles($userGroups);
-        }
-
-        if (in_array($roleId, array_keys($userRoles))) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Method that retrieves specified group(s) roles.
      *
      * @param  mixed[]  $userGroups group(s) id(s)

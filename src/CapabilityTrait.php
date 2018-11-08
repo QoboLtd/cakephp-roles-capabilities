@@ -60,46 +60,6 @@ trait CapabilityTrait
 
         return $skipActions;
     }
-    /**
-     * Check if specified role has access to perform action.
-     *
-     * @param  string  $role role uuid
-     * @param  bool    $handle handle
-     * @return bool
-     * @throws \Cake\Http\Exception\ForbiddenException
-     * @deprecated 16.3.1 use \RolesCapabilities\Access\AccessFactory::hasAccess()
-     */
-    protected function _checkRoleAccess(string $role, bool $handle = true): bool
-    {
-        trigger_error(
-            sprintf(
-                '%s::_checkRoleAccess() is deprecated. Use RolesCapabilities\Access\AccessFactory::hasAccess() instead.',
-                __TRAIT__
-            ),
-            E_USER_DEPRECATED
-        );
-
-        $hasAccess = false;
-
-        if ($this->Capability->hasRoleAccess($role)) {
-            $hasAccess = true;
-        }
-
-        /*
-        superuser has access everywhere
-         */
-        if ($this->Auth->user('is_superuser')) {
-            $hasAccess = true;
-        }
-
-        if (!$handle) {
-            return $hasAccess;
-        }
-
-        if (!$hasAccess) {
-            throw new ForbiddenException();
-        }
-    }
 
     /**
      * managePermissions method
