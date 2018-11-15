@@ -67,15 +67,6 @@ class FilterQueryTest extends TestCase
     }
 
     /**
-     * Test constructor options
-     */
-    public function testConstructorOptions(): void
-    {
-        $filter = new FilterQuery($this->Users->find(), $this->Users, $this->user_array['is_superuser_no_supervisor']);
-        $this->assertEquals(false, $filter->execute());
-    }
-
-    /**
      * Test isFilterable with no user id
      */
     public function testIsFilterableEmptyUser(): void
@@ -148,7 +139,7 @@ class FilterQueryTest extends TestCase
 
         $filter = new FilterQuery($table->find(), $table, []);
         $is_skipTable = $this->invokeMethod($filter, 'isSkipTable');
-        $this->assertEquals(false, $is_skipTable);
+        $this->assertEquals(true, $is_skipTable);
     }
 
     /**
@@ -161,7 +152,7 @@ class FilterQueryTest extends TestCase
 
         $filter = new FilterQuery($table->find(), $table, []);
         $is_skipTable = $this->invokeMethod($filter, 'isSkipTable');
-        $this->assertEquals(false, $is_skipTable);
+        $this->assertEquals(true, $is_skipTable);
     }
 
     /**
@@ -172,7 +163,7 @@ class FilterQueryTest extends TestCase
         Configure::write('RolesCapabilities.ownerCheck.skipTables.byTableName', ['users']);
         $filter = new FilterQuery($this->Users->find(), $this->Users, []);
         $is_skipTable = $this->invokeMethod($filter, 'isSkipTable');
-        $this->assertEquals(false, $is_skipTable);
+        $this->assertEquals(true, $is_skipTable);
     }
 
     /**
@@ -183,7 +174,7 @@ class FilterQueryTest extends TestCase
         $user = $this->user_array['no_superuser_is_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
         $is_supervisor = $this->invokeMethod($filter, 'isSupervisor');
-        $this->assertEquals(false, $is_supervisor);
+        $this->assertEquals(true, $is_supervisor);
     }
 
     /**
@@ -224,5 +215,86 @@ class FilterQueryTest extends TestCase
             $get_parent_modules = $this->invokeMethod($filter, 'getParentJoin', [$association, ["roles"]]);
             $this->assertEquals([], $get_parent_modules);
         }
+    }
+
+    /**
+     * Test public method execute
+     */
+    public function testExecute()
+    {
+        $user = $this->user_array['no_superuser_is_supervisor'];
+        $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
+        $this->assertInstanceOf('\Cake\Datasource\QueryInterface', $filter->execute(), 'message');
+    }
+
+    /**
+     * Test getOwnerFields method
+     */
+    public function testGetOwnerFields()
+    {
+        $user = $this->user_array['no_superuser_is_supervisor'];
+        $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
+        $private_method_response = $this->invokeMethod($filter, 'getOwnerFields');
+        $this->assertEquals([], $private_method_response);
+    }
+
+    /**
+     * Test getBelongTo private method
+     */
+    public function testGetBelongTo()
+    {
+        $user = $this->user_array['no_superuser_is_supervisor'];
+        $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
+        $private_method_response = $this->invokeMethod($filter, 'getBelongTo');
+        $this->assertEquals([], $private_method_response);
+    }
+
+    /**
+     * Test hasFullAccess private method
+     */
+    public function testHasFullAccess()
+    {
+        $user = $this->user_array['no_superuser_is_supervisor'];
+        $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
+        $private_method_response = $this->invokeMethod($filter, 'hasFullAccess');
+        $this->assertEquals(false, $private_method_response);
+    }
+
+    /**
+     * Test getSupervisorWhereClause private method when user is not supervisor
+     */
+    public function testGetSupervisorWhereClauseIsNotSupervisor()
+    {
+        $user = $this->user_array['is_superuser_no_supervisor'];
+        $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
+        $private_method_response = $this->invokeMethod($filter, 'getSupervisorWhereClause');
+        $this->assertEquals([], $private_method_response);
+    }
+
+    /**
+     * Test GetSupervisorWhereClause private method when the user is supervisor
+     */
+    public function testGetSupervisorWhereClauseIsSupervisor()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test getParentJoinsWhereClause private method
+     */
+    public function testGetParentJoinsWhereClause()
+    {
+        $user = $this->user_array['is_superuser_no_supervisor'];
+        $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
+        $private_method_response = $this->invokeMethod($filter, 'getParentJoinsWhereClause');
+        $this->assertEquals([], $private_method_response);
+    }
+
+    /**
+     * Test getWhereClause private method
+     */
+    public function testGetWhereClause()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
     }
 }
