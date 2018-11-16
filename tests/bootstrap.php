@@ -43,6 +43,7 @@ define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 define('CAKE', CORE_PATH . 'src' . DS);
 
 require ROOT . '/vendor/autoload.php';
+require __DIR__ . '/Class/UsefulMethods.php';
 require CORE_PATH . 'config/bootstrap.php';
 
 Configure::write('App', [
