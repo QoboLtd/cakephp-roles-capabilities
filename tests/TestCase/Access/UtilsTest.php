@@ -5,7 +5,7 @@ namespace RolesCapabilities\Test\TestCase\Access;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Access\Utils;
-use RolesCapabilities\Test\App\Model\UsefulMethods;
+use RolesCapabilities\Test\App\Model\Utilities;
 
 class UtilsTest extends TestCase
 {
@@ -278,7 +278,7 @@ class UtilsTest extends TestCase
             'controller' => 'Users'
         ];
 
-        $data = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+        $data = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
 
         $this->assertInstanceOf('\Cake\ORM\Entity', $data);
     }
@@ -294,7 +294,7 @@ class UtilsTest extends TestCase
             'controller' => 'Users'
         ];
 
-        $data = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+        $data = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
 
         $this->assertInstanceOf('\Cake\ORM\Entity', $data);
     }
@@ -310,7 +310,7 @@ class UtilsTest extends TestCase
             'controller' => 'Users'
         ];
 
-        $data = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+        $data = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
 
         $this->assertInstanceOf('\Cake\ORM\Entity', $data);
     }
@@ -327,7 +327,7 @@ class UtilsTest extends TestCase
             'controller' => 'Users'
         ];
 
-        $data = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+        $data = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
     }
 
     /**
@@ -362,7 +362,7 @@ class UtilsTest extends TestCase
     {
         $url = ['id' => "00000000-0000-0000-0000-000000000001"];
 
-        $data = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getUserGroups', [$url]);
+        $data = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getUserGroups', [$url]);
         $this->assertEquals([], $data);
     }
 
@@ -389,7 +389,7 @@ class UtilsTest extends TestCase
             ]
         ];
 
-        $bool = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessBelongs', $parameters);
+        $bool = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessBelongs', $parameters);
         $this->assertFalse($bool);
     }
 
@@ -416,7 +416,7 @@ class UtilsTest extends TestCase
             ]
         ];
 
-        $bool = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessOwner', $parameters);
+        $bool = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessOwner', $parameters);
         $this->assertFalse($bool);
     }
 
@@ -443,7 +443,7 @@ class UtilsTest extends TestCase
             ]
         ];
 
-        $bool = UsefulMethods::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessFull', $parameters);
+        $bool = Utilities::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessFull', $parameters);
         $this->assertFalse($bool);
     }
 

@@ -6,7 +6,7 @@ use RolesCapabilities\FilterQuery;
 /**
  * Class for useful methods in regards testing
  */
-class UsefulMethods
+class Utilities
 {
     /**
      * Call protected/private method of a class.
