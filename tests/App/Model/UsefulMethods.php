@@ -1,4 +1,6 @@
 <?php
+namespace RolesCapabilities\Test\App\Model;
+
 use RolesCapabilities\FilterQuery;
 
 /**
