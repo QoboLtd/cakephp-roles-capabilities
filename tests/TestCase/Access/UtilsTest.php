@@ -4,8 +4,8 @@ namespace RolesCapabilities\Test\TestCase\Access;
 
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Access\Utils;
 use Qobo\Utils\TestSuite\Utility;
+use RolesCapabilities\Access\Utils;
 
 class UtilsTest extends TestCase
 {

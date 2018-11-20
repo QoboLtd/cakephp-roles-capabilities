@@ -5,8 +5,8 @@ use Cake\Core\Configure;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase as TestCase;
-use RolesCapabilities\FilterQuery;
 use Qobo\Utils\TestSuite\Utility;
+use RolesCapabilities\FilterQuery;
 
 class FilterQueryTest extends TestCase
 {
