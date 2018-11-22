@@ -861,7 +861,7 @@ class Utils
                 continue;
             }
 
-            $fields[] = $association->foreignKey();
+            $fields[] = $association->getForeignKey();
         }
 
         return $fields;
