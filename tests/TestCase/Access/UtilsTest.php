@@ -4,12 +4,14 @@ namespace RolesCapabilities\Test\TestCase\Access;
 
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use Qobo\Utils\TestSuite\Utility;
 use RolesCapabilities\Access\Utils;
 
 class UtilsTest extends TestCase
 {
     public $fixtures = [
         'plugin.roles_capabilities.users',
+        'plugin.roles_capabilities.groups'
     ];
 
     public function testGetControllerFullName(): void
@@ -263,5 +265,230 @@ class UtilsTest extends TestCase
         $list = Utils::getReportToUsers('00000000-0000-0000-0000-000000000001');
         $this->assertTrue(is_array($list), 'Return an array');
         $this->assertCount(0, $list, 'Count is 0');
+    }
+
+    /**
+     * Test getEntityFromUrl method
+     */
+    public function testGetEntityFromUrl()
+    {
+        $url = [
+            'pass' => ["00000000-0000-0000-0000-000000000001"],
+            'plugin' => null,
+            'controller' => 'Users'
+        ];
+
+        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+
+        $this->assertInstanceOf('\Cake\ORM\Entity', $data);
+    }
+
+    /**
+     * Test getEntityFromUrl method without the pass parameter
+     */
+    public function testGetEntityFromUrlWithoutPassParameter()
+    {
+        $url = [
+            '0' => "00000000-0000-0000-0000-000000000001",
+            'plugin' => null,
+            'controller' => 'Users'
+        ];
+
+        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+
+        $this->assertInstanceOf('\Cake\ORM\Entity', $data);
+    }
+
+    /**
+     * Test getEntityFromUrl method with the plugin set
+     */
+    public function testGetEntityFromUrlWithPluginSetParameter()
+    {
+        $url = [
+            '0' => "00000000-0000-0000-0000-000000000001",
+            'plugin' => 'Users',
+            'controller' => 'Users'
+        ];
+
+        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+
+        $this->assertInstanceOf('\Cake\ORM\Entity', $data);
+    }
+
+    /**
+     * Test getEntityFromUrl method with the plugin set
+     */
+    public function testGetEntityFromUrlWithWrongId()
+    {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $url = [
+            '0' => "00900000-0090-0000-0000-000090000001",
+            'plugin' => null,
+            'controller' => 'Users'
+        ];
+
+        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
+    }
+
+    /**
+     * Test hasAccessInCapabilities method the user has the capabilities
+     */
+    public function testHasAccessInCapabilities()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test hasAccessInCapabilities method the user doesnt has any capabilities
+     */
+    public function testHasAccessInCapabilitiesWithNoCapabilities()
+    {
+        $bool = Utils::hasAccessInCapabilities("view", "00000000-0000-0000-0000-000000000001");
+        $this->assertFalse($bool);
+    }
+
+    /**
+     * Test getUserGroups method with groups
+     */
+    public function testGetUserGroups()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test getUserGroups method when there are no groups
+     */
+    public function testGetUserGroupsNoGroup()
+    {
+        $url = ['id' => "00000000-0000-0000-0000-000000000001"];
+
+        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getUserGroups', [$url]);
+        $this->assertEquals([], $data);
+    }
+
+    /**
+     * Test hasTypeAccessBelongs with capabilities
+     */
+    public function testHasTypeAccessBelongs()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test hasTypeAccessBelongs when there are no capabilities
+     */
+    public function testHasTypeAccessBelongsWithoutCapabilities()
+    {
+        $parameters = [
+            'capabilities' => [],
+            'user' => ['id' => '00000000-0000-0000-0000-000000000001'],
+            'url' => [
+                'pass' => ["00000000-0000-0000-0000-000000000001"],
+                'plugin' => null,
+                'controller' => 'Users'
+            ]
+        ];
+
+        $bool = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessBelongs', $parameters);
+        $this->assertFalse($bool);
+    }
+
+    /**
+     * Test hasTypeAccessOwner with capabilities
+     */
+    public function testHasTypeAccessOwner()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test hasTypeAccessOwner when there are no capabilities
+     */
+    public function testHasTypeAccessOwnerWithoutCapabilities()
+    {
+        $parameters = [
+            'capabilities' => [],
+            'user' => ['id' => '00000000-0000-0000-0000-000000000001'],
+            'url' => [
+                'pass' => ["00000000-0000-0000-0000-000000000001"],
+                'plugin' => null,
+                'controller' => 'Users'
+            ]
+        ];
+
+        $bool = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessOwner', $parameters);
+        $this->assertFalse($bool);
+    }
+
+    /**
+     * Test hasTypeAccessFull with capabilities
+     */
+    public function testHasTypeAccessFull()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test hasTypeAccessFull when there are no capabilities
+     */
+    public function testHasTypeAccessFullWithoutCapabilities()
+    {
+        $parameters = [
+            'capabilities' => [],
+            'user' => ['id' => '00000000-0000-0000-0000-000000000001'],
+            'url' => [
+                'pass' => ["00000000-0000-0000-0000-000000000001"],
+                'plugin' => null,
+                'controller' => 'Users'
+            ]
+        ];
+
+        $bool = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessFull', $parameters);
+        $this->assertFalse($bool);
+    }
+
+    /**
+     * Test hasTypeAccess with capabilities
+     */
+    public function testHasTypeAccessHasCapabilitiesButNoAccess()
+    {
+        $url = [
+            'pass' => ["00000000-0000-0000-0000-000000000001"],
+            'plugin' => null,
+            'controller' => 'Users'
+        ];
+
+        $bool = Utils::hasTypeAccess(Utils::getTypeFull(), ['full' => []], ['id' => '00000000-0000-0000-0000-000000000001'], $url);
+        $this->assertFalse($bool);
+    }
+
+    /**
+     * Test hasTypeAccess when there are no capabilities
+     */
+    public function testHasTypeAccessWithoutCapabilities()
+    {
+        $url = [
+            'pass' => ["00000000-0000-0000-0000-000000000001"],
+            'plugin' => null,
+            'controller' => 'Users'
+        ];
+
+        $bool = Utils::hasTypeAccess(Utils::getTypeFull(), [], ['id' => '00000000-0000-0000-0000-000000000001'], $url);
+        $this->assertFalse($bool);
+    }
+
+    /**
+     * Test hasTypeAccess when wrong type
+     */
+    public function testHasTypeAccessWrongType()
+    {
+        $url = [
+            'pass' => ["00000000-0000-0000-0000-000000000001"],
+            'plugin' => null,
+            'controller' => 'Users'
+        ];
+
+        $bool = Utils::hasTypeAccess('half', ['half' => []], ['id' => '00000000-0000-0000-0000-000000000001'], $url);
+        $this->assertFalse($bool);
     }
 }
