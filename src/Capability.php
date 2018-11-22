@@ -31,25 +31,25 @@ class Capability
      * Capability name
      * @var string
      */
-    protected $name;
+    protected $name = '';
 
     /**
      * Capability label
      * @var string
      */
-    protected $label;
+    protected $label = '';
 
     /**
      * Capability description
      * @var string
      */
-    protected $description;
+    protected $description = '';
 
     /**
      * Capability field
      * @var string
      */
-    protected $field;
+    protected $field = '';
 
     /**
      * Capability parent modules
