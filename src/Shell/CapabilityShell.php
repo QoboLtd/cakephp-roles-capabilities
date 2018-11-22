@@ -33,7 +33,7 @@ class CapabilityShell extends Shell
         $parser = parent::getOptionParser();
 
         $parser
-            ->description('Roles Shell that handle\'s related tasks.')
+            ->setDescription('Roles Shell that handle\'s related tasks.')
             ->addSubcommand(
                 'assign',
                 [
