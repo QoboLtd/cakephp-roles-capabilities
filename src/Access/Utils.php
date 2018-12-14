@@ -72,6 +72,15 @@ class Utils
     protected static $userCapabilities = [];
 
     /**
+     * Skip actions with ID to fetch entity (used for search, for example)
+     *
+     * @var array
+     */
+    protected static $skipActionsWithId = [
+        'index',
+    ];
+
+    /**
      * Returns Controller's class name namespaced.
      *
      * @param mixed[] $url array of URL parameters.
@@ -792,7 +801,7 @@ class Utils
         }
 
         // if url includes an id, fetch relevant record
-        if (!empty($id)) {
+        if (!empty($id) && !in_array($url['action'], static::$skipActionsWithId)) {
             try {
                 $tableName = $url['controller'];
                 if (!empty($url['plugin'])) {
