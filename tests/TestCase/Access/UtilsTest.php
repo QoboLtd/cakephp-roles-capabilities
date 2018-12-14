@@ -317,21 +317,6 @@ class UtilsTest extends TestCase
     }
 
     /**
-     * Test getEntityFromUrl method with the plugin set
-     */
-    public function testGetEntityFromUrlWithWrongId()
-    {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
-        $url = [
-            '0' => "00900000-0090-0000-0000-000090000001",
-            'plugin' => null,
-            'controller' => 'Users'
-        ];
-
-        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
-    }
-
-    /**
      * Test hasAccessInCapabilities method the user has the capabilities
      */
     public function testHasAccessInCapabilities()
