@@ -14,6 +14,7 @@ namespace RolesCapabilities\Access;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -801,6 +802,8 @@ class Utils
                 $table = TableRegistry::get($tableName);
                 $entity = $table->get($id);
             } catch (InvalidPrimaryKeyException $e) {
+                Log::warning("Failed to fetch record with id [$id] from table [$tableName]");
+            } catch (RecordNotFoundException $e) {
                 Log::warning("Failed to fetch record with id [$id] from table [$tableName]");
             }
         }

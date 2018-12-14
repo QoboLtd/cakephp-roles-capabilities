@@ -11,7 +11,8 @@ class UtilsTest extends TestCase
 {
     public $fixtures = [
         'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.groups'
+        'plugin.roles_capabilities.groups',
+        'plugin.groups.groups_users'
     ];
 
     public function testGetControllerFullName(): void
@@ -313,21 +314,6 @@ class UtilsTest extends TestCase
         $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
 
         $this->assertInstanceOf('\Cake\ORM\Entity', $data);
-    }
-
-    /**
-     * Test getEntityFromUrl method with the plugin set
-     */
-    public function testGetEntityFromUrlWithWrongId()
-    {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
-        $url = [
-            '0' => "00900000-0090-0000-0000-000090000001",
-            'plugin' => null,
-            'controller' => 'Users'
-        ];
-
-        $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
     }
 
     /**
