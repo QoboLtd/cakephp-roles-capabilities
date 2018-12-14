@@ -800,8 +800,11 @@ class Utils
             $id = $url['0'];
         }
 
+        $skipFetch = !empty($url['action']) && in_array($url['action'], static::$skipActionsWithId) ? true : false;
+
+
         // if url includes an id, fetch relevant record
-        if (!empty($id) && !in_array($url['action'], static::$skipActionsWithId)) {
+        if (!empty($id) && !$skipFetch) {
             try {
                 $tableName = $url['controller'];
                 if (!empty($url['plugin'])) {
