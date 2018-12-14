@@ -802,7 +802,6 @@ class Utils
 
         $skipFetch = !empty($url['action']) && in_array($url['action'], static::$skipActionsWithId) ? true : false;
 
-
         // if url includes an id, fetch relevant record
         if (!empty($id) && !$skipFetch) {
             try {
