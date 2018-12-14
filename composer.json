@@ -42,6 +42,7 @@
     "autoload-dev": {
         "psr-4": {
             "RolesCapabilities\\Test\\": "tests/",
+            "Groups\\Test\\": "vendor/qobo/cakephp-groups/tests/",
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
     },

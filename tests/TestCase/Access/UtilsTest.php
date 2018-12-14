@@ -11,7 +11,8 @@ class UtilsTest extends TestCase
 {
     public $fixtures = [
         'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.groups'
+        'plugin.roles_capabilities.groups',
+        'plugin.groups.groups_users'
     ];
 
     public function testGetControllerFullName(): void
