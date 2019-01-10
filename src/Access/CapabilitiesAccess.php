@@ -101,6 +101,10 @@ class CapabilitiesAccess extends AuthenticatedAccess
         $config = new ModuleConfig(ConfigType::MODULE(), Inflector::camelize($url['controller']));
         $moduleConfig = $config->parseToArray();
 
+        if (! isset($moduleConfig['table']['permissions_parent_modules'])) {
+            return false;
+        }
+
         $parents = $moduleConfig['table']['permissions_parent_modules'];
 
         return !empty($parents);
