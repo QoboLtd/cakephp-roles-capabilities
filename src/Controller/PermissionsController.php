@@ -13,6 +13,7 @@ namespace RolesCapabilities\Controller;
 
 use Cake\Utility\Inflector;
 use InvalidArgumentException;
+use RolesCapabilities\Model\Table\PermissionsTable;
 
 /**
  * Permissions Controller
@@ -21,11 +22,6 @@ use InvalidArgumentException;
  */
 class PermissionsController extends AppController
 {
-    /**
-     * @var array allowedActions
-     */
-    protected $allowedActions = ['view', 'edit', 'delete'];
-
     /**
      * Index method
      *
@@ -99,7 +95,7 @@ class PermissionsController extends AppController
         $users[''] = '';
         asort($users);
         $types[''] = '';
-        foreach ($this->allowedActions as $action) {
+        foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
             $types[$action] = Inflector::humanize($action);
         }
         $this->set(compact('permission', 'users', 'types'));
