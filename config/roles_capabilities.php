@@ -49,11 +49,11 @@ return [
                 ],
             ],
             'defaultRules' => [
-                'NoAuth',
-                'SuperUser',
-                'Permissions',
-                'Capabilities',
-                'Supervisor'
+                RolesCapabilities\Access\NoAuthAccess::class,
+                RolesCapabilities\Access\SuperUserAccess::class,
+                RolesCapabilities\Access\PermissionsAccess::class,
+                RolesCapabilities\Access\CapabilitiesAccess::class,
+                RolesCapabilities\Access\SupervisorAccess::class
             ],
             'assignationModels' => [
                 'Users',
