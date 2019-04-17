@@ -47,15 +47,15 @@ class PermissionsAccess extends AuthenticatedAccess
                 'type IN ' => $url['action'],
                 'foreign_key' => $url['pass'][0],
                 'OR' => [
-                            [
-                                'owner_foreign_key IN ' => array_keys($groups),
-                                'owner_model' => 'Groups',
-                            ],
-                            [
-                                'owner_foreign_key' => $user['id'],
-                                'owner_model' => 'Users',
-                            ]
+                    [
+                        'owner_foreign_key IN ' => array_keys($groups),
+                        'owner_model' => 'Groups',
+                    ],
+                    [
+                        'owner_foreign_key' => $user['id'],
+                        'owner_model' => 'Users',
                     ]
+                ]
             ])
             ->applyOptions(['accessCheck' => false]);
 
