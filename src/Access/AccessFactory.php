@@ -56,7 +56,7 @@ class AccessFactory
     public function hasAccess(array $url = [], array $user = []): bool
     {
         foreach ($this->getCheckRules() as $rule) {
-            if (! in_array(AccessInterface::class, class_implements($rule))) {
+            if (! class_exists($rule) || ! in_array(AccessInterface::class, class_implements($rule))) {
                 throw new \InvalidArgumentException(sprintf('Unknown rule class: %s', $rule));
             }
 
