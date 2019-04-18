@@ -242,8 +242,27 @@ final class FilterQuery
     private function getWhereClause(): array
     {
         $result = array_merge($this->getOwnerFields(), $this->getBelongTo(), $this->getPermissions());
-        $result = array_merge($result, $this->getParentJoinsWhereClause());
+        $result = array_merge($result, $this->getParentPermissions(), $this->getParentJoinsWhereClause());
         $result = array_merge_recursive($result, $this->getSupervisorWhereClause());
+
+        return $result;
+    }
+
+    private function getParentPermissions()
+    {
+        $result = [];
+        foreach ($this->table->associations() as $association) {
+            if (! $this->isSupportedJoinAssociation($association)) {
+                continue;
+            }
+
+            if (! $this->isParentModuleAssociation($association)) {
+                continue;
+            }
+
+            $field = sprintf('%s IN', $association->getForeignKey());
+            $result[$field] = $this->getPermissionsByModel($this->getModelByAssociation($association));
+        }
 
         return $result;
     }
@@ -255,13 +274,8 @@ final class FilterQuery
      */
     private function getParentJoinsWhereClause(): array
     {
-        $joins = $this->getParentJoins();
-        if (empty($joins)) {
-            return [];
-        }
-
         $result = [];
-        foreach ($joins as $name => $conditions) {
+        foreach ($this->getParentJoins() as $name => $conditions) {
             $result = array_merge($result, $conditions);
 
             $this->query->leftJoinWith($name, function ($q) {
@@ -343,11 +357,31 @@ final class FilterQuery
     }
 
     /**
-     * Return permissions.
+     * User permissions getter.
      *
      * @return mixed[]
      */
     private function getPermissions(): array
+    {
+        $model = App::shortName(get_class($this->table), 'Model/Table', 'Table');
+
+        $values = $this->getPermissionsByModel($model);
+        if (empty($values)) {
+            return [];
+        }
+
+        $primaryKey = $this->table->getPrimaryKey();
+
+        return [$this->table->aliasField($primaryKey) . ' IN' => array_unique($values)];
+    }
+
+    /**
+     * User permissions getter, by model.
+     *
+     * @param string $model Model name
+     * @return string[]
+     */
+    private function getPermissionsByModel(string $model)
     {
         $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
             ->getUserGroups($this->user['id']);
@@ -357,7 +391,7 @@ final class FilterQuery
             ->select('foreign_key')
             ->where([
                 // WARNING: this might conflict with APP table's name matching a plugin's table name
-                'model' => App::shortName(get_class($this->table), 'Model/Table', 'Table'),
+                'model' => $model,
                 'type IN ' => ['view'],
                 'OR' => [
                     ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
@@ -366,16 +400,12 @@ final class FilterQuery
             ])
             ->applyOptions(['accessCheck' => false]);
 
-        if ($query->isEmpty()) {
-            return [];
-        }
-
-        $values = [];
+        $result = [];
         foreach ($query->all() as $permission) {
-            $values[] = $permission->foreign_key;
+            $result[] = $permission->get('foreign_key');
         }
 
-        return [$this->table->aliasField($this->table->getPrimaryKey()) . ' IN' => array_unique($values)];
+        return $result;
     }
 
     /**
@@ -385,9 +415,7 @@ final class FilterQuery
      */
     private function getParentJoins(): array
     {
-        $modules = $this->getParentModules();
-
-        if (empty($modules)) {
+        if (empty($this->getParentModules())) {
             return [];
         }
 
@@ -397,7 +425,11 @@ final class FilterQuery
                 continue;
             }
 
-            $conditions = $this->getParentJoin($association, $modules);
+            if (! $this->isParentModuleAssociation($association)) {
+                continue;
+            }
+
+            $conditions = $this->getParentJoin($association);
             if (empty($conditions)) {
                 continue;
             }
@@ -436,24 +468,15 @@ final class FilterQuery
      * Return parent association join.
      *
      * @param \Cake\ORM\Association $association Association instance
-     * @param mixed[] $modules Parent modules
      * @return mixed[]
      */
-    private function getParentJoin(Association $association, array $modules): array
+    private function getParentJoin(Association $association): array
     {
-        if (! in_array($association->type(), $this->parentJoinAssocations)) {
-            return [];
-        }
-
-        $targetTable = $association->getTarget();
-        $targetName = App::shortName(get_class($targetTable), 'Model/Table', 'Table');
-        if (! in_array($targetName, $modules)) {
-            return [];
-        }
+        $table = $association->getTarget();
 
         $result = [];
-        foreach (Utils::getTableAssignationFields($targetTable) as $field) {
-            $result[$targetTable->aliasField($field) . ' IN'] = $this->user['id'];
+        foreach (Utils::getTableAssignationFields($table) as $field) {
+            $result[$table->aliasField($field) . ' IN'] = $this->user['id'];
         }
 
         return $result;
