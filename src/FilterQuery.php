@@ -471,6 +471,28 @@ final class FilterQuery
     }
 
     /**
+     * Parent module assocation validator.
+     *
+     * @param \Cake\ORM\Association $association Association instance
+     * @return bool
+     */
+    private function isParentModuleAssociation(Association $association) : bool
+    {
+        return in_array($this->getModelByAssociation($association), $this->getParentModules());
+    }
+
+    /**
+     * Model name getter, by association.
+     *
+     * @param \Cake\ORM\Association $association Association instance
+     * @return string
+     */
+    private function getModelByAssociation(Association $association) : string
+    {
+        return App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table');
+    }
+
+    /**
      * Return belong to statement.
      *
      * @return mixed[]
