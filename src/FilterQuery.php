@@ -248,7 +248,12 @@ final class FilterQuery
         return $result;
     }
 
-    private function getParentPermissions()
+    /**
+     * User permissions getter, by parent module.
+     *
+     * @return mixed[]
+     */
+    private function getParentPermissions() : array
     {
         $result = [];
         foreach ($this->table->associations() as $association) {
