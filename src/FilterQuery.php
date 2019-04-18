@@ -54,13 +54,6 @@ final class FilterQuery
     private $user;
 
     /**
-     * Association types supported for parent join functionality.
-     *
-     * @var array
-     */
-    private $parentJoinAssocations = ['manyToMany', 'manyToOne'];
-
-    /**
      * Filterable flag
      *
      * True by default and only set to false if specific conditions apply.
@@ -214,7 +207,7 @@ final class FilterQuery
      *
      * @return \Cake\Datasource\QueryInterface
      */
-    public function execute(): \Cake\Datasource\QueryInterface
+    public function execute(): QueryInterface
     {
         // query is not filterable, return it as is.
         if (! $this->filterable) {
@@ -400,6 +393,10 @@ final class FilterQuery
 
         $result = [];
         foreach ($this->table->associations() as $association) {
+            if (! $this->isSupportedJoinAssociation($association)) {
+                continue;
+            }
+
             $conditions = $this->getParentJoin($association, $modules);
             if (empty($conditions)) {
                 continue;
@@ -460,6 +457,17 @@ final class FilterQuery
         }
 
         return $result;
+    }
+
+    /**
+     * Supported JOIN assocation validator.
+     *
+     * @param \Cake\ORM\Association $association Association instance
+     * @return bool
+     */
+    private function isSupportedJoinAssociation(Association $association) : bool
+    {
+        return in_array($association->type(), [Association::MANY_TO_MANY, Association::MANY_TO_ONE]);
     }
 
     /**
