@@ -32,6 +32,7 @@ class FilterQueryTest extends TestCase
         'plugin.roles_capabilities.users',
         'plugin.roles_capabilities.groups_roles',
         'plugin.roles_capabilities.groups_users',
+        'plugin.roles_capabilities.roles',
         'plugin.roles_capabilities.capabilities'
     ];
 
