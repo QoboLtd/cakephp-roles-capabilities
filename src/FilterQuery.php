@@ -364,7 +364,7 @@ final class FilterQuery
             ->select('foreign_key')
             ->where([
                 // WARNING: this might conflict with APP table's name matching a plugin's table name
-                'model' => $this->table->getAlias(),
+                'model' => App::shortName(get_class($this->table), 'Model/Table', 'Table'),
                 'type IN ' => ['view'],
                 'OR' => [
                     ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
