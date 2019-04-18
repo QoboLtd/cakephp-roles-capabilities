@@ -32,6 +32,10 @@ use Cake\Validation\Validator;
  */
 class PermissionsTable extends Table
 {
+    /**
+     * Allowed permissions actions
+     */
+    const ALLOWED_ACTIONS = ['view', 'edit', 'delete'];
 
     /**
      * Initialize method
@@ -77,6 +81,7 @@ class PermissionsTable extends Table
 
         $validator
             ->requirePresence('type', 'create')
+            ->inList('type', self::ALLOWED_ACTIONS)
             ->notEmpty('type');
 
         $validator

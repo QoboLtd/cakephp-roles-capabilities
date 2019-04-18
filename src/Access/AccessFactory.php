@@ -12,6 +12,7 @@
 namespace RolesCapabilities\Access;
 
 use Cake\Core\Configure;
+use RolesCapabilities\Access\AccessInterface;
 
 /**
  *  AccessFactory Class
@@ -22,16 +23,6 @@ use Cake\Core\Configure;
  */
 class AccessFactory
 {
-    /**
-     *  Access classes suffix
-     */
-    const CHECKER_SUFFIX = 'Access';
-
-    /**
-     *  Access Interface name
-     */
-    const CHECK_ACCESS_INTERFACE = 'AccessInterface';
-
     /**
      *  List of rules for hasAccess() function
      *
@@ -65,7 +56,11 @@ class AccessFactory
     public function hasAccess(array $url = [], array $user = []): bool
     {
         foreach ($this->getCheckRules() as $rule) {
-            $result = $this->getCheckRuleObject($rule)->hasAccess($url, $user);
+            if (! class_exists($rule) || ! in_array(AccessInterface::class, class_implements($rule))) {
+                throw new \InvalidArgumentException(sprintf('Unknown rule class: %s', $rule));
+            }
+
+            $result = (new $rule)->hasAccess($url, $user);
 
             if ($result) {
                 return true;
@@ -83,23 +78,5 @@ class AccessFactory
     public function getCheckRules(): array
     {
         return $this->checkRules;
-    }
-
-    /**
-     *  Return rule object based on its name
-     *
-     * @param string $ruleName name of rule
-     * @return \RolesCapabilities\Access\AccessInterface rule object or throw exception
-     */
-    protected function getCheckRuleObject(string $ruleName): \RolesCapabilities\Access\AccessInterface
-    {
-        $interface = __NAMESPACE__ . '\\' . static::CHECK_ACCESS_INTERFACE;
-        $ruleClass = __NAMESPACE__ . '\\' . $ruleName . static::CHECKER_SUFFIX;
-
-        if (class_exists($ruleClass) && in_array($interface, class_implements($ruleClass))) {
-            return new $ruleClass();
-        }
-
-        throw new \InvalidArgumentException("Unknown rule [$ruleName]");
     }
 }

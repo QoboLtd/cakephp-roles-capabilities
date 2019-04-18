@@ -13,6 +13,7 @@ namespace RolesCapabilities\Controller;
 
 use Cake\Utility\Inflector;
 use InvalidArgumentException;
+use RolesCapabilities\Model\Table\PermissionsTable;
 
 /**
  * Permissions Controller
@@ -21,11 +22,6 @@ use InvalidArgumentException;
  */
 class PermissionsController extends AppController
 {
-    /**
-     * @var array allowedActions
-     */
-    protected $allowedActions = ['view', 'edit', 'delete'];
-
     /**
      * Index method
      *
@@ -89,17 +85,16 @@ class PermissionsController extends AppController
         $permission = $this->Permissions->newEntity();
         if ($this->request->is('post')) {
             $permission = $this->Permissions->patchEntity($permission, $data);
-            if ($this->Permissions->save($permission)) {
-                $this->Flash->success((string)__('The  permission has been saved.'));
+            $this->Permissions->save($permission) ?
+                $this->Flash->success((string)__('The  permission has been saved.')) :
+                $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
 
-                return $this->redirect($this->referer());
-            }
-            $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
+            return $this->redirect($this->referer());
         }
         $users[''] = '';
         asort($users);
         $types[''] = '';
-        foreach ($this->allowedActions as $action) {
+        foreach (PermissionsTable::ALLOWED_ACTIONS as $action) {
             $types[$action] = Inflector::humanize($action);
         }
         $this->set(compact('permission', 'users', 'types'));
@@ -119,12 +114,11 @@ class PermissionsController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $permission = $this->Permissions->patchEntity($permission, $this->request->getData());
-            if ($this->Permissions->save($permission)) {
-                $this->Flash->success((string)__('The  permission has been saved.'));
+            $this->Permissions->save($permission) ?
+                $this->Flash->success((string)__('The  permission has been saved.')) :
+                $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
+            return $this->redirect(['action' => 'index']);
         }
         $this->set(compact('permission'));
         $this->set('_serialize', ['permission']);
