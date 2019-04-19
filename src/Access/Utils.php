@@ -13,19 +13,21 @@ namespace RolesCapabilities\Access;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Log\Log;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use InvalidArgumentException;
+use Groups\Model\Table\GroupsTable;
 use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
-use ReflectionClass;
-use ReflectionMethod;
 use RolesCapabilities\Capability as Cap;
+use RolesCapabilities\Model\Table\CapabilitiesTable;
+use Webmozart\Assert\Assert;
 
 /**
  *  Utils class with common methos for Capabilities
@@ -152,8 +154,8 @@ class Utils
             return $actions;
         }
 
-        $refClass = new ReflectionClass($controllerName);
-        foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+        $refClass = new \ReflectionClass($controllerName);
+        foreach ($refClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $actions[] = $method->name;
         }
 
@@ -578,17 +580,20 @@ class Utils
             return static::$userCapabilities[$userId];
         }
 
-        $userGroups = static::getCapabilitiesTable()->getUserGroups($userId);
+        $table = TableRegistry::get('RolesCapabilities.Capabilities');
+        Assert::isInstanceOf($table, CapabilitiesTable::class);
+
+        $userGroups = $table->getUserGroups($userId);
         if (empty($userGroups)) {
             return $entities;
         }
 
-        $userRoles = static::getCapabilitiesTable()->getGroupsRoles($userGroups);
+        $userRoles = $table->getGroupsRoles($userGroups);
         if (empty($userRoles)) {
             return $entities;
         }
 
-        static::$userCapabilities[$userId] = static::getCapabilitiesTable()->getUserRolesEntities($userRoles);
+        static::$userCapabilities[$userId] = $table->getUserRolesEntities($userRoles);
 
         return static::$userCapabilities[$userId];
     }
@@ -726,9 +731,10 @@ class Utils
      */
     protected static function getUserGroups(array $user): array
     {
-        $groups = TableRegistry::get('Groups.Groups');
+        $table = TableRegistry::get('Groups.Groups');
+        Assert::isInstanceOf($table, GroupsTable::class);
 
-        return $groups->getUserGroups($user['id'], [
+        return $table->getUserGroups($user['id'], [
             'fields' => ['id'],
             'contain' => [],
         ]);
@@ -777,9 +783,9 @@ class Utils
      * getEntityFromUrl method gets entity ID from given URL if so
      *
      * @param mixed[] $url to get ID
-     * @return object|null object or null
+     * @return \Cake\Datasource\EntityInterface|null
      */
-    protected static function getEntityFromUrl(array $url)
+    protected static function getEntityFromUrl(array $url) : ?EntityInterface
     {
         $entity = null;
 
@@ -802,27 +808,13 @@ class Utils
                 $table = TableRegistry::get($tableName);
                 $entity = $table->get($id);
             } catch (InvalidPrimaryKeyException $e) {
-                Log::warning("Failed to fetch record with id [$id] from table [$tableName]");
+                Log::warning(sprintf('Failed to fetch record with id [%s] from table [%s]', $id, $url['controller']));
             } catch (RecordNotFoundException $e) {
-                Log::warning("Failed to fetch record with id [$id] from table [$tableName]");
+                Log::warning(sprintf('Failed to fetch record with id [%s] from table [%s]', $id, $url['controller']));
             }
         }
 
         return $entity;
-    }
-
-    /**
-     * Get instance of Capabilities Table.
-     *
-     * @return object Capabilities Table object
-     */
-    protected static function getCapabilitiesTable()
-    {
-        if (empty(static::$capabilitiesTable)) {
-            static::$capabilitiesTable = TableRegistry::get('RolesCapabilities.Capabilities');
-        }
-
-        return static::$capabilitiesTable;
     }
 
     /**
@@ -910,11 +902,9 @@ class Utils
 
         try {
             $config = new ModuleConfig(ConfigType::MODULE(), $moduleName);
-            $moduleConfig = $config->parse();
-            if (!empty($moduleConfig->table->permissions_parent_modules)) {
-                $result = $moduleConfig->table->permissions_parent_modules;
-            }
-        } catch (InvalidArgumentException $e) {
+            $moduleConfig = $config->parseToArray();
+            $result = Hash::get($moduleConfig, 'table.permissions_parent_modules', []);
+        } catch (\InvalidArgumentException $e) {
             return $result;
         }
 

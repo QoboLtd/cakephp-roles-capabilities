@@ -15,6 +15,7 @@ use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
+use Webmozart\Assert\Assert;
 
 /**
  * Import Task
@@ -58,26 +59,23 @@ class ImportTask extends Shell
 
             $this->info("Role [" . $role['name'] . "] does not exist. Creating.");
             $entity = $table->newEntity();
-            /**
-             * @var \RolesCapabilities\Model\Entity\Role $entity
-             */
             $entity = $table->patchEntity($entity, $role);
 
-            $group = $this->getGroupByRoleName($entity->name);
+            $group = $this->getGroupByRoleName($entity->get('name'));
             if (empty($group)) {
-                $this->abort("Failed to fetch group [" . $entity->name . "]");
+                $this->abort("Failed to fetch group [" . $entity->get('name') . "]");
             }
 
             $result = $table->save($entity);
             if (!$result) {
                 $this->err("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
-                $this->abort("Failed to create role [" . $entity->name . "]");
+                $this->abort("Failed to create role [" . $entity->get('name') . "]");
             }
 
-            $msg = 'Role [' . $entity->name . '] imported';
+            $msg = 'Role [' . $entity->get('name') . '] imported';
             // associate imported role with matching group
             if ($table->Groups->link($entity, [$group])) {
-                $msg .= ' and associated with group [' . $group->name . ']';
+                $msg .= ' and associated with group [' . $group->get('name') . ']';
             }
             $msg .= ' successfully';
 
@@ -93,9 +91,14 @@ class ImportTask extends Shell
      * @param  string $name Role name
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function getGroupByRoleName(string $name)
+    protected function getGroupByRoleName(string $name) : ?EntityInterface
     {
-        $result = TableRegistry::get('Groups.Groups')->findByName($name)->first();
+        $result = TableRegistry::get('Groups.Groups')->find()
+            ->enableHydration(true)
+            ->where(['name' => $name])
+            ->first();
+
+        Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
         return $result;
     }

@@ -17,6 +17,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\FilterQuery;
+use Webmozart\Assert\Assert;
 
 class ModelBeforeFindEventsListener implements EventListenerInterface
 {
@@ -63,11 +64,10 @@ class ModelBeforeFindEventsListener implements EventListenerInterface
             return;
         }
 
-        /**
-         * @var \Cake\Datasource\RepositoryInterface $subject
-         */
-        $subject = $event->getSubject();
-        $filterQuery = new FilterQuery($query, $subject, User::getCurrentUser());
+        $table = $event->getSubject();
+        Assert::isInstanceOf($table, \Cake\ORM\Table::class);
+
+        $filterQuery = new FilterQuery($query, $table, User::getCurrentUser());
 
         $filterQuery->execute();
     }

@@ -13,11 +13,13 @@ namespace RolesCapabilities;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
-use Cake\Datasource\QueryInterface;
-use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use RolesCapabilities\Access\Utils;
+use RolesCapabilities\Model\Table\CapabilitiesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * This class is responsible for filtering all application queries
@@ -28,7 +30,7 @@ final class FilterQuery
     /**
      * Query instance.
      *
-     * @var \Cake\Datasource\QueryInterface
+     * @var \Cake\ORM\Query
      */
     private $query;
 
@@ -42,7 +44,7 @@ final class FilterQuery
     /**
      * Query target table.
      *
-     * @var \Cake\Datasource\RepositoryInterface
+     * @var \Cake\ORM\Table
      */
     private $table;
 
@@ -65,12 +67,12 @@ final class FilterQuery
     /**
      * Constructor method.
      *
-     * @param \Cake\Datasource\QueryInterface $query Query object
-     * @param \Cake\Datasource\RepositoryInterface $table Table instance
+     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\Table $table Table instance
      * @param mixed[] $user User info
      * @return void
      */
-    public function __construct(QueryInterface $query, RepositoryInterface $table, array $user)
+    public function __construct(Query $query, Table $table, array $user)
     {
         $this->query = $query;
         $this->table = $table;
@@ -93,14 +95,13 @@ final class FilterQuery
     /**
      * Controller class name getter.
      *
-     * @return false|string False if the class is not found or namespaced class name
+     * @return string
      */
-    private function getControllerClassName()
+    private function getControllerClassName() : string
     {
-        return App::className(
-            App::shortName(get_class($this->table), 'Model/Table', 'Table') . 'Controller',
-            'Controller'
-        );
+        $tableName = App::shortName(get_class($this->table), 'Model/Table', 'Table');
+
+        return (string)App::className($tableName . 'Controller', 'Controller');
     }
 
     /**
@@ -205,9 +206,9 @@ final class FilterQuery
      * - Index or view records assigned to users who report to him (supervisor access).
      * - Index or view records related to a parent module which the user has one of the two conditions above applied.
      *
-     * @return \Cake\Datasource\QueryInterface
+     * @return \Cake\ORM\Query
      */
-    public function execute(): QueryInterface
+    public function execute(): Query
     {
         // query is not filterable, return it as is.
         if (! $this->filterable) {
@@ -225,8 +226,11 @@ final class FilterQuery
         }
 
         if (empty($where)) {
+            $primaryKey = $this->table->getPrimaryKey();
+            Assert::string($primaryKey);
+
             // if user has neither owner nor full capability on current action then filter out all records
-            $where = [$this->table->aliasField($this->table->primaryKey()) => null];
+            $where = [$this->table->aliasField($primaryKey) => null];
         }
 
         $this->query->where($where);
@@ -265,7 +269,10 @@ final class FilterQuery
                 continue;
             }
 
-            $field = sprintf('%s IN', $association->getForeignKey());
+            $foreignKey = $association->getForeignKey();
+            Assert::string($foreignKey);
+
+            $field = sprintf('%s IN', $foreignKey);
             $result[$field] = $this->getPermissionsByModel($this->getModelByAssociation($association));
         }
 
@@ -376,6 +383,7 @@ final class FilterQuery
         }
 
         $primaryKey = $this->table->getPrimaryKey();
+        Assert::string($primaryKey);
 
         return [$this->table->aliasField($primaryKey) . ' IN' => array_unique($values)];
     }
@@ -386,10 +394,12 @@ final class FilterQuery
      * @param string $model Model name
      * @return string[]
      */
-    private function getPermissionsByModel(string $model)
+    private function getPermissionsByModel(string $model) : array
     {
-        $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
-            ->getUserGroups($this->user['id']);
+        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities');
+        Assert::isInstanceOf($table, CapabilitiesTable::class);
+
+        $groups = $table->getUserGroups($this->user['id']);
 
         $query = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions')
             ->find('all')
@@ -533,9 +543,10 @@ final class FilterQuery
             return $result;
         }
 
-        $groups = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities')
-            ->getUserGroups($this->user['id']);
+        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities');
+        Assert::isInstanceOf($table, CapabilitiesTable::class);
 
+        $groups = $table->getUserGroups($this->user['id']);
         // check user capabilities against action's belongs capabilities
         foreach ($this->capabilities['action'][Utils::getTypeBelongs()] as $capability) {
             if (in_array($capability->getName(), $this->capabilities['user'])) {

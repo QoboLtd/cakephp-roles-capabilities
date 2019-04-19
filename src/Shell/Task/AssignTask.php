@@ -13,9 +13,12 @@ namespace RolesCapabilities\Shell\Task;
 
 use Cake\Console\Shell;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use RolesCapabilities\Access\Utils;
+use RolesCapabilities\Model\Table\RolesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * Assign Task
@@ -49,10 +52,8 @@ class AssignTask extends Shell
 
         $this->info('Configured admin role is [' . $this->role . ']');
 
-        /**
-         * @var \RolesCapabilities\Model\Table\RolesTable
-         */
         $table = TableRegistry::get('RolesCapabilities.Roles');
+        Assert::isInstanceOf($table, RolesTable::class);
 
         $role = $this->getAdminsRoleEntity($table);
         if (empty($role)) {
@@ -61,7 +62,7 @@ class AssignTask extends Shell
 
         $allCapabilities = $this->getAllCapabilities($table);
         $count = count($allCapabilities);
-        $role->capabilities = $allCapabilities;
+        $role->set('capabilities', $allCapabilities);
         // delete existing role capabilities
         $table->Capabilities->deleteAll(['role_id' => $role->id]);
 
@@ -79,13 +80,16 @@ class AssignTask extends Shell
      * Get 'Admins' role with its capabilities.
      *
      * @param  \Cake\ORM\Table $table Table instance
-     * @return \Cake\ORM\Entity|null
+     * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function getAdminsRoleEntity(Table $table)
+    protected function getAdminsRoleEntity(Table $table) : ?EntityInterface
     {
-        $result = $table
-            ->findByName($this->role)
+        $result = $table->find()
+            ->enableHydration(true)
+            ->where(['name' => $this->role])
             ->first();
+
+        Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
         return $result;
     }
@@ -93,10 +97,10 @@ class AssignTask extends Shell
     /**
      * Get all capabilities.
      *
-     * @param  \Cake\ORM\Table $table Table instance
+     * @param \RolesCapabilities\Model\Table\RolesTable $table Table instance
      * @return mixed[]
      */
-    protected function getAllCapabilities(Table $table): array
+    protected function getAllCapabilities(RolesTable $table): array
     {
         $result = [];
 

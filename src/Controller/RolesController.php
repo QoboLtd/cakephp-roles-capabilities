@@ -63,7 +63,7 @@ class RolesController extends AppController
     {
         $role = $this->Roles->newEntity();
         if ($this->request->is('post')) {
-            $data = $this->request->getData();
+            $data = (array)$this->request->getData();
             /**
              * @var \RolesCapabilities\Model\Entity\Role $role
              */
@@ -103,7 +103,7 @@ class RolesController extends AppController
             'contain' => ['Groups']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $data = $this->request->getData();
+            $data = (array)$this->request->getData();
             /**
              * @var \RolesCapabilities\Model\Entity\Role
              */
