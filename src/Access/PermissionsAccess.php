@@ -12,6 +12,8 @@
 namespace RolesCapabilities\Access;
 
 use Cake\ORM\TableRegistry;
+use RolesCapabilities\Model\Table\CapabilitiesTable;
+use Webmozart\Assert\Assert;
 
 /**
  *  PermissionsAccess class checks if user has access to specific entity
@@ -38,7 +40,10 @@ class PermissionsAccess extends AuthenticatedAccess
             return false;
         }
 
-        $groups = TableRegistry::get('RolesCapabilities.Capabilities')->getUserGroups($user['id']);
+        $table = TableRegistry::get('RolesCapabilities.Capabilities');
+        Assert::isInstanceOf($table, CapabilitiesTable::class);
+
+        $groups = $table->getUserGroups($user['id']);
         $query = TableRegistry::get('RolesCapabilities.Permissions')
             ->find('all')
             ->select('foreign_key')

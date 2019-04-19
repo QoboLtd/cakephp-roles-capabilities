@@ -271,7 +271,7 @@ class UtilsTest extends TestCase
     /**
      * Test getEntityFromUrl method
      */
-    public function testGetEntityFromUrl()
+    public function testGetEntityFromUrl() : void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
@@ -287,7 +287,7 @@ class UtilsTest extends TestCase
     /**
      * Test getEntityFromUrl method without the pass parameter
      */
-    public function testGetEntityFromUrlWithoutPassParameter()
+    public function testGetEntityFromUrlWithoutPassParameter() : void
     {
         $url = [
             '0' => "00000000-0000-0000-0000-000000000001",
@@ -303,7 +303,7 @@ class UtilsTest extends TestCase
     /**
      * Test getEntityFromUrl method with the plugin set
      */
-    public function testGetEntityFromUrlWithPluginSetParameter()
+    public function testGetEntityFromUrlWithPluginSetParameter() : void
     {
         $url = [
             '0' => "00000000-0000-0000-0000-000000000001",
@@ -319,7 +319,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasAccessInCapabilities method the user has the capabilities
      */
-    public function testHasAccessInCapabilities()
+    public function testHasAccessInCapabilities() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -327,7 +327,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasAccessInCapabilities method the user doesnt has any capabilities
      */
-    public function testHasAccessInCapabilitiesWithNoCapabilities()
+    public function testHasAccessInCapabilitiesWithNoCapabilities() : void
     {
         $bool = Utils::hasAccessInCapabilities("view", "00000000-0000-0000-0000-000000000001");
         $this->assertFalse($bool);
@@ -336,7 +336,7 @@ class UtilsTest extends TestCase
     /**
      * Test getUserGroups method with groups
      */
-    public function testGetUserGroups()
+    public function testGetUserGroups() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -344,7 +344,7 @@ class UtilsTest extends TestCase
     /**
      * Test getUserGroups method when there are no groups
      */
-    public function testGetUserGroupsNoGroup()
+    public function testGetUserGroupsNoGroup() : void
     {
         $url = ['id' => "00000000-0000-0000-0000-000000000001"];
 
@@ -355,7 +355,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessBelongs with capabilities
      */
-    public function testHasTypeAccessBelongs()
+    public function testHasTypeAccessBelongs() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -363,7 +363,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessBelongs when there are no capabilities
      */
-    public function testHasTypeAccessBelongsWithoutCapabilities()
+    public function testHasTypeAccessBelongsWithoutCapabilities() : void
     {
         $parameters = [
             'capabilities' => [],
@@ -382,7 +382,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessOwner with capabilities
      */
-    public function testHasTypeAccessOwner()
+    public function testHasTypeAccessOwner() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -390,7 +390,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessOwner when there are no capabilities
      */
-    public function testHasTypeAccessOwnerWithoutCapabilities()
+    public function testHasTypeAccessOwnerWithoutCapabilities() : void
     {
         $parameters = [
             'capabilities' => [],
@@ -409,7 +409,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessFull with capabilities
      */
-    public function testHasTypeAccessFull()
+    public function testHasTypeAccessFull() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -417,7 +417,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessFull when there are no capabilities
      */
-    public function testHasTypeAccessFullWithoutCapabilities()
+    public function testHasTypeAccessFullWithoutCapabilities() : void
     {
         $parameters = [
             'capabilities' => [],
@@ -436,7 +436,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccess with capabilities
      */
-    public function testHasTypeAccessHasCapabilitiesButNoAccess()
+    public function testHasTypeAccessHasCapabilitiesButNoAccess() : void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
@@ -451,7 +451,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccess when there are no capabilities
      */
-    public function testHasTypeAccessWithoutCapabilities()
+    public function testHasTypeAccessWithoutCapabilities() : void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
@@ -466,7 +466,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccess when wrong type
      */
-    public function testHasTypeAccessWrongType()
+    public function testHasTypeAccessWrongType() : void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],

@@ -30,7 +30,7 @@ class PermissionsController extends AppController
     public function index()
     {
         $conditions = [];
-        $params = $this->request->query();
+        $params = (array)$this->request->query();
         if (!empty($params['model'])) {
             $conditions['model'] = $params['model'];
         }
@@ -70,7 +70,7 @@ class PermissionsController extends AppController
      */
     public function add()
     {
-        $data = $this->request->getData();
+        $data = (array)$this->request->getData();
         if (!empty($data['group_id'])) {
             $data['owner_model'] = 'Groups';
             $data['owner_foreign_key'] = $data['group_id'];
@@ -113,7 +113,7 @@ class PermissionsController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $permission = $this->Permissions->patchEntity($permission, $this->request->getData());
+            $permission = $this->Permissions->patchEntity($permission, (array)$this->request->getData());
             $this->Permissions->save($permission) ?
                 $this->Flash->success((string)__('The  permission has been saved.')) :
                 $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
