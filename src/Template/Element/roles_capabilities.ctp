@@ -1,27 +1,62 @@
 <?php
+/**
+ * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
+ */
 
 use Cake\Utility\Inflector;
 
+if (true !== $disabled) {
+    echo $this->Html->css([
+        'AdminLTE./bower_components/select2/dist/css/select2.min',
+        'Qobo/Utils.select2-bootstrap.min',
+        'Qobo/Utils.select2-style',
+        'RolesCapabilities.style'
+    ], ['block' => 'css']);
+    echo $this->Html->script([
+        'AdminLTE./bower_components/select2/dist/js/select2.full.min',
+        'Qobo/Utils.select2.init',
+        'RolesCapabilities.utils'
+    ], ['block' => 'scriptBottom']);
+}
+
 $count = 0;
-$tabs = '';
 ksort($capabilities);
+
+$getGroupName = function ($name) {
+    $parts = array_map(function ($n) {
+        return Inflector::humanize(Inflector::underscore(str_replace('Controller', '', $n)));
+    }, explode('\\', $name));
+
+    $parts = array_filter($parts);
+    // get just the controller and plugin names
+    $parts = array_slice($parts, -2);
+
+    return implode(' :: ', $parts);
+};
+
 ?>
 <div class="row">
     <div class="col-md-2">
         <div class="fixed-height-box">
-        <ul class="nav nav-pills nav-stacked">
-        <?php foreach ($capabilities as $groupName => $groupCaps) : ?>
-            <?php
-            if (empty($groupCaps)) {
-                continue;
-            }
+            <ul class="nav nav-pills nav-stacked">
+            <?php foreach ($capabilities as $groupName => $groupCaps) :
+                if (empty($groupCaps)) {
+                    continue;
+                }
 
                 $active = ++$count == 1 ? 'active' : '';
                 $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
-            ?>
-            <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></a></li>
-        <?php endforeach; ?>
-        </ul>
+                ?>
+                <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $getGroupName($groupName) ?></a></li>
+            <?php endforeach; ?>
+            </ul>
         </div>
     </div>
     <div class="col-md-10">
@@ -68,7 +103,7 @@ ksort($capabilities);
                 $sActive = ++$sCount == 1 ? 'active' : '';
                 echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
 
-                echo $this->Form->input($slug, [
+                echo $this->Form->control($slug, [
                     'type' => 'checkbox',
                     'label' => 'Select All',
                     'class' => 'select_all',
@@ -78,7 +113,7 @@ ksort($capabilities);
                 echo '<hr/>';
 
                 foreach ($caps as $cap) {
-                    echo $this->Form->input($cap->getName(), [
+                    echo $this->Form->control($cap->getName(), [
                         'type' => 'checkbox',
                         'label' => $cap->getDescription(),
                         'class' => 'checkbox-capability',
