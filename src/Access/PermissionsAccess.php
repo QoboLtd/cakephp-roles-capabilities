@@ -44,24 +44,24 @@ class PermissionsAccess extends AuthenticatedAccess
         Assert::isInstanceOf($table, CapabilitiesTable::class);
 
         $groups = $table->getUserGroups($user['id']);
+
+        $where = [
+            'model' => $url['controller'], // WARNING: this might conflict with APP table's name matching a plugin's table name
+            'type' => $url['action'],
+            'foreign_key' => $url['pass'][0],
+            'OR' => [
+                ['owner_foreign_key' => $user['id'], 'owner_model' => 'Users']
+            ]
+        ];
+
+        if (! empty($groups)) {
+            $where['OR'][] = ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'];
+        }
+
         $query = TableRegistry::get('RolesCapabilities.Permissions')
             ->find('all')
             ->select('foreign_key')
-            ->where([
-                'model' => $url['controller'],
-                'type IN ' => $url['action'],
-                'foreign_key' => $url['pass'][0],
-                'OR' => [
-                    [
-                        'owner_foreign_key IN ' => array_keys($groups),
-                        'owner_model' => 'Groups',
-                    ],
-                    [
-                        'owner_foreign_key' => $user['id'],
-                        'owner_model' => 'Users',
-                    ]
-                ]
-            ])
+            ->where($where)
             ->applyOptions(['accessCheck' => false]);
 
         return $query->count() > 0 ? true : false;

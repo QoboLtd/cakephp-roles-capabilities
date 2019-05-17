@@ -401,18 +401,22 @@ final class FilterQuery
 
         $groups = $table->getUserGroups($this->user['id']);
 
+        $where = [
+            'model' => $model, // WARNING: this might conflict with APP table's name matching a plugin's table name
+            'type' => 'view',
+            'OR' => [
+                ['owner_foreign_key' => $this->user['id'], 'owner_model' => 'Users']
+            ]
+        ];
+
+        if (! empty($groups)) {
+            $where['OR'][] = ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'];
+        }
+
         $query = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions')
             ->find('all')
             ->select('foreign_key')
-            ->where([
-                // WARNING: this might conflict with APP table's name matching a plugin's table name
-                'model' => $model,
-                'type IN ' => ['view'],
-                'OR' => [
-                    ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
-                    ['owner_foreign_key' => $this->user['id'], 'owner_model' => 'Users']
-                ]
-            ])
+            ->where($where)
             ->applyOptions(['accessCheck' => false]);
 
         $result = [];
