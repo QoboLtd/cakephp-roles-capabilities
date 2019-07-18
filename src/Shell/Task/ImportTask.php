@@ -52,34 +52,35 @@ class ImportTask extends Shell
                 continue;
             }
 
-            if ($table->exists(['name' => $role['name']])) {
-                $this->warn("Role [" . $role['name'] . "] already exists. Skipping.");
+            $entity = $table->find()->where(['name' => $role['name']])->first();
+            Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
+
+            if (null !== $entity && $entity->get('deny_edit')) {
+                $this->warn(sprintf('Roles "%s" already exists and is not allowed to be modified.', $role['name']));
                 continue;
             }
 
-            $this->info("Role [" . $role['name'] . "] does not exist. Creating.");
-            $entity = $table->newEntity();
+            null === $entity ?
+                $this->info(sprintf('Creating role "%s".', $role['name'])) :
+                $this->info(sprintf('Updating role "%s".', $role['name']));
+
+            $entity = null === $entity ? $table->newEntity() : $entity;
             $entity = $table->patchEntity($entity, $role);
 
-            $group = $this->getGroupByRoleName($entity->get('name'));
-            if (empty($group)) {
-                $this->abort("Failed to fetch group [" . $entity->get('name') . "]");
-            }
-
-            $result = $table->save($entity);
-            if (!$result) {
+            if (! $table->save($entity)) {
                 $this->err("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
                 $this->abort("Failed to create role [" . $entity->get('name') . "]");
             }
 
-            $msg = 'Role [' . $entity->get('name') . '] imported';
+            $group = $this->getGroupByRoleName($entity->get('name'));
+            if (null === $group) {
+                continue;
+            }
+
             // associate imported role with matching group
             if ($table->Groups->link($entity, [$group])) {
-                $msg .= ' and associated with group [' . $group->get('name') . ']';
+                $this->info(sprintf('Role "%s" linked with group "%s"', $entity->get('name'), $group->get('name')));
             }
-            $msg .= ' successfully';
-
-            $this->info($msg);
         }
 
         $this->success('System roles imported successfully');
