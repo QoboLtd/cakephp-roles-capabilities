@@ -6,9 +6,6 @@ use Cake\TestSuite\TestCase;
 use RolesCapabilities\Shell\Task\ImportTask;
 use Webmozart\Assert\Assert;
 
-/**
- * @property \RolesCapabilities\Model\Table\RolesTable $Roles
- */
 class ImportTaskTest extends TestCase
 {
     public $fixtures = [
