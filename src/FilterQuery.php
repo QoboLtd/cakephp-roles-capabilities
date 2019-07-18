@@ -272,8 +272,13 @@ final class FilterQuery
             $foreignKey = $association->getForeignKey();
             Assert::string($foreignKey);
 
+            $values = $this->getPermissionsByModel($this->getModelByAssociation($association));
+            if (empty($values)) {
+                continue;
+            }
+
             $field = sprintf('%s IN', $foreignKey);
-            $result[$field] = $this->getPermissionsByModel($this->getModelByAssociation($association));
+            $result[$field] = $values;
         }
 
         return $result;
