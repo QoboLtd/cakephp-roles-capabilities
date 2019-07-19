@@ -52,7 +52,14 @@ class ImportTask extends Shell
                 continue;
             }
 
-            $entity = $table->find()->where(['name' => $role['name']])->first();
+            $entity = $table->find()->where(['name' => $role['name']])->contain(['Groups' => function ($q) {
+                return $q->select(['Groups.id']);
+            }])->first();
+
+            $linkedGroups = array_map(function ($item) {
+                return $item->get('id');
+            }, $entity->get('groups'));
+
             Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
 
             if (null !== $entity && $entity->get('deny_edit')) {
@@ -73,7 +80,8 @@ class ImportTask extends Shell
             }
 
             $group = $this->getGroupByRoleName($entity->get('name'));
-            if (null === $group) {
+
+            if (null === $group || in_array($group->get('id'), $linkedGroups, true)) {
                 continue;
             }
 
