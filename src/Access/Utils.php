@@ -184,7 +184,7 @@ class Utils
     public static function filterSkippedActions(string $controllerName, array $actions): array
     {
         $skipActions = [];
-        if (is_callable([$controllerName, 'getSkipActions'])) {
+        if (class_exists($controllerName) && is_callable([$controllerName, 'getSkipActions'])) {
             $skipActions = $controllerName::getSkipActions($controllerName);
         }
 
@@ -556,7 +556,7 @@ class Utils
     {
         $result = [];
         foreach (Utility::getControllers() as $controller) {
-            if (!is_callable([$controller, 'getCapabilities'])) {
+            if (!class_exists($controller) || !is_callable([$controller, 'getCapabilities'])) {
                 continue;
             }
 
@@ -614,7 +614,7 @@ class Utils
         }
 
         $skipControllers = Configure::read('RolesCapabilities.accessCheck.skipControllers');
-        if (is_callable([$controllerName, 'getSkipControllers'])) {
+        if (class_exists($controllerName) && is_callable([$controllerName, 'getSkipControllers'])) {
             $skipControllers = array_merge($skipControllers, $controllerName::getSkipControllers());
         }
 
