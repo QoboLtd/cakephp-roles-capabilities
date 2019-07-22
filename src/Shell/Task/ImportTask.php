@@ -52,9 +52,13 @@ class ImportTask extends Shell
                 continue;
             }
 
-            $entity = $table->find()->where(['name' => $role['name']])->contain(['Groups' => function ($q) {
+            $query = $table->find()->where(['name' => $role['name']])->contain(['Groups' => function ($q) {
                 return $q->select(['Groups.id']);
-            }])->first();
+            }]);
+
+            Assert::isInstanceOf($query, \Cake\ORM\Query::class);
+
+            $entity = $query->first();
 
             Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
 
