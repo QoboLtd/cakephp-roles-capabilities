@@ -140,7 +140,7 @@ class NoAuthAccess extends BaseAccessClass
     protected function isSkipControllerActions(string $controllerName, string $action): bool
     {
         $skipActions = [];
-        if (method_exists([$controllerName, 'getSkipActions'])) {
+        if (method_exists($controllerName, 'getSkipActions')) {
             $skipActions = $controllerName::getSkipActions($controllerName);
         }
 
