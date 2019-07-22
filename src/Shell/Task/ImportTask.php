@@ -56,11 +56,11 @@ class ImportTask extends Shell
                 return $q->select(['Groups.id']);
             }])->first();
 
-            $linkedGroups = array_map(function ($item) {
+            Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
+
+            $linkedGroups = null === $entity ? [] : array_map(function ($item) {
                 return $item->get('id');
             }, $entity->get('groups'));
-
-            Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
 
             if (null !== $entity && $entity->get('deny_edit')) {
                 $this->warn(sprintf('Roles "%s" already exists and is not allowed to be modified.', $role['name']));
