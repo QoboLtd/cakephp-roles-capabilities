@@ -89,7 +89,7 @@ class RolesTable extends Table
 
         // don't allow editing of non-editable role(s)
         $rules->addUpdate(function ($entity, $options) {
-            return !$entity->deny_edit;
+            return ! $entity->getOriginal('deny_edit');
         }, 'systemCheck');
 
         // don't allow deletion of non-deletable role(s)
