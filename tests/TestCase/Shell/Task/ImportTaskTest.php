@@ -1,6 +1,7 @@
 <?php
 namespace RolesCapabilities\Test\TestCase\Shell\Task;
 
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Shell\Task\ImportTask;
@@ -72,6 +73,7 @@ class ImportTaskTest extends TestCase
             $this->assertTrue($updated['modified']->getTimestamp() === $initialModifiedDate->getTimestamp()) :
             $this->assertTrue($updated['modified']->getTimestamp() > $initialModifiedDate->getTimestamp());
 
+        unset($data['description']);
         $this->assertSame([], array_diff_assoc($data, $updated));
     }
 
@@ -80,9 +82,11 @@ class ImportTaskTest extends TestCase
      */
     public function rolesProvider() : array
     {
-        return [
-            [['name' => 'Admins', 'deny_edit' => true, 'deny_delete' => true]],
-            [['name' => 'Everyone', 'deny_edit' => false, 'deny_delete' => true]]
-        ];
+        $roles = [];
+        foreach (Configure::read('RolesCapabilities.Roles') as $role) {
+            $roles[] = [$role];
+        }
+
+        return $roles;
     }
 }
