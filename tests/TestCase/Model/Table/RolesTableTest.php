@@ -123,7 +123,7 @@ class RolesTableTest extends TestCase
         $this->assertNotEmpty($entity->get('id'));
     }
 
-    public function testSaveFromAllowEditToDenyEdit()
+    public function testSaveFromAllowEditToDenyEdit() : void
     {
         $this->Roles->deleteAll([]);
 
@@ -148,7 +148,7 @@ class RolesTableTest extends TestCase
         $this->assertSame([], array_diff_assoc(['deny_edit' => true], $entity->toArray()));
     }
 
-    public function testSaveFromDenyEditToAllowEdit()
+    public function testSaveFromDenyEditToAllowEdit() : void
     {
         $this->Roles->deleteAll([]);
 
@@ -173,7 +173,7 @@ class RolesTableTest extends TestCase
         $this->assertSame([], array_diff_assoc(['deny_edit' => true], $entity->toArray()));
     }
 
-    public function testDeleteWithAllowDelete()
+    public function testDeleteWithAllowDelete() : void
     {
         $this->Roles->deleteAll([]);
 
@@ -193,7 +193,7 @@ class RolesTableTest extends TestCase
         $this->assertTrue($this->Roles->delete($entity));
     }
 
-    public function testDeleteWithDenyDelete()
+    public function testDeleteWithDenyDelete() : void
     {
         $this->Roles->deleteAll([]);
 
