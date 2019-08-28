@@ -106,7 +106,7 @@ class PermissionsTable extends Table
     }
 
     /**
-     * Retrieves current lead view permission for specified user.
+     * Retrieves view permission for specified user.
      *
      * @param string $modelName Model name
      * @param string $foreignKey Foreign key
