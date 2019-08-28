@@ -91,4 +91,15 @@ class PermissionsTableTest extends TestCase
 
         $this->assertSame('00000000-0000-0000-0000-000000000001', $permission->get('id'));
     }
+
+    public function testfetchUserViewPermissionWithInvalidData() : void
+    {
+        $permission = $this->Permissions->fetchUserViewPermission(
+            'NonExistingModel',
+            'c4bd0658-f0d8-482b-bf02-4ffe45f18bdf',
+            '00000000-0000-0000-0000-000000000003'
+        );
+
+        $this->assertSame(null, $permission);
+    }
 }
