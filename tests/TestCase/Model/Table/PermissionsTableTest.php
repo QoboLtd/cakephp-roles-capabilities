@@ -4,6 +4,7 @@ namespace RolesCapabilities\Test\TestCase\Model\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Model\Table\PermissionsTable;
+use Webmozart\Assert\Assert;
 
 /**
  * RolesCapabilities\Model\Table\PermissionsTable Test Case
@@ -89,6 +90,7 @@ class PermissionsTableTest extends TestCase
             '00000000-0000-0000-0000-000000000003'
         );
 
+        Assert::isInstanceOf($permission, \RolesCapabilities\Model\Entity\Permission::class);
         $this->assertSame('00000000-0000-0000-0000-000000000001', $permission->get('id'));
     }
 
