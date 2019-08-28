@@ -14,6 +14,8 @@ namespace RolesCapabilities\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use RolesCapabilities\Model\Entity\Permission;
+use Webmozart\Assert\Assert;
 
 /**
  * Permissions Model
@@ -101,5 +103,34 @@ class PermissionsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         return $rules;
+    }
+
+    /**
+     * Retrieves current lead view permission for specified user.
+     *
+     * @param string $modelName Model name
+     * @param string $foreignKey Foreign key
+     * @param string $userId User ID
+     * @return \RolesCapabilities\Model\Entity\Permission|null
+     */
+    public function fetchUserViewPermission(string $modelName, string $foreignKey, string $userId) : ?Permission
+    {
+        Assert::stringNotEmpty($modelName);
+        Assert::uuid($foreignKey);
+        Assert::uuid($userId);
+
+        $entity = $this->find()
+            ->where([
+                'owner_model' => 'Users',
+                'model' => $modelName,
+                'owner_foreign_key' => $userId,
+                'foreign_key' => $foreignKey,
+                'type' => 'view'
+            ])
+            ->first();
+
+        Assert::nullOrIsInstanceOf($entity, Permission::class);
+
+        return $entity;
     }
 }
