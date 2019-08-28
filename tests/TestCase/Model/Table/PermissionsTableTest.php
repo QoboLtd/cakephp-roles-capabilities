@@ -4,6 +4,7 @@ namespace RolesCapabilities\Test\TestCase\Model\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Model\Table\PermissionsTable;
+use Webmozart\Assert\Assert;
 
 /**
  * RolesCapabilities\Model\Table\PermissionsTable Test Case
@@ -56,33 +57,51 @@ class PermissionsTableTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize(): void
+    public function testSave(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $data = [
+            'creator' => '00000000-0000-0000-0000-000000000001',
+            'type' => 'view',
+            'owner_model' => 'Users',
+            'owner_foreign_key' => '00000000-0000-0000-0000-000000000003',
+            'model' => 'Articles',
+            'foreign_key' => '00000000-0000-0000-0000-000000000001'
+        ];
+
+        $permission = $this->Permissions->newEntity($data);
+
+        $this->Permissions->save($permission);
+
+        $this->assertNotEmpty($permission->get('id'));
+        $this->assertSame($data['creator'], $permission->get('creator'));
+        $this->assertSame($data['type'], $permission->get('type'));
+        $this->assertSame($data['owner_model'], $permission->get('owner_model'));
+        $this->assertSame($data['owner_foreign_key'], $permission->get('owner_foreign_key'));
+        $this->assertSame($data['model'], $permission->get('model'));
+        $this->assertSame($data['foreign_key'], $permission->get('foreign_key'));
+        $this->assertSame(null, $permission->get('expired'));
     }
 
-    /**
-     * Test validationDefault method
-     *
-     * @return void
-     */
-    public function testValidationDefault(): void
+    public function testfetchUserViewPermission() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $permission = $this->Permissions->fetchUserViewPermission(
+            'Leads',
+            'c4bd0658-f0d8-482b-bf02-4ffe45f18bdf',
+            '00000000-0000-0000-0000-000000000003'
+        );
+
+        Assert::isInstanceOf($permission, \RolesCapabilities\Model\Entity\Permission::class);
+        $this->assertSame('00000000-0000-0000-0000-000000000001', $permission->get('id'));
     }
 
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules(): void
+    public function testfetchUserViewPermissionWithInvalidData() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $permission = $this->Permissions->fetchUserViewPermission(
+            'NonExistingModel',
+            'c4bd0658-f0d8-482b-bf02-4ffe45f18bdf',
+            '00000000-0000-0000-0000-000000000003'
+        );
+
+        $this->assertSame(null, $permission);
     }
 }
