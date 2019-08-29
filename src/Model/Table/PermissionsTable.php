@@ -39,6 +39,8 @@ class PermissionsTable extends Table
      */
     const ALLOWED_ACTIONS = ['view', 'edit', 'delete'];
 
+    const ALLOWED_OWNER_MODELS = ['Groups', 'Users'];
+
     /**
      * Initialize method
      *
@@ -74,10 +76,21 @@ class PermissionsTable extends Table
             ->notEmpty('foreign_key');
 
         $validator
+            ->uuid('owner_foreign_key')
+            ->requirePresence('owner_foreign_key', 'create')
+            ->notEmpty('owner_foreign_key');
+
+        $validator
+            ->requirePresence('owner_model', 'create')
+            ->inList('owner_model', self::ALLOWED_OWNER_MODELS)
+            ->notEmpty('owner_model');
+
+        $validator
             ->requirePresence('model', 'create')
             ->notEmpty('model');
 
         $validator
+            ->uuid('creator')
             ->requirePresence('creator', 'create')
             ->notEmpty('creator');
 
