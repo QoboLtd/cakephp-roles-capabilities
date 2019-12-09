@@ -38,14 +38,14 @@ class NoAuthAccessTest extends TestCase
         $url = [
             'plugin' => 'CakeDC\Users',
             'controller' => 'Users',
-            'action' => 'login'
+            'action' => 'login',
         ];
         $this->assertTrue($this->instance->hasAccess($url, $user), 'No auth access to non restricted area');
 
         $url = [
             'plugin' => '',
             'controller' => 'Users',
-            'action' => 'view'
+            'action' => 'view',
         ];
         $this->assertFalse($this->instance->hasAccess($url, $user), 'No auth access to restricted area');
     }

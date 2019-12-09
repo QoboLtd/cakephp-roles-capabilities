@@ -11,7 +11,7 @@ class AccessFactoryTest extends TestCase
     public function testConstructorRules(): void
     {
         $rules = [
-            'MyRule1', 'MyRule2'
+            'MyRule1', 'MyRule2',
         ];
         $af = new AccessFactory($rules);
         $this->assertArraySubset($af->getCheckRules(), $rules);
@@ -25,7 +25,7 @@ class AccessFactoryTest extends TestCase
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action' => 'login'
+           'action' => 'login',
         ];
 
         $af = new AccessFactory();
@@ -41,7 +41,7 @@ class AccessFactoryTest extends TestCase
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action' => 'view'
+           'action' => 'view',
         ];
 
         $af = new AccessFactory();
@@ -62,7 +62,7 @@ class AccessFactoryTest extends TestCase
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action' => 'view'
+           'action' => 'view',
         ];
 
         $af = new AccessFactory();
@@ -79,7 +79,7 @@ class AccessFactoryTest extends TestCase
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action' => 'view'
+           'action' => 'view',
         ];
 
         $af = new AccessFactory(['blah', 'bar', 'foo']);

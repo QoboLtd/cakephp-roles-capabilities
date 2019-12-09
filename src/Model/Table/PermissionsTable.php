@@ -126,7 +126,7 @@ class PermissionsTable extends Table
      * @param string $userId User ID
      * @return \RolesCapabilities\Model\Entity\Permission|null
      */
-    public function fetchUserViewPermission(string $modelName, string $foreignKey, string $userId) : ?Permission
+    public function fetchUserViewPermission(string $modelName, string $foreignKey, string $userId): ?Permission
     {
         Assert::stringNotEmpty($modelName);
         Assert::uuid($foreignKey);
@@ -138,7 +138,7 @@ class PermissionsTable extends Table
                 'model' => $modelName,
                 'owner_foreign_key' => $userId,
                 'foreign_key' => $foreignKey,
-                'type' => 'view'
+                'type' => 'view',
             ])
             ->first();
 

@@ -39,7 +39,7 @@ class CapabilitiesFixture extends TestFixture
         [
             'id' => 'c3327fd3-66d7-4037-91af-2baa39ccd85f',
             'name' => 'Lorem ipsum dolor sit amet',
-            'role_id' => 'Lorem ipsum dolor sit amet'
+            'role_id' => 'Lorem ipsum dolor sit amet',
         ],
     ];
 }

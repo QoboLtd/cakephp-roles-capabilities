@@ -62,7 +62,7 @@ class Utils
      * @var array
      */
     protected static $nonAssignedActions = [
-        'add'
+        'add',
     ];
 
     protected static $capabilitiesTable = null;
@@ -416,7 +416,7 @@ class Utils
             $name = static::generateCapabilityName($contrName, $action);
             $options = [
                 'label' => static::generateCapabilityLabel($contrName, $action . '_all'),
-                'description' => static::generateCapabilityDescription($contrName, static::humanizeActionName($action))
+                'description' => static::generateCapabilityDescription($contrName, static::humanizeActionName($action)),
             ];
 
             $result[] = new Cap($name, $options);
@@ -497,7 +497,7 @@ class Utils
                 $options = [
                     'label' => $label,
                     'description' => $description,
-                    'field' => $field
+                    'field' => $field,
                 ];
 
                 if (!empty($assignationType)) {
@@ -539,7 +539,7 @@ class Utils
                 $contrName,
                 'fetch if owner on parent module (' . implode(', ', $parentModules) . ')'
             ),
-            'parent_modules' => $parentModules
+            'parent_modules' => $parentModules,
         ];
 
         $result[] = new Cap($name, $options);
@@ -785,7 +785,7 @@ class Utils
      * @param mixed[] $url to get ID
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected static function getEntityFromUrl(array $url) : ?EntityInterface
+    protected static function getEntityFromUrl(array $url): ?EntityInterface
     {
         $entity = null;
 
@@ -943,7 +943,7 @@ class Utils
         $table = TableRegistry::get(Configure::read('Users.table'));
         $users = $table->find()
             ->where([
-                'reports_to' => $userId
+                'reports_to' => $userId,
             ])
             ->all()
             ->toArray();

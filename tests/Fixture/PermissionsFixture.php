@@ -53,7 +53,7 @@ class PermissionsFixture extends TestFixture
             'type' => 'view',
             'expired' => null,
             'created' => '2017-04-12 11:21:52',
-            'modified' => '2017-04-12 11:21:52'
+            'modified' => '2017-04-12 11:21:52',
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000002',
@@ -65,7 +65,7 @@ class PermissionsFixture extends TestFixture
             'type' => 'view',
             'expired' => null,
             'created' => '2019-08-28 11:45:12',
-            'modified' => '2019-08-28 11:45:12'
+            'modified' => '2019-08-28 11:45:12',
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000003',
@@ -77,7 +77,7 @@ class PermissionsFixture extends TestFixture
             'type' => 'view',
             'expired' => null,
             'created' => '2019-08-28 11:45:12',
-            'modified' => '2019-08-28 11:45:12'
+            'modified' => '2019-08-28 11:45:12',
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000004',
@@ -89,7 +89,7 @@ class PermissionsFixture extends TestFixture
             'type' => 'view',
             'expired' => null,
             'created' => '2019-08-28 11:45:12',
-            'modified' => '2019-08-28 11:45:12'
+            'modified' => '2019-08-28 11:45:12',
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000005',
@@ -101,7 +101,7 @@ class PermissionsFixture extends TestFixture
             'type' => 'view',
             'expired' => null,
             'created' => '2017-04-12 11:21:52',
-            'modified' => '2017-04-12 11:21:52'
+            'modified' => '2017-04-12 11:21:52',
         ],
     ];
 }

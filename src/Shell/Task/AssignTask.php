@@ -82,7 +82,7 @@ class AssignTask extends Shell
      * @param  \Cake\ORM\Table $table Table instance
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function getAdminsRoleEntity(Table $table) : ?EntityInterface
+    protected function getAdminsRoleEntity(Table $table): ?EntityInterface
     {
         $result = $table->find()
             ->enableHydration(true)

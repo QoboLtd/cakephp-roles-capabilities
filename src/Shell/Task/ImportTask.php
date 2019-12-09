@@ -104,7 +104,7 @@ class ImportTask extends Shell
      * @param  string $name Role name
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function getGroupByRoleName(string $name) : ?EntityInterface
+    protected function getGroupByRoleName(string $name): ?EntityInterface
     {
         $result = TableRegistry::get('Groups.Groups')->find()
             ->enableHydration(true)

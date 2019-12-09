@@ -12,7 +12,7 @@ class ImportTaskTest extends TestCase
     public $fixtures = [
         'plugin.Groups.groups',
         'plugin.RolesCapabilities.groups_roles',
-        'plugin.RolesCapabilities.roles'
+        'plugin.RolesCapabilities.roles',
     ];
 
     private $task;
@@ -80,7 +80,7 @@ class ImportTaskTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function rolesProvider() : array
+    public function rolesProvider(): array
     {
         $roles = [];
         foreach (Configure::read('RolesCapabilities.Roles') as $role) {

@@ -28,7 +28,7 @@ class CapabilitiesAccessTest extends TestCase
         $url = [
             'plugin' => null,
             'controller' => 'Leads',
-            'action' => 'index'
+            'action' => 'index',
         ];
 
         $user = [

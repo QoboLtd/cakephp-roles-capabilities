@@ -46,13 +46,13 @@ class RolesTable extends Table
         $this->hasMany('Capabilities', [
             'foreignKey' => 'role_id',
             'className' => 'RolesCapabilities.Capabilities',
-            'dependent' => true
+            'dependent' => true,
         ]);
         $this->belongsToMany('Groups', [
             'foreignKey' => 'role_id',
             'targetForeignKey' => 'group_id',
             'joinTable' => 'groups_roles',
-            'className' => 'Groups.Groups'
+            'className' => 'Groups.Groups',
         ]);
     }
 
