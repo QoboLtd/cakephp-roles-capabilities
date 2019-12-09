@@ -12,7 +12,7 @@ class UtilsTest extends TestCase
     public $fixtures = [
         'plugin.roles_capabilities.users',
         'plugin.roles_capabilities.groups',
-        'plugin.groups.groups_users'
+        'plugin.groups.groups_users',
     ];
 
     public function testGetControllerFullName(): void
@@ -218,7 +218,7 @@ class UtilsTest extends TestCase
     public function getControllerMethods(): array
     {
         return [
-            [__CLASS__, __FUNCTION__]
+            [__CLASS__, __FUNCTION__],
         ];
     }
 
@@ -271,12 +271,12 @@ class UtilsTest extends TestCase
     /**
      * Test getEntityFromUrl method
      */
-    public function testGetEntityFromUrl() : void
+    public function testGetEntityFromUrl(): void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
             'plugin' => null,
-            'controller' => 'Users'
+            'controller' => 'Users',
         ];
 
         $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
@@ -287,12 +287,12 @@ class UtilsTest extends TestCase
     /**
      * Test getEntityFromUrl method without the pass parameter
      */
-    public function testGetEntityFromUrlWithoutPassParameter() : void
+    public function testGetEntityFromUrlWithoutPassParameter(): void
     {
         $url = [
             '0' => "00000000-0000-0000-0000-000000000001",
             'plugin' => null,
-            'controller' => 'Users'
+            'controller' => 'Users',
         ];
 
         $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
@@ -303,12 +303,12 @@ class UtilsTest extends TestCase
     /**
      * Test getEntityFromUrl method with the plugin set
      */
-    public function testGetEntityFromUrlWithPluginSetParameter() : void
+    public function testGetEntityFromUrlWithPluginSetParameter(): void
     {
         $url = [
             '0' => "00000000-0000-0000-0000-000000000001",
             'plugin' => 'Users',
-            'controller' => 'Users'
+            'controller' => 'Users',
         ];
 
         $data = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'getEntityFromUrl', [$url]);
@@ -319,7 +319,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasAccessInCapabilities method the user has the capabilities
      */
-    public function testHasAccessInCapabilities() : void
+    public function testHasAccessInCapabilities(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -327,7 +327,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasAccessInCapabilities method the user doesnt has any capabilities
      */
-    public function testHasAccessInCapabilitiesWithNoCapabilities() : void
+    public function testHasAccessInCapabilitiesWithNoCapabilities(): void
     {
         $bool = Utils::hasAccessInCapabilities("view", "00000000-0000-0000-0000-000000000001");
         $this->assertFalse($bool);
@@ -336,7 +336,7 @@ class UtilsTest extends TestCase
     /**
      * Test getUserGroups method with groups
      */
-    public function testGetUserGroups() : void
+    public function testGetUserGroups(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -344,7 +344,7 @@ class UtilsTest extends TestCase
     /**
      * Test getUserGroups method when there are no groups
      */
-    public function testGetUserGroupsNoGroup() : void
+    public function testGetUserGroupsNoGroup(): void
     {
         $url = ['id' => "00000000-0000-0000-0000-000000000001"];
 
@@ -355,7 +355,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessBelongs with capabilities
      */
-    public function testHasTypeAccessBelongs() : void
+    public function testHasTypeAccessBelongs(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -363,7 +363,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessBelongs when there are no capabilities
      */
-    public function testHasTypeAccessBelongsWithoutCapabilities() : void
+    public function testHasTypeAccessBelongsWithoutCapabilities(): void
     {
         $parameters = [
             'capabilities' => [],
@@ -371,8 +371,8 @@ class UtilsTest extends TestCase
             'url' => [
                 'pass' => ["00000000-0000-0000-0000-000000000001"],
                 'plugin' => null,
-                'controller' => 'Users'
-            ]
+                'controller' => 'Users',
+            ],
         ];
 
         $bool = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessBelongs', $parameters);
@@ -382,7 +382,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessOwner with capabilities
      */
-    public function testHasTypeAccessOwner() : void
+    public function testHasTypeAccessOwner(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -390,7 +390,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessOwner when there are no capabilities
      */
-    public function testHasTypeAccessOwnerWithoutCapabilities() : void
+    public function testHasTypeAccessOwnerWithoutCapabilities(): void
     {
         $parameters = [
             'capabilities' => [],
@@ -398,8 +398,8 @@ class UtilsTest extends TestCase
             'url' => [
                 'pass' => ["00000000-0000-0000-0000-000000000001"],
                 'plugin' => null,
-                'controller' => 'Users'
-            ]
+                'controller' => 'Users',
+            ],
         ];
 
         $bool = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessOwner', $parameters);
@@ -409,7 +409,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessFull with capabilities
      */
-    public function testHasTypeAccessFull() : void
+    public function testHasTypeAccessFull(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -417,7 +417,7 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccessFull when there are no capabilities
      */
-    public function testHasTypeAccessFullWithoutCapabilities() : void
+    public function testHasTypeAccessFullWithoutCapabilities(): void
     {
         $parameters = [
             'capabilities' => [],
@@ -425,8 +425,8 @@ class UtilsTest extends TestCase
             'url' => [
                 'pass' => ["00000000-0000-0000-0000-000000000001"],
                 'plugin' => null,
-                'controller' => 'Users'
-            ]
+                'controller' => 'Users',
+            ],
         ];
 
         $bool = Utility::callStaticPrivateMethod('\RolesCapabilities\Access\Utils', 'hasTypeAccessFull', $parameters);
@@ -436,12 +436,12 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccess with capabilities
      */
-    public function testHasTypeAccessHasCapabilitiesButNoAccess() : void
+    public function testHasTypeAccessHasCapabilitiesButNoAccess(): void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
             'plugin' => null,
-            'controller' => 'Users'
+            'controller' => 'Users',
         ];
 
         $bool = Utils::hasTypeAccess(Utils::getTypeFull(), ['full' => []], ['id' => '00000000-0000-0000-0000-000000000001'], $url);
@@ -451,12 +451,12 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccess when there are no capabilities
      */
-    public function testHasTypeAccessWithoutCapabilities() : void
+    public function testHasTypeAccessWithoutCapabilities(): void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
             'plugin' => null,
-            'controller' => 'Users'
+            'controller' => 'Users',
         ];
 
         $bool = Utils::hasTypeAccess(Utils::getTypeFull(), [], ['id' => '00000000-0000-0000-0000-000000000001'], $url);
@@ -466,12 +466,12 @@ class UtilsTest extends TestCase
     /**
      * Test hasTypeAccess when wrong type
      */
-    public function testHasTypeAccessWrongType() : void
+    public function testHasTypeAccessWrongType(): void
     {
         $url = [
             'pass' => ["00000000-0000-0000-0000-000000000001"],
             'plugin' => null,
-            'controller' => 'Users'
+            'controller' => 'Users',
         ];
 
         $bool = Utils::hasTypeAccess('half', ['half' => []], ['id' => '00000000-0000-0000-0000-000000000001'], $url);

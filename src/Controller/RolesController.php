@@ -41,7 +41,7 @@ class RolesController extends AppController
     public function view(string $id = null)
     {
         $role = $this->Roles->get($id, [
-            'contain' => ['Groups']
+            'contain' => ['Groups'],
         ]);
 
         $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
@@ -100,7 +100,7 @@ class RolesController extends AppController
     public function edit(string $id = null)
     {
         $role = $this->Roles->get($id, [
-            'contain' => ['Groups']
+            'contain' => ['Groups'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = (array)$this->request->getData();

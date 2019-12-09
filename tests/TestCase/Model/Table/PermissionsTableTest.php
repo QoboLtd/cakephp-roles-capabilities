@@ -26,7 +26,7 @@ class PermissionsTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.roles_capabilities.permissions',
-        'plugin.roles_capabilities.users'
+        'plugin.roles_capabilities.users',
     ];
 
     /**
@@ -65,7 +65,7 @@ class PermissionsTableTest extends TestCase
             'owner_model' => 'Users',
             'owner_foreign_key' => '00000000-0000-0000-0000-000000000003',
             'model' => 'Articles',
-            'foreign_key' => '00000000-0000-0000-0000-000000000001'
+            'foreign_key' => '00000000-0000-0000-0000-000000000001',
         ];
 
         $permission = $this->Permissions->newEntity($data);
@@ -82,7 +82,7 @@ class PermissionsTableTest extends TestCase
         $this->assertSame(null, $permission->get('expired'));
     }
 
-    public function testfetchUserViewPermission() : void
+    public function testfetchUserViewPermission(): void
     {
         $permission = $this->Permissions->fetchUserViewPermission(
             'Leads',
@@ -94,7 +94,7 @@ class PermissionsTableTest extends TestCase
         $this->assertSame('00000000-0000-0000-0000-000000000001', $permission->get('id'));
     }
 
-    public function testfetchUserViewPermissionWithInvalidData() : void
+    public function testfetchUserViewPermissionWithInvalidData(): void
     {
         $permission = $this->Permissions->fetchUserViewPermission(
             'NonExistingModel',

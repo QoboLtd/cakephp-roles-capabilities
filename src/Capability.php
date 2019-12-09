@@ -24,7 +24,7 @@ class Capability
      */
     protected $defaultOptions = [
         'label' => '',
-        'description' => ''
+        'description' => '',
     ];
 
     /**

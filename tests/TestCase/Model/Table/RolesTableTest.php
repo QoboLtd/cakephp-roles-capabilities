@@ -80,8 +80,8 @@ class RolesTableTest extends TestCase
         ]);
         $this->assertArraySubset([
             'name' => [
-                '_required' => 'This field is required'
-            ]
+                '_required' => 'This field is required',
+            ],
         ], $role->getErrors(), true, 'Missing required property *name* error');
     }
 
@@ -101,12 +101,12 @@ class RolesTableTest extends TestCase
         $this->Roles->save($role1);
 
         $role2 = $this->Roles->newEntity([
-            'name' => 'test'
+            'name' => 'test',
         ]);
         $this->assertArraySubset([
             'name' => [
-                'unique' => 'The provided value is invalid'
-            ]
+                'unique' => 'The provided value is invalid',
+            ],
         ], $role2->getErrors(), true, 'Non unique role name');
 
         $role1 = $this->Roles->patchEntity($role1, ['description' => 'New description']);
@@ -123,7 +123,7 @@ class RolesTableTest extends TestCase
         $this->assertNotEmpty($entity->get('id'));
     }
 
-    public function testSaveFromAllowEditToDenyEdit() : void
+    public function testSaveFromAllowEditToDenyEdit(): void
     {
         $this->Roles->deleteAll([]);
 
@@ -131,7 +131,7 @@ class RolesTableTest extends TestCase
             'name' => 'Allow Edit',
             'description' => 'Allow Edit description',
             'deny_edit' => false, // allow edit initially
-            'deny_delete' => true
+            'deny_delete' => true,
         ];
 
         $entity = $this->Roles->newEntity($data);
@@ -148,7 +148,7 @@ class RolesTableTest extends TestCase
         $this->assertSame([], array_diff_assoc(['deny_edit' => true], $entity->toArray()));
     }
 
-    public function testSaveFromDenyEditToAllowEdit() : void
+    public function testSaveFromDenyEditToAllowEdit(): void
     {
         $this->Roles->deleteAll([]);
 
@@ -156,7 +156,7 @@ class RolesTableTest extends TestCase
             'name' => 'Deny Edit',
             'description' => 'Deny Edit description',
             'deny_edit' => true, // deny edit initially
-            'deny_delete' => true
+            'deny_delete' => true,
         ];
 
         $entity = $this->Roles->newEntity($data);
@@ -173,7 +173,7 @@ class RolesTableTest extends TestCase
         $this->assertSame([], array_diff_assoc(['deny_edit' => true], $entity->toArray()));
     }
 
-    public function testDeleteWithAllowDelete() : void
+    public function testDeleteWithAllowDelete(): void
     {
         $this->Roles->deleteAll([]);
 
@@ -181,7 +181,7 @@ class RolesTableTest extends TestCase
             'name' => 'Deny Edit',
             'description' => 'Deny Edit description',
             'deny_edit' => false,
-            'deny_delete' => false
+            'deny_delete' => false,
         ];
 
         $entity = $this->Roles->newEntity($data);
@@ -193,7 +193,7 @@ class RolesTableTest extends TestCase
         $this->assertTrue($this->Roles->delete($entity));
     }
 
-    public function testDeleteWithDenyDelete() : void
+    public function testDeleteWithDenyDelete(): void
     {
         $this->Roles->deleteAll([]);
 
@@ -201,7 +201,7 @@ class RolesTableTest extends TestCase
             'name' => 'Deny Edit',
             'description' => 'Deny Edit description',
             'deny_edit' => false,
-            'deny_delete' => true
+            'deny_delete' => true,
         ];
 
         $entity = $this->Roles->newEntity($data);

@@ -88,7 +88,7 @@ final class FilterQuery
             // get current user capabilities
             'user' => Utils::fetchUserCapabilities($this->user['id']),
             // @todo currently we are always assume index action, this probably needs to change in the future
-            'action' => Utils::getCapabilities($this->getControllerClassName(), ['index'])
+            'action' => Utils::getCapabilities($this->getControllerClassName(), ['index']),
         ];
     }
 
@@ -97,7 +97,7 @@ final class FilterQuery
      *
      * @return string
      */
-    private function getControllerClassName() : string
+    private function getControllerClassName(): string
     {
         $tableName = App::shortName(get_class($this->table), 'Model/Table', 'Table');
 
@@ -257,7 +257,7 @@ final class FilterQuery
      *
      * @return mixed[]
      */
-    private function getParentPermissions() : array
+    private function getParentPermissions(): array
     {
         $result = [];
         foreach ($this->table->associations() as $association) {
@@ -399,7 +399,7 @@ final class FilterQuery
      * @param string $model Model name
      * @return string[]
      */
-    private function getPermissionsByModel(string $model) : array
+    private function getPermissionsByModel(string $model): array
     {
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Capabilities');
         Assert::isInstanceOf($table, CapabilitiesTable::class);
@@ -415,8 +415,8 @@ final class FilterQuery
                 'type IN ' => ['view'],
                 'OR' => [
                     ['owner_foreign_key IN ' => array_keys($groups), 'owner_model' => 'Groups'],
-                    ['owner_foreign_key' => $this->user['id'], 'owner_model' => 'Users']
-                ]
+                    ['owner_foreign_key' => $this->user['id'], 'owner_model' => 'Users'],
+                ],
             ])
             ->applyOptions(['accessCheck' => false]);
 
@@ -508,7 +508,7 @@ final class FilterQuery
      * @param \Cake\ORM\Association $association Association instance
      * @return bool
      */
-    private function isSupportedJoinAssociation(Association $association) : bool
+    private function isSupportedJoinAssociation(Association $association): bool
     {
         return in_array($association->type(), [Association::MANY_TO_MANY, Association::MANY_TO_ONE]);
     }
@@ -519,7 +519,7 @@ final class FilterQuery
      * @param \Cake\ORM\Association $association Association instance
      * @return bool
      */
-    private function isParentModuleAssociation(Association $association) : bool
+    private function isParentModuleAssociation(Association $association): bool
     {
         return in_array($this->getModelByAssociation($association), $this->getParentModules());
     }
@@ -530,7 +530,7 @@ final class FilterQuery
      * @param \Cake\ORM\Association $association Association instance
      * @return string
      */
-    private function getModelByAssociation(Association $association) : string
+    private function getModelByAssociation(Association $association): string
     {
         return App::shortName(get_class($association->getTarget()), 'Model/Table', 'Table');
     }

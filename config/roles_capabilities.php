@@ -9,24 +9,24 @@ return [
                     CakeDC\Users\Model\Table\UsersTable::class,
                     Groups\Model\Table\GroupsTable::class,
                     RolesCapabilities\Model\Table\CapabilitiesTable::class,
-                    RolesCapabilities\Model\Table\RolesTable::class
+                    RolesCapabilities\Model\Table\RolesTable::class,
                 ],
                 'byTableName' => [],
                 'byRegistryAlias' => [
                     'GroupsRoles',
-                    'GroupsUsers'
-                ]
+                    'GroupsUsers',
+                ],
             ],
         ],
         'accessCheck' => [
             'skipControllers' => [
                 'CakeDC\Users\Controller\SocialAccountsController',
-                'App\Controller\PagesController'
+                'App\Controller\PagesController',
             ],
             'skipActions' => [
                 '*' => [
                     'getCapabilities',
-                    'getSkipActions'
+                    'getSkipActions',
                 ],
                 'CakeDC\Users\Controller\UsersController' => [
                     'changePassword',
@@ -53,14 +53,14 @@ return [
                 RolesCapabilities\Access\SuperUserAccess::class,
                 RolesCapabilities\Access\PermissionsAccess::class,
                 RolesCapabilities\Access\CapabilitiesAccess::class,
-                RolesCapabilities\Access\SupervisorAccess::class
+                RolesCapabilities\Access\SupervisorAccess::class,
             ],
             'assignationModels' => [
                 'Users',
                 'CakeDC/Users.Users',
             ],
             'belongsToModels' => [
-                'Groups'
+                'Groups',
             ],
         ],
         'Roles' => [
@@ -68,14 +68,14 @@ return [
                 'name' => 'Admins',
                 'description' => 'Administrators role',
                 'deny_edit' => true,
-                'deny_delete' => true
+                'deny_delete' => true,
             ],
             'Everyone' => [
                 'name' => 'Everyone',
                 'description' => 'Generic role',
                 'deny_edit' => false,
-                'deny_delete' => true
-            ]
-        ]
-    ]
+                'deny_delete' => true,
+            ],
+        ],
+    ],
 ];

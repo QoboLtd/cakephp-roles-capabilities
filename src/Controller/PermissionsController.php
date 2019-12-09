@@ -110,7 +110,7 @@ class PermissionsController extends AppController
     public function edit(string $id = null)
     {
         $permission = $this->Permissions->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $permission = $this->Permissions->patchEntity($permission, (array)$this->request->getData());

@@ -25,7 +25,7 @@ class FilterQueryTest extends TestCase
         'plugin.roles_capabilities.groups_roles',
         'plugin.roles_capabilities.groups_users',
         'plugin.roles_capabilities.roles',
-        'plugin.roles_capabilities.capabilities'
+        'plugin.roles_capabilities.capabilities',
     ];
 
     /**
@@ -39,7 +39,7 @@ class FilterQueryTest extends TestCase
 
         $this->user_array = [
             'is_superuser_no_supervisor' => $this->Users->get('00000000-0000-0000-0000-000000000001')->toArray(),
-            'no_superuser_is_supervisor' => $this->Users->get('00000000-0000-0000-0000-000000000002')->toArray()
+            'no_superuser_is_supervisor' => $this->Users->get('00000000-0000-0000-0000-000000000002')->toArray(),
         ];
     }
 
@@ -167,7 +167,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getParentJoints method when module is empty
      */
-    public function testGetParentJoinsEmpty() : void
+    public function testGetParentJoinsEmpty(): void
     {
         $user = $this->user_array['no_superuser_is_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -178,7 +178,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getParentJoin method
      */
-    public function testGetParentJoin() : void
+    public function testGetParentJoin(): void
     {
         $config = TableRegistry::exists('Capabilities') ? [] : ['className' => 'RolesCapabilities\Model\Table\CapabilitiesTable'];
         $table = TableRegistry::get('Capabilities', $config);
@@ -195,7 +195,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test public method execute when is not filterable
      */
-    public function testExecuteNotFilterable() : void
+    public function testExecuteNotFilterable(): void
     {
         $user = $this->user_array['no_superuser_is_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -205,7 +205,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test public method execute when its filterable
      */
-    public function testExecuteIsFilterable() : void
+    public function testExecuteIsFilterable(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -213,7 +213,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getOwnerFields method
      */
-    public function testGetOwnerFields() : void
+    public function testGetOwnerFields(): void
     {
         $user = $this->user_array['no_superuser_is_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -224,7 +224,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getBelongTo private method
      */
-    public function testGetBelongToWithoutUserCapabilities() : void
+    public function testGetBelongToWithoutUserCapabilities(): void
     {
         $user = $this->user_array['no_superuser_is_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -235,7 +235,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test hasFullAccess private method
      */
-    public function testHasFullAccess() : void
+    public function testHasFullAccess(): void
     {
         $user = $this->user_array['no_superuser_is_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -246,7 +246,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getSupervisorWhereClause private method when user is not supervisor
      */
-    public function testGetSupervisorWhereClauseIsNotSupervisor() : void
+    public function testGetSupervisorWhereClauseIsNotSupervisor(): void
     {
         $user = $this->user_array['is_superuser_no_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -257,7 +257,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test GetSupervisorWhereClause private method when the user is supervisor
      */
-    public function testGetSupervisorWhereClauseIsSupervisor() : void
+    public function testGetSupervisorWhereClauseIsSupervisor(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -265,7 +265,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getParentJoinsWhereClause private method
      */
-    public function testGetParentJoinsWhereClause() : void
+    public function testGetParentJoinsWhereClause(): void
     {
         $user = $this->user_array['is_superuser_no_supervisor'];
         $filter = new FilterQuery($this->Users->find(), $this->Users, $user);
@@ -276,7 +276,7 @@ class FilterQueryTest extends TestCase
     /**
      * Test getWhereClause private method
      */
-    public function testGetWhereClause() : void
+    public function testGetWhereClause(): void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

@@ -60,7 +60,7 @@ class AccessFactory
                 throw new \InvalidArgumentException(sprintf('Unknown rule class: %s', $rule));
             }
 
-            $result = (new $rule)->hasAccess($url, $user);
+            $result = (new $rule())->hasAccess($url, $user);
 
             if ($result) {
                 return true;

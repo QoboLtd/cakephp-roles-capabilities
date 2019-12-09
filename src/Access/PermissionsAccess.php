@@ -59,8 +59,8 @@ class PermissionsAccess extends AuthenticatedAccess
                     [
                         'owner_foreign_key' => $user['id'],
                         'owner_model' => 'Users',
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->applyOptions(['accessCheck' => false]);
 

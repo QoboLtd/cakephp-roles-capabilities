@@ -22,7 +22,7 @@ class RoleShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'RolesCapabilities.Import'
+        'RolesCapabilities.Import',
     ];
 
     /**
