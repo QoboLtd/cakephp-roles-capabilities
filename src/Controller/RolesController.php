@@ -76,11 +76,11 @@ class RolesController extends AppController
             }
 
             if ($this->Roles->save($role)) {
-                $this->Flash->success((string)__('The role has been saved.'));
+                $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error((string)__('The role could not be saved. Please, try again.'));
+                $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The role could not be saved. Please, try again.'));
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
@@ -118,11 +118,11 @@ class RolesController extends AppController
             $this->Roles->Capabilities->deleteAll(['role_id' => $id]);
 
             if ($this->Roles->save($role)) {
-                $this->Flash->success((string)__('The role has been saved.'));
+                $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error((string)__('The role could not be saved. Please, try again.'));
+                $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The role could not be saved. Please, try again.'));
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
@@ -146,9 +146,9 @@ class RolesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $role = $this->Roles->get($id);
         if ($this->Roles->delete($role)) {
-            $this->Flash->success((string)__('The role has been deleted.'));
+            $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been deleted.'));
         } else {
-            $this->Flash->error((string)__('The role could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The role could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

@@ -22,7 +22,7 @@ echo $this->Html->css(
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?php echo $this->Html->link(__('Roles'), [
+            <h4><?php echo $this->Html->link(__d('Qobo/RolesCapabilities', 'Roles'), [
                 'plugin' => 'RolesCapabilities',
                 'controller' => 'Roles',
                 'action' => 'index'
@@ -42,9 +42,9 @@ echo $this->Html->css(
                 </div>
                 <div class="box-body">
                     <dl class="dl-horizontal">
-                        <dt><?= __('Name') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Name') ?></dt>
                         <dd><?= h($role->name) ?></dd>
-                        <dt><?= __('Description') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Description') ?></dt>
                         <dd><?= h($role->description) ?></dd>
                     </dl>
                 </div>
@@ -58,12 +58,12 @@ echo $this->Html->css(
                 <ul id="relatedTabs" class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
                         <a href="#capabilities" aria-controls="capabilities" role="tab" data-toggle="tab">
-                            <?= __('Capabilities'); ?>
+                            <?= __d('Qobo/RolesCapabilities', 'Capabilities'); ?>
                         </a>
                     </li>
                     <li role="presentation">
                         <a href="#groups" aria-controls="groups" role="tab" data-toggle="tab">
-                            <?= __('Groups'); ?>
+                            <?= __d('Qobo/RolesCapabilities', 'Groups'); ?>
                         </a>
                     </li>
                 </ul>
@@ -77,8 +77,8 @@ echo $this->Html->css(
                             <table class="table table-hover table-condensed table-vertical-align">
                                 <thead>
                                     <tr>
-                                        <th><?= __('Name') ?></th>
-                                        <th><?= __('Description') ?></th>
+                                        <th><?= __d('Qobo/RolesCapabilities', 'Name') ?></th>
+                                        <th><?= __d('Qobo/RolesCapabilities', 'Description') ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>

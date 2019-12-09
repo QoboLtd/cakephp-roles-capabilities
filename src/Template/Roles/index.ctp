@@ -33,15 +33,15 @@ echo $this->Html->scriptBlock(
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Roles');?></h4>
+            <h4><?= __d('Qobo/RolesCapabilities', 'Roles');?></h4>
         </div>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
                 <div class="btn-group btn-group-sm" role="group">
                 <?= $this->Html->link(
-                    '<i class="fa fa-plus"></i> ' . __('Add'),
+                    '<i class="fa fa-plus"></i> ' . __d('Qobo/RolesCapabilities', 'Add'),
                     ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'add'],
-                    ['escape' => false, 'title' => __('Add'), 'class' => 'btn btn-default']
+                    ['escape' => false, 'title' => __d('Qobo/RolesCapabilities', 'Add'), 'class' => 'btn btn-default']
                 ); ?>
                 </div>
             </div>
@@ -56,7 +56,7 @@ echo $this->Html->scriptBlock(
                     <tr>
                         <th><?= $this->Paginator->sort('name') ?></th>
                         <th><?= h('Groups'); ?></th>
-                        <th class="actions"><?= __('Actions') ?></th>
+                        <th class="actions"><?= __d('Qobo/RolesCapabilities', 'Actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,13 +83,13 @@ echo $this->Html->scriptBlock(
                             <?= $this->Html->link(
                                 '<i class="fa fa-eye"></i>',
                                 ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'view', $role->id],
-                                ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                ['title' => __d('Qobo/RolesCapabilities', 'View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                             ); ?>
                             <?php if (!$role->deny_edit) : ?>
                                 <?= $this->Html->link(
                                     '<i class="fa fa-pencil"></i>',
                                     ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'edit', $role->id],
-                                    ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                    ['title' => __d('Qobo/RolesCapabilities', 'Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ); ?>
                             <?php endif; ?>
                             <?php if (!$role->deny_delete) : ?>
@@ -97,8 +97,8 @@ echo $this->Html->scriptBlock(
                                     '<i class="fa fa-trash"></i>',
                                     ['plugin' => 'RolesCapabilities', 'controller' => 'Roles', 'action' => 'delete', $role->id],
                                     [
-                                        'confirm' => __('Are you sure you want to delete {0}?', $role->name),
-                                        'title' => __('Delete'),
+                                        'confirm' => __d('Qobo/RolesCapabilities', 'Are you sure you want to delete {0}?', $role->name),
+                                        'title' => __d('Qobo/RolesCapabilities', 'Delete'),
                                         'class' => 'btn btn-default btn-sm',
                                         'escape' => false
                                     ]

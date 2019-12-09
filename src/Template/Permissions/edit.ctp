@@ -11,6 +11,6 @@
  */
 ?>
 <section class="content-header">
-    <h1><?= __('Edit {0}', ['Permission']) ?></h1>
+    <h1><?= __d('Qobo/RolesCapabilities', 'Edit {0}', ['Permission']) ?></h1>
 </section>
 

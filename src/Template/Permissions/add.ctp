@@ -11,5 +11,5 @@
  */
 ?>
 <section class="content-header">
-    <h1><?= __('Add {0}', ['Permissions']) ?></h1>
+    <h1><?= __d('Qobo/RolesCapabilities', 'Add {0}', ['Permissions']) ?></h1>
 </section>
