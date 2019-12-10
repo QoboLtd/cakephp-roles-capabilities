@@ -9,7 +9,7 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        <?= $this->Form->label(__('Groups')); ?>
+        <?= $this->Form->label(__d('Qobo/RolesCapabilities', 'Groups')); ?>
         <?= $this->Form->select('groups._ids', $groups, [
             'class' => 'select2',
             'multiple' => true

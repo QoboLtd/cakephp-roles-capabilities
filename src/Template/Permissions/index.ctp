@@ -28,7 +28,7 @@ echo $this->Html->scriptBlock(
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Permissions');?></h4>
+            <h4><?= __d('Qobo/RolesCapabilities', 'Permissions');?></h4>
         </div>
         <div class="col-xs-12 col-md-6">
             <div class="pull-right">
@@ -64,13 +64,13 @@ echo $this->Html->scriptBlock(
                             <?= $this->Html->link(
                                 '<i class="fa fa-eye"></i>',
                                 ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'view', $permission->id],
-                                ['title' => __('View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                ['title' => __d('Qobo/RolesCapabilities', 'View'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                             ); ?>
                             <?php if (!$permission->deny_edit) : ?>
                                 <?= $this->Html->link(
                                     '<i class="fa fa-pencil"></i>',
                                     ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'edit', $permission->id],
-                                    ['title' => __('Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+                                    ['title' => __d('Qobo/RolesCapabilities', 'Edit'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
                                 ); ?>
                             <?php endif; ?>
                             <?php if (!$permission->deny_delete) : ?>
@@ -78,8 +78,8 @@ echo $this->Html->scriptBlock(
                                     '<i class="fa fa-trash"></i>',
                                     ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'delete', $permission->id],
                                     [
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $permission->id),
-                                        'title' => __('Delete'),
+                                        'confirm' => __d('Qobo/RolesCapabilities', 'Are you sure you want to delete # {0}?', $permission->id),
+                                        'title' => __d('Qobo/RolesCapabilities', 'Delete'),
                                         'class' => 'btn btn-default btn-sm',
                                         'escape' => false
                                     ]
