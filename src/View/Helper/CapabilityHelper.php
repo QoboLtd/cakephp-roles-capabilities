@@ -28,11 +28,23 @@ final class CapabilityHelper extends Helper
         return self::groupModelsByPlugin(self::getModels());
     }
 
+    /**
+     * Model resource-based capabilities getter.
+     *
+     * @param string $modelName Model name
+     * @return array<string, array<\RolesCapabilities\Capability\CapabilityInterface>>
+     */
     public function resourcesOfModel(string $modelName): array
     {
         return (new Generator())->resources($modelName);
     }
 
+    /**
+     * Model action-based capabilities getter.
+     *
+     * @param string $modelName Model name
+     * @return \RolesCapabilities\Capability\CapabilityInterface[]
+     */
     public function actionsOfModel(string $modelName): array
     {
         return (new Generator())->actions($modelName);
@@ -45,7 +57,7 @@ final class CapabilityHelper extends Helper
      */
     private static function getModels(): array
     {
-        $result = array_map(function($controller) {
+        $result = array_map(function ($controller) {
             return App::shortName($controller, 'Controller', 'Controller');
         }, Utility::getControllers());
 

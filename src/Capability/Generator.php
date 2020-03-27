@@ -19,6 +19,7 @@ use Qobo\Utils\ModuleConfig\ConfigType;
 use Qobo\Utils\ModuleConfig\ModuleConfig;
 use Qobo\Utils\Utility;
 use RolesCapabilities\Access\ResourceInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * Capabilities generator class.
@@ -29,7 +30,7 @@ final class Generator
      * Generates model resource-based capabilities.
      *
      * @param string $model Model name
-     * @return \RolesCapabilities\Capability\CapabilityInterface[]
+     * @return array<string, array<\RolesCapabilities\Capability\CapabilityInterface>>
      */
     public function resources(string $model): array
     {
@@ -56,7 +57,7 @@ final class Generator
      */
     public function actions(string $model): array
     {
-        $className = App::className($model, 'Controller', 'Controller');
+        $className = (string)App::className($model, 'Controller', 'Controller');
         if (! class_exists($className)) {
             return [];
         }
@@ -96,13 +97,28 @@ final class Generator
     public function user(array $user): array
     {
         throw new \LogicException('To be implemented');
+
+        return [];
     }
 
+    /**
+     * Create operation capabilities getter.
+     *
+     * @param string $resource Resource name.
+     * @return \RolesCapabilities\Capability\CapabilityInterface[]
+     */
     private function getCreateCapabilities(string $resource) : array
     {
         return [new FullCapability($resource, ResourceInterface::OPERATION_CREATE)];
     }
 
+    /**
+     * Read operation capabilities getter.
+     *
+     * @param string $resource Resource name.
+     * @param string $model Model name.
+     * @return \RolesCapabilities\Capability\CapabilityInterface[]
+     */
     private function getReadCapabilities(string $resource, string $model) : array
     {
         $result = [new FullCapability($resource, ResourceInterface::OPERATION_READ)];
@@ -123,6 +139,13 @@ final class Generator
         return $result;
     }
 
+    /**
+     * Update operation capabilities getter.
+     *
+     * @param string $resource Resource name.
+     * @param string $model Model name.
+     * @return \RolesCapabilities\Capability\CapabilityInterface[]
+     */
     private function getUpdateCapabilities(string $resource, string $model) : array
     {
         $result = [new FullCapability($resource, ResourceInterface::OPERATION_UPDATE)];
@@ -138,6 +161,13 @@ final class Generator
         return $result;
     }
 
+    /**
+     * Delete operation capabilities getter.
+     *
+     * @param string $resource Resource name.
+     * @param string $model Model name.
+     * @return \RolesCapabilities\Capability\CapabilityInterface[]
+     */
     private function getDeleteCapabilities(string $resource, string $model) : array
     {
         $result = [new FullCapability($resource, ResourceInterface::OPERATION_DELETE)];
@@ -170,7 +200,9 @@ final class Generator
         foreach (TableRegistry::getTableLocator()->get($model)->associations() as $association) {
             // skip non-assignation models
             if (in_array($association->className(), $assignationModels)) {
-                $result[] = $association->getForeignKey();
+                $foreignKey = $association->getForeignKey();
+                Assert::string($foreignKey);
+                $result[] = $foreignKey;
             }
         }
 
@@ -194,7 +226,9 @@ final class Generator
         foreach (TableRegistry::getTableLocator()->get($model)->associations() as $association) {
             // skip non-assignation models
             if (in_array($association->className(), $belongsToModels)) {
-                $result[] = $association->foreignKey();
+                $foreignKey = $association->getForeignKey();
+                Assert::string($foreignKey);
+                $result[] = $foreignKey;
             }
         }
 

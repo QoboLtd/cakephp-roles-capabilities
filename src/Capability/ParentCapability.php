@@ -54,6 +54,14 @@ final class ParentCapability extends AbstractCapability
     /**
      * {@inheritDoc}
      */
+    public function getEnforced() : array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getOverriddenBy() : array
     {
         return [new FullCapability($this->resource, $this->operation)];

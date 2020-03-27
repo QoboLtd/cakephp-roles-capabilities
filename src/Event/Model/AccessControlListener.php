@@ -15,6 +15,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Query;
+use Qobo\Utils\Utility\User;
 use RolesCapabilities\FilterQuery;
 use Webmozart\Assert\Assert;
 
@@ -68,6 +69,21 @@ class AccessControlListener implements EventListenerInterface
         ];
     }
 
+    /**
+     * Query filtering method based on current user capabilities.
+     *
+     * Filtering can be skipped on per query basis by passing the
+     * 'accessCheck' option and set it to false.
+     *
+     * Additionally filtering can be skipped on per table basis by
+     * defining the table name in the plugin's configuration under
+     * variable 'RolesCapabilities.ownerCheck.skipTables'.
+     *
+     * @param \Cake\Event\Event $event The beforeFind event that was fired.
+     * @param \Cake\ORM\Query $query Query
+     * @param \ArrayObject $options The options for the query
+     * @return void
+     */
     public function beforeFind(Event $event, Query $query, \ArrayObject $options) : void
     {
         if (isset($options['accessCheck']) && false === $options['accessCheck']) {
@@ -80,6 +96,13 @@ class AccessControlListener implements EventListenerInterface
         (new FilterQuery($query, $table, User::getCurrentUser()))->execute();
     }
 
+    /**
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired.
+     * @param \Cake\ORM\Entity $entity The entity that is going to be saved.
+     * @param \ArrayObject $options The options passed to the save method.
+     * @return void
+     */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options) : void
     {
         if (isset($options['accessCheck']) && false === $options['accessCheck']) {
@@ -96,6 +119,13 @@ class AccessControlListener implements EventListenerInterface
         $event->stopPropagation();
     }
 
+    /**
+     *
+     * @param \Cake\Event\Event $event The beforeDelete event that was fired.
+     * @param \Cake\Datasource\EntityInterface $entity The entity to be deleted.
+     * @param \ArrayObject $options Options.
+     * @return void
+     */
     public function beforeDelete(Event $event, EntityInterface $entity, \ArrayObject $options) : void
     {
         if (isset($options['accessCheck']) && false === $options['accessCheck']) {
