@@ -458,24 +458,23 @@ class Utils
     /**
      * generateCapabilities method to generate controller belongs to capabilities
      *
-     * @param string $contrName Controller name
+     * @param string $controller Controller name
      * @param mixed[] $actions Controller actions
      * @param mixed[] $assignationFields list of assignation fields
      * @param string $assignationType Type of association
      * @return mixed[]
      */
-    protected static function generateCapabilities(string $contrName, array $actions, array $assignationFields, string $assignationType = ''): array
+    protected static function generateCapabilities(string $controller, array $actions, array $assignationFields, string $assignationType = ''): array
     {
-        $result = [];
-
-        if (empty($contrName) || empty($actions)) {
-            return $result;
+        if (empty($controller) || empty($actions)) {
+            return [];
         }
 
         if (empty($assignationFields)) {
-            return $result;
+            return [];
         }
 
+        $result = [];
         foreach ($actions as $action) {
             // skip rest of the logic if assignment fields are not found
             // or if current action does not support assignment (Example: add / create)
@@ -485,19 +484,13 @@ class Utils
 
             // generate action's owner (assignment field) type capabilities
             foreach ($assignationFields as $assignationField) {
-                $label = static::generateCapabilityLabel($contrName, $action . '_' . $assignationField);
                 $suffix = ' if ' . (!empty($assignationType) ? $assignationType : 'owner') . ' (' . Inflector::humanize($assignationField) . ')';
-                $description = static::generateCapabilityDescription(
-                    $contrName,
-                    static::humanizeActionName($action) . $suffix
-                );
-                $field = $assignationField;
 
-                $name = static::generateCapabilityName($contrName, $action . '_' . $assignationField);
+                $name = static::generateCapabilityName($controller, $action . '_' . $assignationField);
                 $options = [
-                    'label' => $label,
-                    'description' => $description,
-                    'field' => $field,
+                    'label' => static::generateCapabilityLabel($controller, $action . '_' . $assignationField),
+                    'description' => static::generateCapabilityDescription($controller, static::humanizeActionName($action) . $suffix),
+                    'field' => $assignationField,
                 ];
 
                 if (!empty($assignationType)) {
