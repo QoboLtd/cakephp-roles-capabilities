@@ -47,6 +47,14 @@ final class FullCapability extends AbstractCapability
             return [new FullCapability($this->resource, ResourceInterface::OPERATION_READ)];
         }
 
-        return parent::getEnforced();
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOverriddenBy() : array
+    {
+        return [];
     }
 }

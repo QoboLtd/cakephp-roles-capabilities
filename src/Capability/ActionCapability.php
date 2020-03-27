@@ -24,6 +24,12 @@ final class ActionCapability extends AbstractCapability
      */
     public function __construct(string $resource, string $operation)
     {
+        try {
+            parent::__construct($resource, $operation);
+        } catch (\LogicException $e) {
+            // @ignoreException
+        }
+
         $this->resource = $resource;
         $this->operation = $operation;
     }
@@ -55,5 +61,21 @@ final class ActionCapability extends AbstractCapability
         }
 
         return sprintf('Allow %s', $action);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEnforced() : array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOverriddenBy() : array
+    {
+        return [];
     }
 }

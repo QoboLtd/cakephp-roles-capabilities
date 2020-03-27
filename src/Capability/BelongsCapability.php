@@ -67,7 +67,7 @@ final class BelongsCapability extends AbstractCapability
             return [new OwnerCapability($this->resource, ResourceInterface::OPERATION_READ, $this->field)];
         }
 
-        return parent::getEnforced();
+        return [];
     }
 
     /**

@@ -38,27 +38,11 @@ abstract class AbstractCapability implements CapabilityInterface
     public function __construct(string $resource, string $operation)
     {
         if (! in_array($operation, static::SUPPORTED_OPERATIONS, true)) {
-            throw new \RuntimeException(sprintf('"%s" operation is not supported by "%s"', $operation, __CLASS__));
+            throw new \LogicException(sprintf('"%s" operation is not supported by "%s"', $operation, __CLASS__));
         }
 
         $this->resource = $resource;
         $this->operation = $operation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getEnforced() : array
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getOverriddenBy() : array
-    {
-        return [];
     }
 
     /**
