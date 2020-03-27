@@ -1,0 +1,109 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2019-12-09 12:19+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "The  permission has been saved."
+msgstr ""
+
+msgid "The  permission could not be saved. Please, try again."
+msgstr ""
+
+msgid "The  permission has been deleted."
+msgstr ""
+
+msgid "The  permission could not be deleted. Please, try again."
+msgstr ""
+
+msgid "The role has been saved."
+msgstr ""
+
+msgid "The role could not be saved. Please, try again."
+msgstr ""
+
+msgid "The role has been deleted."
+msgstr ""
+
+msgid "The role could not be deleted. Please, try again."
+msgstr ""
+
+msgid "Groups"
+msgstr ""
+
+msgid "Access"
+msgstr ""
+
+msgid "Add {0}"
+msgstr ""
+
+msgid "Edit {0}"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Are you sure you want to delete # {0}?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid " Permission"
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Entity ID"
+msgstr ""
+
+msgid "Entity Model"
+msgstr ""
+
+msgid "Create {0}"
+msgstr ""
+
+msgid "Capabilities"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Are you sure you want to delete {0}?"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+

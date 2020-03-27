@@ -13,15 +13,15 @@
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Create {0}', ['Role']) ?></h4>
+            <h4><?= __d('Qobo/RolesCapabilities', 'Create {0}', ['Role']) ?></h4>
         </div>
     </div>
 </section>
 <section class="content">
     <?= $this->element('role_form', ['role' => $role, 'groups' => $groups]) ?>
     <div class="box box-solid">
-        <div class="box-header with-border"><i class="fa fa-unlock"></i><h3 class="box-title"><?= __('Capabilities') ?></h3></div>
+        <div class="box-header with-border"><i class="fa fa-unlock"></i><h3 class="box-title"><?= __d('Qobo/RolesCapabilities', 'Capabilities') ?></h3></div>
         <div class="box-body"><?= $this->element('roles_capabilities', ['capabilities' => $capabilities, 'disabled' => false, 'roleCaps' => []]) ?></div>
-        <div class="box-footer"><?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary', 'id' => 'capabilities-submit']) ?></div>
+        <div class="box-footer"><?= $this->Form->button(__d('Qobo/RolesCapabilities', 'Submit'), ['class' => 'btn btn-primary', 'id' => 'capabilities-submit']) ?></div>
     </div>
 </section>

@@ -79,7 +79,7 @@ $getGroupName = function ($name) {
                     return strcmp($a->getDescription(), $b->getDescription());
                 });
 
-                $title = Inflector::humanize($type) . ' ' . __('Access');
+                $title = Inflector::humanize($type) . ' ' . __d('Qobo/RolesCapabilities', 'Access');
                 $type = preg_replace('/(\(|\))/', '', $type);
                 $slug = $tabId . '_' . $type . '_' . 'access';
 
@@ -96,7 +96,7 @@ $getGroupName = function ($name) {
                     return strcmp($a->getDescription(), $b->getDescription());
                 });
 
-                $title = Inflector::humanize($type) . ' ' . __('Access');
+                $title = Inflector::humanize($type) . ' ' . __d('Qobo/RolesCapabilities', 'Access');
                 $type = preg_replace('/(\(|\))/', '', $type);
                 $slug = $tabId . '_' . $type . '_' . 'access';
 

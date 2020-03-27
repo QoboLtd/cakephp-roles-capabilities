@@ -14,6 +14,8 @@ namespace RolesCapabilities\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use RolesCapabilities\Model\Entity\Permission;
+use Webmozart\Assert\Assert;
 
 /**
  * Permissions Model
@@ -36,6 +38,8 @@ class PermissionsTable extends Table
      * Allowed permissions actions
      */
     const ALLOWED_ACTIONS = ['view', 'edit', 'delete'];
+
+    const ALLOWED_OWNER_MODELS = ['Groups', 'Users'];
 
     /**
      * Initialize method
@@ -72,10 +76,21 @@ class PermissionsTable extends Table
             ->notEmpty('foreign_key');
 
         $validator
+            ->uuid('owner_foreign_key')
+            ->requirePresence('owner_foreign_key', 'create')
+            ->notEmpty('owner_foreign_key');
+
+        $validator
+            ->requirePresence('owner_model', 'create')
+            ->inList('owner_model', self::ALLOWED_OWNER_MODELS)
+            ->notEmpty('owner_model');
+
+        $validator
             ->requirePresence('model', 'create')
             ->notEmpty('model');
 
         $validator
+            ->uuid('creator')
             ->requirePresence('creator', 'create')
             ->notEmpty('creator');
 
@@ -101,5 +116,34 @@ class PermissionsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         return $rules;
+    }
+
+    /**
+     * Retrieves view permission for specified user.
+     *
+     * @param string $modelName Model name
+     * @param string $foreignKey Foreign key
+     * @param string $userId User ID
+     * @return \RolesCapabilities\Model\Entity\Permission|null
+     */
+    public function fetchUserViewPermission(string $modelName, string $foreignKey, string $userId): ?Permission
+    {
+        Assert::stringNotEmpty($modelName);
+        Assert::uuid($foreignKey);
+        Assert::uuid($userId);
+
+        $entity = $this->find()
+            ->where([
+                'owner_model' => 'Users',
+                'model' => $modelName,
+                'owner_foreign_key' => $userId,
+                'foreign_key' => $foreignKey,
+                'type' => 'view',
+            ])
+            ->first();
+
+        Assert::nullOrIsInstanceOf($entity, Permission::class);
+
+        return $entity;
     }
 }

@@ -47,7 +47,7 @@ class CapabilitiesTable extends Table
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'RolesCapabilities.Roles'
+            'className' => 'RolesCapabilities.Roles',
         ]);
     }
 
@@ -103,7 +103,7 @@ class CapabilitiesTable extends Table
         if (!empty($userGroups)) {
             $query = $this->Roles->find('list', [
                 'keyField' => 'id',
-                'valueField' => 'name'
+                'valueField' => 'name',
             ]);
             $query->matching('Groups', function ($q) use ($userGroups) {
                 return $q->where(['Groups.id IN' => array_keys($userGroups)])->applyOptions(['accessCheck' => false]);

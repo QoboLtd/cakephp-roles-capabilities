@@ -46,13 +46,13 @@ class RolesTable extends Table
         $this->hasMany('Capabilities', [
             'foreignKey' => 'role_id',
             'className' => 'RolesCapabilities.Capabilities',
-            'dependent' => true
+            'dependent' => true,
         ]);
         $this->belongsToMany('Groups', [
             'foreignKey' => 'role_id',
             'targetForeignKey' => 'group_id',
             'joinTable' => 'groups_roles',
-            'className' => 'Groups.Groups'
+            'className' => 'Groups.Groups',
         ]);
     }
 
@@ -89,7 +89,7 @@ class RolesTable extends Table
 
         // don't allow editing of non-editable role(s)
         $rules->addUpdate(function ($entity, $options) {
-            return !$entity->deny_edit;
+            return ! $entity->getOriginal('deny_edit');
         }, 'systemCheck');
 
         // don't allow deletion of non-deletable role(s)

@@ -15,7 +15,7 @@ echo $this->Html->css('RolesCapabilities.style', ['block' => 'css']);
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?php echo $this->Html->link(__('Roles'), [
+            <h4><?php echo $this->Html->link(__d('Qobo/RolesCapabilities', 'Roles'), [
                 'plugin' => 'RolesCapabilities',
                 'controller' => 'Roles',
                 'action' => 'index'
@@ -31,9 +31,9 @@ echo $this->Html->css('RolesCapabilities.style', ['block' => 'css']);
                 <div class="box-header with-border"><i class="fa fa-lock"></i><h3 class="box-title">Details</h3></div>
                 <div class="box-body">
                     <dl class="dl-horizontal">
-                        <dt><?= __('Name') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Name') ?></dt>
                         <dd><?= h($role->get('name')) ?></dd>
-                        <dt><?= __('Description') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Description') ?></dt>
                         <dd><?= h($role->get('description')) ?></dd>
                     </dl>
                 </div>
@@ -41,15 +41,15 @@ echo $this->Html->css('RolesCapabilities.style', ['block' => 'css']);
         </div>
         <div class="col-md-6">
             <div class="box box-solid">
-                <div class="box-header with-border"><i class="fa fa-users"></i><h3 class="box-title">Groups</h3></div>
+                <div class="box-header with-border"><i class="fa fa-users"></i><h3 class="box-title"><?= __d('Qobo/RolesCapabilities', 'Groups'); ?></h3></div>
                 <div class="box-body">
                 <?php if (! empty($role->get('groups'))) : ?>
                     <div class="table-responsive">
                         <table class="table table-hover table-condensed table-vertical-align">
                             <thead>
                                 <tr>
-                                    <th><?= __('Name') ?></th>
-                                    <th><?= __('Description') ?></th>
+                                    <th><?= __d('Qobo/RolesCapabilities', 'Name') ?></th>
+                                    <th><?= __d('Qobo/RolesCapabilities', 'Description') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,7 +76,7 @@ echo $this->Html->css('RolesCapabilities.style', ['block' => 'css']);
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-solid">
-                <div class="box-header with-border"><i class="fa fa-unlock"></i><h3 class="box-title">Capabilities</h3></div>
+                <div class="box-header with-border"><i class="fa fa-unlock"></i><h3 class="box-title"> <?= __d('Qobo/RolesCapabilities', 'Capabilities'); ?></h3></div>
                 <div class="box-body"><?= $this->element('roles_capabilities', ['capabilities' => $capabilities, 'disabled' => true, 'roleCaps' => $roleCaps]) ?></div>
             </div>
         </div>

@@ -86,8 +86,8 @@ class PermissionsController extends AppController
         if ($this->request->is('post')) {
             $permission = $this->Permissions->patchEntity($permission, $data);
             $this->Permissions->save($permission) ?
-                $this->Flash->success((string)__('The  permission has been saved.')) :
-                $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
+                $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The  permission has been saved.')) :
+                $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The  permission could not be saved. Please, try again.'));
 
             return $this->redirect($this->referer());
         }
@@ -110,13 +110,13 @@ class PermissionsController extends AppController
     public function edit(string $id = null)
     {
         $permission = $this->Permissions->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $permission = $this->Permissions->patchEntity($permission, (array)$this->request->getData());
             $this->Permissions->save($permission) ?
-                $this->Flash->success((string)__('The  permission has been saved.')) :
-                $this->Flash->error((string)__('The  permission could not be saved. Please, try again.'));
+                $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The  permission has been saved.')) :
+                $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The  permission could not be saved. Please, try again.'));
 
             return $this->redirect(['action' => 'index']);
         }
@@ -136,9 +136,9 @@ class PermissionsController extends AppController
         $data = $this->request->getData();
         $permission = $this->Permissions->get($id);
         if ($this->Permissions->delete($permission)) {
-            $this->Flash->success((string)__('The  permission has been deleted.'));
+            $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The  permission has been deleted.'));
         } else {
-            $this->Flash->error((string)__('The  permission could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The  permission could not be deleted. Please, try again.'));
         }
 
         $this->redirect($this->referer());

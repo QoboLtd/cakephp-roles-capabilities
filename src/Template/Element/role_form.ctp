@@ -28,7 +28,7 @@ echo $this->Form->create($role, ['id' => 'capabilities-form']);
         <div class="box box-solid">
             <div class="box-header with-border"><i class="fa fa-users"></i><h3 class="box-title">Groups</h3></div>
             <div class="box-body">
-                <?= $this->Form->label(__('Groups')); ?>
+                <?= $this->Form->label(__d('Qobo/RolesCapabilities', 'Groups')); ?>
                 <?= $this->Form->select('groups._ids', $groups, ['class' => 'select2', 'multiple' => true]); ?>
             </div>
         </div>

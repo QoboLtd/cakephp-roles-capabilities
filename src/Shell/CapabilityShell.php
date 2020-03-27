@@ -22,7 +22,7 @@ class CapabilityShell extends Shell
      * {@inheritDoc}
      */
     public $tasks = [
-        'RolesCapabilities.Assign'
+        'RolesCapabilities.Assign',
     ];
 
     /**
@@ -38,7 +38,7 @@ class CapabilityShell extends Shell
                 'assign',
                 [
                     'help' => 'Assign all capabilities to \'Admins\' role.',
-                    'parser' => $this->Assign->getOptionParser()
+                    'parser' => $this->Assign->getOptionParser(),
                 ]
             );
 

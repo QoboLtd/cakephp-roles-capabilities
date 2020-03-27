@@ -50,7 +50,7 @@ class RolesFixture extends TestFixture
             'trashed' => null,
             'description' => 'Administrators role',
             'deny_edit' => 1,
-            'deny_delete' => 1
+            'deny_delete' => 1,
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000002',
@@ -60,7 +60,7 @@ class RolesFixture extends TestFixture
             'trashed' => null,
             'description' => 'Generic role',
             'deny_edit' => 0,
-            'deny_delete' => 1
+            'deny_delete' => 1,
         ],
         [
             'id' => '79928943-0016-4677-869a-e37728ff6564',
@@ -70,7 +70,7 @@ class RolesFixture extends TestFixture
             'trashed' => null,
             'description' => 'Supervisor role',
             'deny_edit' => 0,
-            'deny_delete' => 0
+            'deny_delete' => 0,
         ],
         [
             'id' => '79628943-0016-4677-869a-e37728ff6564',
@@ -80,7 +80,7 @@ class RolesFixture extends TestFixture
             'trashed' => null,
             'description' => 'Sales role',
             'deny_edit' => 0,
-            'deny_delete' => 0
+            'deny_delete' => 0,
         ],
 
     ];

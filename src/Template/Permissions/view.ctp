@@ -12,7 +12,7 @@
 ?>
 <section class="content-header">
     <h1><?= $this->Html->link(
-        __(' Permission'),
+        __d('Qobo/RolesCapabilities', ' Permission'),
         ['plugin' => 'RolesCapabilities', 'controller' => 'Permissions', 'action' => 'index']
     ) . ' &raquo; ' . h($permission->model) ?></h1>
 </section>
@@ -27,13 +27,13 @@
                 </div>
                 <div class="box-body">
                     <dl class="dl-horizontal">
-                        <dt><?= __('Model') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Model') ?></dt>
                         <dd><?= h($permission->model) ?></dd>
-                        <dt><?= __('Type') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Type') ?></dt>
                         <dd><?= h($permission->type) ?></dd>
-                        <dt><?= __('Entity ID') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Entity ID') ?></dt>
                         <dd><?= h($permission->owner_foreign_key) ?></dd>
-                        <dt><?= __('Entity Model') ?></dt>
+                        <dt><?= __d('Qobo/RolesCapabilities', 'Entity Model') ?></dt>
                         <dd><?= h($permission->owner_model) ?></dd>
                     </dl>
                 </div>

@@ -26,7 +26,7 @@ class SuperUserAccessTest extends TestCase
         $url = [
            'plugin' => 'Blah',
            'controller' => 'Foo',
-           'action' => 'view'
+           'action' => 'view',
         ];
 
         $this->assertTrue($this->instance->hasAccess($url, $user), 'User has superuser flag');
