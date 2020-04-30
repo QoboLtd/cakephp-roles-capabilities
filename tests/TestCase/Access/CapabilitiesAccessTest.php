@@ -1,6 +1,6 @@
 <?php
 
-namespace RolesCapabilities\Test\Access;
+namespace RolesCapabilities\Test\TestCase\Access;
 
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Access\CapabilitiesAccess;
