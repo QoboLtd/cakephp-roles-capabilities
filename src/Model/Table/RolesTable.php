@@ -14,7 +14,6 @@ namespace RolesCapabilities\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use RolesCapabilities\Model\Entity\Role;
 
 /**
  * Roles Model
