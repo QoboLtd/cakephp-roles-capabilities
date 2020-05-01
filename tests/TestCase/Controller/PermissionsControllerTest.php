@@ -16,8 +16,8 @@ class PermissionsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.permissions',
-        'plugin.roles_capabilities.users',
+        'plugin.RolesCapabilities.Permissions',
+        'plugin.RolesCapabilities.Users',
     ];
 
     /**

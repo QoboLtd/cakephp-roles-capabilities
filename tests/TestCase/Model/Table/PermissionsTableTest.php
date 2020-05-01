@@ -25,8 +25,8 @@ class PermissionsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.permissions',
-        'plugin.roles_capabilities.users',
+        'plugin.RolesCapabilities.Permissions',
+        'plugin.RolesCapabilities.Users',
     ];
 
     /**
