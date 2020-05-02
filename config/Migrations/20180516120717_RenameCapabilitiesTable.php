@@ -13,6 +13,7 @@ class RenameCapabilitiesTable extends AbstractMigration
     public function change()
     {
         $this->table('capabilities')
-            ->rename('qobo_capabilities');
+            ->rename('qobo_capabilities')
+            ->update();
     }
 }

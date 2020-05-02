@@ -13,6 +13,7 @@ class RenamePermissionsTable extends AbstractMigration
     public function change()
     {
         $this->table('permissions')
-            ->rename('qobo_permissions');
+            ->rename('qobo_permissions')
+            ->update();
     }
 }
