@@ -21,19 +21,9 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/QoboLtd/cakephp-utils.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/QoboLtd/cakephp-groups.git"
-        }
-    ],
     "require": {
-        "qobo/cakephp-utils": "dev-cakephp-v38a",
-        "qobo/cakephp-groups": "dev-cakephp-v38"
+        "qobo/cakephp-utils": "^13.0",
+        "qobo/cakephp-groups": "^11.0"
     },
     "require-dev": {
         "qobo/cakephp-composer-dev": "^v1.0"
