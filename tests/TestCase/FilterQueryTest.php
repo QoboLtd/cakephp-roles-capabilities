@@ -21,11 +21,11 @@ class FilterQueryTest extends TestCase
      * @var array Fixtures list
      */
     public $fixtures = [
-        'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.groups_roles',
-        'plugin.roles_capabilities.groups_users',
-        'plugin.roles_capabilities.roles',
-        'plugin.roles_capabilities.capabilities',
+        'plugin.RolesCapabilities.Users',
+        'plugin.RolesCapabilities.GroupsRoles',
+        'plugin.RolesCapabilities.GroupsUsers',
+        'plugin.RolesCapabilities.Roles',
+        'plugin.RolesCapabilities.Capabilities',
     ];
 
     /**

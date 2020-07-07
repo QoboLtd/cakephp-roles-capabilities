@@ -20,8 +20,8 @@ class RolesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.roles_capabilities.roles',
-        'plugin.roles_capabilities.capabilities',
+        'plugin.RolesCapabilities.Roles',
+        'plugin.RolesCapabilities.Capabilities',
     ];
 
     /**

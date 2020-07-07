@@ -852,7 +852,7 @@ class Utils
 
         foreach ($table->associations() as $association) {
             // skip non-assignation models
-            if (!in_array($association->className(), $assignationModels)) {
+            if (!in_array($association->getClassName(), $assignationModels)) {
                 continue;
             }
 

@@ -13,6 +13,7 @@ class RenameRolesTable extends AbstractMigration
     public function change()
     {
         $this->table('roles')
-            ->rename('qobo_roles');
+            ->rename('qobo_roles')
+            ->update();
     }
 }

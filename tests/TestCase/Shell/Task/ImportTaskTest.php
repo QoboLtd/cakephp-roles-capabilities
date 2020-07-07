@@ -10,9 +10,9 @@ use Webmozart\Assert\Assert;
 class ImportTaskTest extends TestCase
 {
     public $fixtures = [
-        'plugin.Groups.groups',
-        'plugin.RolesCapabilities.groups_roles',
-        'plugin.RolesCapabilities.roles',
+        'plugin.Groups.Groups',
+        'plugin.RolesCapabilities.GroupsRoles',
+        'plugin.RolesCapabilities.Roles',
     ];
 
     private $task;
