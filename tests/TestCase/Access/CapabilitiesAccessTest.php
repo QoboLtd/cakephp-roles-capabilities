@@ -12,9 +12,9 @@ use RolesCapabilities\Capability;
 class CapabilitiesAccessTest extends TestCase
 {
     public $fixtures = [
-        'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.groups',
-        'plugin.roles_capabilities.groups_users',
+        'plugin.RolesCapabilities.Users',
+        'plugin.RolesCapabilities.Groups',
+        'plugin.RolesCapabilities.GroupsUsers',
     ];
 
     public function setUp()

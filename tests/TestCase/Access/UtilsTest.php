@@ -10,9 +10,9 @@ use RolesCapabilities\Access\Utils;
 class UtilsTest extends TestCase
 {
     public $fixtures = [
-        'plugin.roles_capabilities.users',
-        'plugin.roles_capabilities.groups',
-        'plugin.groups.groups_users',
+        'plugin.RolesCapabilities.Users',
+        'plugin.RolesCapabilities.Groups',
+        'plugin.Groups.GroupsUsers',
     ];
 
     public function testGetControllerFullName(): void
