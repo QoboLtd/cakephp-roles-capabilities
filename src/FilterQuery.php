@@ -510,7 +510,7 @@ final class FilterQuery
      */
     private function isSupportedJoinAssociation(Association $association): bool
     {
-        return in_array($association->type(), [Association::MANY_TO_MANY, Association::MANY_TO_ONE]);
+        return in_array($association->type(), [Association::MANY_TO_MANY, Association::MANY_TO_ONE, Association::ONE_TO_MANY]);
     }
 
     /**
