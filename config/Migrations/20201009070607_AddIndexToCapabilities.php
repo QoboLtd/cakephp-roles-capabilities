@@ -13,7 +13,7 @@ class AddIndexToCapabilities extends AbstractMigration
     public function change()
     {
         // unless there is a bug that left orphan capabilities due to missing FK then this shouldn't delete anything.
-        $this->execute('DELETE FROM qobo_capabilities WHERE role_id NOT IN (SELECT role_id FROM qobo_roles);');
+        $this->execute('DELETE FROM qobo_capabilities WHERE role_id NOT IN (SELECT id FROM qobo_roles);');
 
         $table = $this->table('qobo_capabilities');
 
