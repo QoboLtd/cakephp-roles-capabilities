@@ -18,7 +18,7 @@ class AddIndexToCapabilities extends AbstractMigration
         $table = $this->table('qobo_capabilities');
 
         $table->addIndex([
-            'role_id'
+            'role_id',
         ], [
             'name' => 'idx_role_id',
             'unique' => false,
