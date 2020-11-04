@@ -14,6 +14,8 @@ namespace RolesCapabilities;
 use Cake\Core\Configure;
 use RolesCapabilities\Access\AccessFactory;
 use RolesCapabilities\Access\Utils;
+use RolesCapabilities\EntityAccess\AuthorizationContext;
+use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 
 trait CapabilityTrait
 {
@@ -40,9 +42,14 @@ trait CapabilityTrait
      */
     protected function _checkAccess(array $url, array $user): bool
     {
-        $accessFactory = new AccessFactory();
+        AuthorizationContextHolder::asSystem();
+        try {
+            $accessFactory = new AccessFactory();
 
-        return $accessFactory->hasAccess($url, $user);
+            return $accessFactory->hasAccess($url, $user);
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
     }
 
     /**
