@@ -128,6 +128,19 @@ class PermissionsTable extends Table
      */
     public function fetchUserViewPermission(string $modelName, string $foreignKey, string $userId): ?Permission
     {
+        return $this->fetchUserPermission($modelName, $foreignKey, $userId, 'view');
+    }
+
+    /**
+     * Retrieves the permission for specified user.
+     *
+     * @param string $modelName Model name
+     * @param string $foreignKey Foreign key
+     * @param string $userId User ID
+     * @return \RolesCapabilities\Model\Entity\Permission|null
+     */
+    public function fetchUserPermission(string $modelName, string $foreignKey, string $userId, string $type): ?Permission
+    {
         Assert::stringNotEmpty($modelName);
         Assert::uuid($foreignKey);
         Assert::uuid($userId);
@@ -138,7 +151,7 @@ class PermissionsTable extends Table
                 'model' => $modelName,
                 'owner_foreign_key' => $userId,
                 'foreign_key' => $foreignKey,
-                'type' => 'view',
+                'type' => $type,
             ])
             ->first();
 
