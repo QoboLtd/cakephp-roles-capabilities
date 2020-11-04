@@ -45,25 +45,14 @@ class CapabilityCell extends Cell
      */
     public function groupName(string $name): void
     {
-        $parts = array_map(
-            function ($n) {
-                return Inflector::humanize(Inflector::underscore(str_replace('Controller', '', $n)));
-            },
-            explode('\\', $name)
-        );
+        $parts = explode('\\', $name);
+        $className = end($parts);
+        if ($className === false) {
+            throw new \RuntimeException('Could not get classname from group');
+        }
 
-        /*
-        removes empty array entries
-         */
-        $parts = array_filter($parts);
+        $className = str_replace('Controller', '', $className);
 
-        /*
-        get just the controller and plugin names
-         */
-        $parts = array_slice($parts, -2);
-
-        $name = implode(' :: ', $parts);
-
-        $this->set('groupName', $name);
+        $this->set('groupName', Inflector::humanize(Inflector::underscore($className)));
     }
 }

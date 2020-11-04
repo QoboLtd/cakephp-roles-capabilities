@@ -314,9 +314,7 @@ class Utils
      */
     public static function generateCapabilityDescription(string $controllerName, string $action): string
     {
-        $result = 'Allow ' . $action;
-
-        return $result;
+        return $action;
     }
 
     /**
