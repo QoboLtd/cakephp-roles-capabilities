@@ -24,13 +24,6 @@ use Cake\Validation\Validator;
 class ExtendedCapabilitiesTable extends Table
 {
     /**
-     * Group(s) roles
-     *
-     * @var array
-     */
-    protected $_groupsRoles = [];
-
-    /**
      * Initialize method
      *
      * @param mixed[] $config The configuration for the Table.
@@ -41,7 +34,6 @@ class ExtendedCapabilitiesTable extends Table
         parent::initialize($config);
 
         $this->setTable('qobo_extended_capabilities');
-        $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Roles', [
@@ -54,18 +46,14 @@ class ExtendedCapabilitiesTable extends Table
     /**
      * Default validation rules.
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
+     * @param Validator $validator Validator instance.
+     * @return Validator
      */
-    public function validationDefault(Validator $validator): \Cake\Validation\Validator
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'uuid'])
             ->allowEmpty('id', 'create');
-
-        $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
 
         return $validator;
     }
@@ -74,10 +62,10 @@ class ExtendedCapabilitiesTable extends Table
      * Returns a rules checker object that will be used for validating
      * application integrity.
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
+     * @param RulesChecker $rules The rules object to be modified.
+     * @return RulesChecker
      */
-    public function buildRules(RulesChecker $rules): \Cake\ORM\RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 

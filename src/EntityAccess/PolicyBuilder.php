@@ -24,7 +24,7 @@ class PolicyBuilder
     private $entityId;
 
     /**
-     * @var $operation
+     * @var string
      */
     private $operation;
 
@@ -79,19 +79,6 @@ class PolicyBuilder
      */
     public function build(): AuthorizationRule
     {
-        AuthorizationContextHolder::asSystem();
-        try {
-            return $this->doBuild();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
-    }
-
-    /**
-     * Actual building function to allow easy wrapping
-     */
-    private function doBuild(): AuthorizationRule
-    {
         if (empty($this->user)) {
             return new DenyRule();
         }
@@ -103,10 +90,11 @@ class PolicyBuilder
         $userRules = [
             new PermittedOperationRule($this->user['id'], $this->table, $this->operation, $this->entityId),
             new GroupPermittedOperationRule($this->user['id'], $this->table, $this->operation, $this->entityId),
+            new EntityCapabilityRule($this->user['id'], $this->table, $this->operation, $this->entityId),
         ];
 
         if ($this->isSupervisor()) {
-            foreach (Utils::getReportToUsers($entityId) as $subordinate) {
+            foreach (Utils::getReportToUsers($this->user['id']) as $subordinate) {
                 $builder = new PolicyBuilder($subordinate, $this->table, $this->operation, $this->entityId);
                 $userRules[] = $builder->build();
             }

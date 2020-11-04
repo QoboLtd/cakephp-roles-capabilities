@@ -47,6 +47,13 @@ class RolesTable extends Table
             'className' => 'RolesCapabilities.Capabilities',
             'dependent' => true,
         ]);
+
+        $this->hasMany('ExtendedCapabilities', [
+            'foreignKey' => 'role_id',
+            'className' => 'RolesCapabilities.ExtendedCapabilities',
+            'dependent' => true,
+        ]);
+
         $this->belongsToMany('Groups', [
             'foreignKey' => 'role_id',
             'targetForeignKey' => 'group_id',

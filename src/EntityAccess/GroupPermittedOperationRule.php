@@ -13,7 +13,7 @@ use RolesCapabilities\Model\Table\PermissionsTable;
 use Webmozart\Assert\Assert;
 
 /**
- * Rule to allow access if the operation is permitted for 
+ * Rule to allow access if the operation is permitted for
  * any of the groups the subject is a part of.
  */
 class GroupPermittedOperationRule implements AuthorizationRule
@@ -81,6 +81,10 @@ class GroupPermittedOperationRule implements AuthorizationRule
         $groups = TableRegistry::getTableLocator()->get('Groups.Groups');
         Assert::isInstanceOf($groups, GroupsTable::class);
 
+        $userGroups = $groups->find()->select(['id'])->matching('Users', function ($q) {
+            return $q->where(['Users.id' => $this->subject]);
+        });
+
         $conditions = [
             'owner_model' => 'Groups',
             'model' => $this->table->getTable(),
@@ -90,10 +94,6 @@ class GroupPermittedOperationRule implements AuthorizationRule
         if ($this->entityId !== null) {
             $conditions['foreign_key'] = $this->entityId;
         }
-
-        $userGroups = $groups->find()->select(['id'])->matching('Users', function ($q) {
-            return $q->where(['Users.id' => $this->subject]);
-        });
 
         $conditions['owner_foreign_key IN '] = $userGroups;
 

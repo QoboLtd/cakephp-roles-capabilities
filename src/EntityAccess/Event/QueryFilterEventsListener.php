@@ -47,29 +47,6 @@ class QueryFilterEventsListener implements EventListenerInterface
     }
 
     /**
-     * Handles Auth.afterIdentify from AuthComponent
-     *
-     * @param Event $event The event
-     * @param mixed[] $user The user
-     *
-     * @return void
-     */
-    public function afterIdentify(Event $event, array $user): void
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * Handles Auth.logout from AuthComponent
-     *
-     * @return void
-     */
-    public function logout(Event $event): void
-    {
-        $this->user = null;
-    }
-
-    /**
      * Creates authorization policy
      */
     private function policy(Event $event, ?EntityInterface $entity = null, string $operation = 'view'): ?AuthorizationRule
@@ -97,7 +74,10 @@ class QueryFilterEventsListener implements EventListenerInterface
         $entityId = null;
         if ($entity != null) {
             $primaryKey = $table->getPrimaryKey();
-            Assert::isInstanceOf($primaryKey, string);
+
+            if (!is_string($primaryKey)) {
+                throw new \RuntimeException('Unsupported primary key');
+            }
 
             $entityId = $entity->get($primaryKey);
         }
@@ -105,6 +85,21 @@ class QueryFilterEventsListener implements EventListenerInterface
         $builder = new PolicyBuilder($user, $table, $operation, $entityId);
 
         return $builder->build();
+    }
+
+    private function allow(Event $event, ?EntityInterface $entity, string $operation): bool
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $policy = $this->policy($event, $entity, $operation);
+            if ($policy === null) {
+                return true;
+            }
+
+            return $policy->allow();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
     }
 
     /**
@@ -120,16 +115,17 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options): void
     {
-        if (isset($options['accessCheck']) && !$options['accessCheck']) {
-            return;
-        }
+        AuthorizationContextHolder::asSystem();
+        try {
+            $policy = $this->policy($event, null, 'view');
+            if ($policy === null) {
+                return;
+            }
 
-        $policy = $this->policy($event, null, 'view');
-        if ($policy === null) {
-            return;
+            $expression = $policy->expression($query);
+        } finally {
+            AuthorizationContextHolder::pop();
         }
-
-        $expression = $policy->expression($query);
 
         $query->where($expression);
     }
@@ -139,16 +135,7 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
-        if (isset($options['accessCheck']) && ! $options['accessCheck']) {
-            return;
-        }
-
-        $policy = $this->policy($event, $entity, 'delete');
-        if ($policy === null) {
-            return;
-        }
-
-        if (!$policy->allow()) {
+        if (!$this->allow($event, $entity, 'delete')) {
             throw new \RuntimeException('Denied');
         }
     }
@@ -161,22 +148,13 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
-        if (isset($options['accessCheck']) && ! $options['accessCheck']) {
-            return;
-        }
-
         if ($entity->isNew()) {
             $operation = 'create';
         } else {
             $operation = 'edit';
         }
 
-        $policy = $this->policy($event, $entity, $operation);
-        if ($policy === null) {
-            return;
-        }
-
-        if (!$policy->allow()) {
+        if (!$this->allow($event, $entity, $operation)) {
             throw new \RuntimeException('Denied');
         }
     }

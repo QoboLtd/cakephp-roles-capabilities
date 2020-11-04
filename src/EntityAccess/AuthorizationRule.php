@@ -32,7 +32,7 @@ interface AuthorizationRule
     public function allow(): bool;
 
     /**
-     * Converts this rule to a query expression. Applied for "view"
+     * Converts this rule to a query expression. Applied for "view" and "index"
      *
      * @param Query $query The query to build the expression.
      *
