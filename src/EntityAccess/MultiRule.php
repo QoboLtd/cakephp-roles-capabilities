@@ -98,7 +98,7 @@ class MultiRule implements AuthorizationRule
     /** @inheritdoc
      *
      */
-    public function expression(Query $query): QueryExpression
+    public function expression(Query $query): ?QueryExpression
     {
         $expressions = [];
 
@@ -110,7 +110,7 @@ class MultiRule implements AuthorizationRule
         }
 
         if (count($expressions) === 0) {
-            return $query->newExpr('1=1');
+            return null;
         }
 
         return new QueryExpression($expressions, $query->getTypeMap(), $this->conjunction);

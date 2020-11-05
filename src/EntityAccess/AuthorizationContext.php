@@ -22,6 +22,13 @@ class AuthorizationContext
      */
     private $system;
 
+    /**
+     * Private constructor. Use one of the asXXX functions.
+     *
+     * @param ?array $subject The subject (ie user)
+     * @param bool $system Whether this is a system operation
+     * @param ?ServerRequest $request The request (if applicable)
+     */
     private function __construct(?array $subject, bool $system, ?ServerRequest $request)
     {
         $this->subject = $subject;
@@ -63,16 +70,28 @@ class AuthorizationContext
         return new AuthorizationContext(null, false, $request);
     }
 
+    /**
+     * The subject for this context.
+     *
+     * @return ?array The subject or null
+     */
     public function subject(): ?array
     {
         return $this->subject;
     }
 
+    /**
+     * Whether this is a system operation.
+     * @return bool
+     */
     public function system(): bool
     {
         return $this->system;
     }
 
+    /**
+     * @return ?ServerRequest The request (if any)
+     */
     public function request(): ?ServerRequest
     {
         return $this->request;

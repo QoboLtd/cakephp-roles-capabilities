@@ -23,6 +23,9 @@ class EntityCapabilityRule implements AuthorizationRule
 
     private $subject;
 
+    /**
+     * @var Table
+     */
     private $table;
 
     private $operation;
@@ -91,16 +94,32 @@ class EntityCapabilityRule implements AuthorizationRule
             }
 
             $association = $this->table->getAssociation($associationName);
+            $primaryKey = $association->getTarget()->getPrimaryKey();
+            Assert::string($primaryKey);
 
             // TODO Check if association matches subject.
-            $query = $association->find();
+            $query = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
         }
+
+        $primaryKey = $this->table->getPrimaryKey();
+        Assert::string($primaryKey);
+
+        $query = $this->table->find()->where([$this->table->aliasField($primaryKey) => $this->entityId]);
+
+        $expression = $this->expression($query);
+        if ($expression === null) {
+            return true;
+        }
+
+        $entity = $query->where($expression)->first();
+
+        return $entity !== null;
     }
 
     /**
      * @inheritdoc
      */
-    public function expression(Query $query): QueryExpression
+    public function expression(Query $query): ?QueryExpression
     {
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
         Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
@@ -132,7 +151,7 @@ class EntityCapabilityRule implements AuthorizationRule
         foreach ($capabilities as $capability) {
             $associationName = $capability->get('association');
             if ($associationName === '') {
-                return $query->newExpr('1=1');
+                return null;
             }
 
             if (!$this->table->hasAssociation($associationName)) {
@@ -141,9 +160,10 @@ class EntityCapabilityRule implements AuthorizationRule
             }
 
             $association = $this->table->getAssociation($associationName);
+            $primaryKey = $association->getTarget()->getPrimaryKey();
+            Assert::string($primaryKey);
 
-            // Filter by subject
-            $expressions[] = $association->find();
+            $expressions[] = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
         }
 
         $exp = $query->newExpr();

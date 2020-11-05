@@ -9,29 +9,32 @@ use RolesCapabilities\EntityAccess\PolicyBuilder;
 
 trait AccessControlTrait
 {
-    public function authorizeAccess(Controller $controller): bool
+    /**
+     * Checks authorization for access to this controller action.
+     * @param Controller $controller The controller to be accessed
+     * @param string $action The action on the controller
+     * @return bool
+     */
+    public function authorizeAccess(Controller $controller, string $action): bool
     {
         $ctx = AuthorizationContextHolder::context();
         if ($ctx === null) {
             return null;
         }
 
-        $table = $controller->loadModel();
-        if ($table === null) {
-            return null;
+        $resource = $controller->getName();
+
+        if ($controller->getPlugin() !== null) {
+            $resource = $controller->getPlugin() . '/' . $resource;
         }
 
-        if (!($table instanceof Table)) {
-            return null;
-        }
-
-        $builder = new PolicyBuilder($ctx->subject(), $table, $operation, $entityId);
+        $builder = new ResourcePolicyBuilder($ctx->subject(), $resource, $action);
 
         AuthorizationContextHolder::asSystem();
         try {
-            $ormPolicy = $builder->build();
+            $resourcePolicy = $builder->build();
 
-            return $ormPolicy->allow();
+            return $resourcePolicy->allow();
         } finally {
             AuthorizationContextHolder::pop();
         }

@@ -19,6 +19,7 @@ use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Qobo\Utils\Utility\User;
 use RolesCapabilities\EntityAccess\AllowRule;
+use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\AuthorizationRule;
 use RolesCapabilities\EntityAccess\PolicyBuilder;
@@ -48,14 +49,11 @@ class QueryFilterEventsListener implements EventListenerInterface
 
     /**
      * Creates authorization policy
+     *
+     * @return AuthorizationRule
      */
-    private function policy(Event $event, ?EntityInterface $entity = null, string $operation = 'view'): ?AuthorizationRule
+    private function policy(AuthorizationContext $ctx, Event $event, ?EntityInterface $entity = null, string $operation = 'view'): AuthorizationRule
     {
-        $ctx = AuthorizationContextHolder::context();
-        if ($ctx === null || $ctx->system()) {
-            return null;
-        }
-
         // TODO Create configuration whitelist
         $req = $ctx->request();
         if ($req != null) {
@@ -63,7 +61,7 @@ class QueryFilterEventsListener implements EventListenerInterface
             $action = $req->getParam('action');
 
             if ($controller === 'Users' && $action === 'login') {
-                return null;
+                return new AllowRule();
             }
         }
 
@@ -87,14 +85,24 @@ class QueryFilterEventsListener implements EventListenerInterface
         return $builder->build();
     }
 
+    /**
+     * Helper function to check if the operation is allowed
+     * @param Event $event The event to check
+     * @param ?EntityInterface $entity The entity for the event (if any)
+     * @param string $operation The operation
+     *
+     * @return bool
+     */
     private function allow(Event $event, ?EntityInterface $entity, string $operation): bool
     {
+        $ctx = AuthorizationContextHolder::context();
+        if ($ctx === null || $ctx->system()) {
+            return true;
+        }
+
         AuthorizationContextHolder::asSystem();
         try {
-            $policy = $this->policy($event, $entity, $operation);
-            if ($policy === null) {
-                return true;
-            }
+            $policy = $this->policy($ctx, $event, $entity, $operation);
 
             return $policy->allow();
         } finally {
@@ -115,19 +123,23 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options): void
     {
+        $ctx = AuthorizationContextHolder::context();
+        if ($ctx === null || $ctx->system()) {
+            return;
+        }
+
         AuthorizationContextHolder::asSystem();
         try {
-            $policy = $this->policy($event, null, 'view');
-            if ($policy === null) {
-                return;
-            }
+            $policy = $this->policy($ctx, $event, null, 'view');
 
             $expression = $policy->expression($query);
         } finally {
             AuthorizationContextHolder::pop();
         }
 
-        $query->where($expression);
+        if ($expression !== null) {
+            $query->where($expression);
+        }
     }
 
     /**

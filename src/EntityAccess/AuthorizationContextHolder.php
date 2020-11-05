@@ -73,5 +73,4 @@ class AuthorizationContextHolder
 
         return self::$ctx[$len - 1];
     }
-
 }

@@ -41,10 +41,6 @@ class ResourceCapabilityRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if ($this->subject == null) {
-            return false;
-        }
-
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
         Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
 
