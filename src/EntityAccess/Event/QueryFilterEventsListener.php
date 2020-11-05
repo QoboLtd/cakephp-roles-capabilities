@@ -12,9 +12,11 @@
 namespace RolesCapabilities\EntityAccess\Event;
 
 use ArrayObject;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Qobo\Utils\Utility\User;
@@ -47,6 +49,36 @@ class QueryFilterEventsListener implements EventListenerInterface
         ];
     }
 
+    private function pluginMatch(array $publicAction, ?string $b): bool
+    {
+        return (empty($publicAction['plugin']) && empty($b)) || $publicAction['plugin'] === $b;
+    }
+
+    public function isPublic(ServerRequest $request): bool
+    {
+        $publicActions = Configure::read('RolesCapabilities.authorizationActions');
+        if (empty($publicActions) || !is_array($publicActions)) {
+            return false;
+        }
+
+        $plugin = $request->getParam('plugin');
+        $controller = $request->getParam('controller');
+        $action = $request->getParam('action');
+
+        foreach ($publicActions as $publicAction) {
+            if (
+                $this->pluginMatch($publicAction, $plugin)
+                && $publicAction['controller'] === $controller
+                && $publicAction['action'] === $action
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     /**
      * Creates authorization policy
      *
@@ -54,17 +86,6 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     private function policy(AuthorizationContext $ctx, Event $event, ?EntityInterface $entity = null, string $operation = 'view'): AuthorizationRule
     {
-        // TODO Create configuration whitelist
-        $req = $ctx->request();
-        if ($req != null) {
-            $controller = $req->getParam('controller');
-            $action = $req->getParam('action');
-
-            if ($controller === 'Users' && $action === 'login') {
-                return new AllowRule();
-            }
-        }
-
         $user = $ctx->subject();
         $table = $event->getSubject();
         Assert::isInstanceOf($table, Table::class);
@@ -100,6 +121,11 @@ class QueryFilterEventsListener implements EventListenerInterface
             return true;
         }
 
+        $req = $ctx->request();
+        if ($req != null && $this->isPublic($req)) {
+            return true;
+        }
+
         AuthorizationContextHolder::asSystem();
         try {
             $policy = $this->policy($ctx, $event, $entity, $operation);
@@ -125,6 +151,11 @@ class QueryFilterEventsListener implements EventListenerInterface
     {
         $ctx = AuthorizationContextHolder::context();
         if ($ctx === null || $ctx->system()) {
+            return;
+        }
+
+        $req = $ctx->request();
+        if ($req != null && $this->isPublic($req)) {
             return;
         }
 
