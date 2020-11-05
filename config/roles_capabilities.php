@@ -2,6 +2,9 @@
 // Roles and Capabilities plugin configuration
 return [
     'RolesCapabilities' => [
+        'authorizationActions' => [
+            [ 'controller' => 'Users', 'action' => 'login' ],
+        ],
         'ownerCheck' => [
             // List of tables that should be skipped during record access check, to avoid infinite recursion.
             'skipTables' => [
