@@ -49,12 +49,26 @@ class QueryFilterEventsListener implements EventListenerInterface
         ];
     }
 
-    private function pluginMatch(array $publicAction, ?string $b): bool
+    /**
+     * Checks whether the plugin matches the action plugin.
+     *
+     * @param mixed[] $publicAction The action
+     * @param ?string $plugin The plugin
+     *
+     * @return bool
+     */
+    private function pluginMatch(array $publicAction, ?string $plugin): bool
     {
-        return (empty($publicAction['plugin']) && empty($b)) || $publicAction['plugin'] === $b;
+        return (empty($publicAction['plugin']) && empty($plugin)) || $publicAction['plugin'] === $plugin;
     }
 
-    public function isPublic(ServerRequest $request): bool
+    /**
+     * Checks whether this is an authentication request.
+     * @param ServerRequest $request The request to check
+     *
+     * @return bool
+     */
+    public function isAuthenticationRequest(ServerRequest $request): bool
     {
         $publicActions = Configure::read('RolesCapabilities.authorizationActions');
         if (empty($publicActions) || !is_array($publicActions)) {
@@ -77,7 +91,6 @@ class QueryFilterEventsListener implements EventListenerInterface
 
         return false;
     }
-
 
     /**
      * Creates authorization policy
@@ -122,7 +135,7 @@ class QueryFilterEventsListener implements EventListenerInterface
         }
 
         $req = $ctx->request();
-        if ($req != null && $this->isPublic($req)) {
+        if ($req != null && $this->isAuthenticationRequest($req)) {
             return true;
         }
 
@@ -155,7 +168,7 @@ class QueryFilterEventsListener implements EventListenerInterface
         }
 
         $req = $ctx->request();
-        if ($req != null && $this->isPublic($req)) {
+        if ($req != null && $this->isAuthenticationRequest($req)) {
             return;
         }
 

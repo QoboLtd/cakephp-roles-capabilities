@@ -5,13 +5,13 @@ namespace RolesCapabilities\Test\TestCase\EntityAccess;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Access\NoAuthAccess;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
-use RolesCapabilities\Model\Table\RolesTable;
 
 class NoAuthAccessTest extends TestCase
 {
@@ -25,7 +25,7 @@ class NoAuthAccessTest extends TestCase
     ];
 
     /**
-     * @var RolesTable
+     * @var Table
      */
     private $Roles;
 
