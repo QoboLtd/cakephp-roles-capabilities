@@ -157,9 +157,9 @@ class UtilsTest extends TestCase
     public function getCapabilityDescriptions(): array
     {
         return [
-            ['AppController', 'index', 'Allow index'],
-            ['SomeController', 'doSomething', 'Allow doSomething'],
-            ['SomeController', 'do_something', 'Allow do_something'],
+            ['AppController', 'index', 'index'],
+            ['SomeController', 'doSomething', 'doSomething'],
+            ['SomeController', 'do_something', 'do_something'],
         ];
     }
 
