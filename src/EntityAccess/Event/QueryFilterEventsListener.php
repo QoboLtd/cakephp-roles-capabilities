@@ -24,6 +24,7 @@ use RolesCapabilities\EntityAccess\AllowRule;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\AuthorizationRule;
+use RolesCapabilities\EntityAccess\Operation;
 use RolesCapabilities\EntityAccess\PolicyBuilder;
 use Webmozart\Assert\Assert;
 
@@ -97,7 +98,7 @@ class QueryFilterEventsListener implements EventListenerInterface
      *
      * @return AuthorizationRule
      */
-    private function policy(AuthorizationContext $ctx, Event $event, ?EntityInterface $entity = null, string $operation = 'view'): AuthorizationRule
+    private function policy(AuthorizationContext $ctx, Event $event, ?EntityInterface $entity = null, string $operation): AuthorizationRule
     {
         $user = $ctx->subject();
         $table = $event->getSubject();
@@ -174,7 +175,7 @@ class QueryFilterEventsListener implements EventListenerInterface
 
         AuthorizationContextHolder::asSystem();
         try {
-            $policy = $this->policy($ctx, $event, null, 'view');
+            $policy = $this->policy($ctx, $event, null, Operation::VIEW);
 
             $expression = $policy->expression($query);
         } finally {
@@ -191,7 +192,7 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
-        if (!$this->allow($event, $entity, 'delete')) {
+        if (!$this->allow($event, $entity, Operation::DELETE)) {
             throw new \RuntimeException('Denied');
         }
     }
@@ -205,9 +206,9 @@ class QueryFilterEventsListener implements EventListenerInterface
     public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
         if ($entity->isNew()) {
-            $operation = 'create';
+            $operation = Operation::CREATE;
         } else {
-            $operation = 'edit';
+            $operation = Operation::EDIT;
         }
 
         if (!$this->allow($event, $entity, $operation)) {
