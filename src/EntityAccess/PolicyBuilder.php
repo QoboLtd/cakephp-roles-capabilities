@@ -5,7 +5,6 @@ namespace RolesCapabilities\EntityAccess;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
-use RolesCapabilities\Access\Utils;
 use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
 use RolesCapabilities\Model\Table\PermissionsTable;
 
@@ -16,7 +15,10 @@ class PolicyBuilder
      */
     private $table;
 
-    private $user;
+    /**
+     * @var ?SubjectInterface
+     */
+    private $subject;
 
     /**
      * @var ?string
@@ -31,45 +33,17 @@ class PolicyBuilder
     /**
      * Creates a new policy builder.
      *
-     * @param ?array $user The user
+     * @param ?SubjectInterface $subject The subject
      * @param Table $table The entity class to check ()
      * @param string $operation The operation to perform (one of: list, create, edit, delete)
      * @param ?string $entityId The entity Id to check
      */
-    public function __construct(?array $user, Table $table, string $operation, ?string $entityId)
+    public function __construct(?SubjectInterface $subject, Table $table, string $operation, ?string $entityId)
     {
-        $this->user = $user;
+        $this->subject = $subject;
         $this->table = $table;
         $this->operation = $operation;
         $this->entityId = $entityId;
-    }
-
-    /**
-     * Whether the user is a supervisor.
-     *
-     * @return bool
-     */
-    private function isSupervisor(): bool
-    {
-        if ($this->user === null || !isset($this->user['is_supervisor'])) {
-            return false;
-        }
-
-        return (bool)$this->user['is_supervisor'];
-    }
-
-    /**
-     * Whether the user is a superuser
-     *
-     * @return bool
-     */
-    private function isSuperuser(): bool
-    {
-        if (!isset($this->user['is_superuser'])) {
-            return false;
-        }
-
-        return (bool)$this->user['is_superuser'];
     }
 
     /**
@@ -79,22 +53,22 @@ class PolicyBuilder
      */
     public function build(): AuthorizationRule
     {
-        if (empty($this->user)) {
+        if ($this->subject === null) {
             return new DenyRule();
         }
 
-        if ($this->isSuperuser()) {
+        if ($this->subject->isSuperuser()) {
             return new AllowRule();
         }
 
         $userRules = [
-            new PermittedOperationRule($this->user['id'], $this->table, $this->operation, $this->entityId),
-            new GroupPermittedOperationRule($this->user['id'], $this->table, $this->operation, $this->entityId),
-            new EntityCapabilityRule($this->user['id'], $this->table, $this->operation, $this->entityId),
+            new PermittedOperationRule($this->subject->getId(), $this->table, $this->operation, $this->entityId),
+            new GroupPermittedOperationRule($this->subject->getId(), $this->table, $this->operation, $this->entityId),
+            new EntityCapabilityRule($this->subject->getId(), $this->table, $this->operation, $this->entityId),
         ];
 
-        if ($this->isSupervisor()) {
-            foreach (Utils::getReportToUsers($this->user['id']) as $subordinate) {
+        if ($this->subject->isSupervisor()) {
+            foreach ($this->subject->getSubordinates() as $subordinate) {
                 $builder = new PolicyBuilder($subordinate, $this->table, $this->operation, $this->entityId);
                 $userRules[] = $builder->build();
             }

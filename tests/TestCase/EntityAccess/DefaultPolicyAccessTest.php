@@ -12,8 +12,9 @@ use RolesCapabilities\Access\NoAuthAccess;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
+use RolesCapabilities\EntityAccess\UserWrapper;
 
-class NoAuthAccessTest extends TestCase
+class DefaultPolicyAccessTest extends TestCase
 {
     /**
      * Fixtures
@@ -21,13 +22,18 @@ class NoAuthAccessTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.RolesCapabilities.Groups',
+        'plugin.RolesCapabilities.Permissions',
         'plugin.RolesCapabilities.Roles',
+        'plugin.RolesCapabilities.Users',
     ];
 
     /**
      * @var Table
      */
     private $Roles;
+
+    private $Users;
 
     /**
      * @var QueryFilterEventsListener
@@ -43,6 +49,7 @@ class NoAuthAccessTest extends TestCase
         EventManager::instance()->on($this->listener);
 
         $this->Roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
+        $this->Users = TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
     }
 
     public function tearDown()
@@ -54,7 +61,7 @@ class NoAuthAccessTest extends TestCase
 
     public function testAnonymousQuery(): void
     {
-        $count = $this->Roles->find('all', ['fields' => 'id'])->count();
+        $count = $this->Roles->find()->count();
         $this->assertEquals($count, 0);
     }
 
@@ -63,7 +70,25 @@ class NoAuthAccessTest extends TestCase
         AuthorizationContextHolder::asSystem();
 
         try {
-            $count = $this->Roles->find('all', ['fields' => 'id'])->count();
+            $count = $this->Roles->find()->count();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertGreaterThan(0, $count);
+    }
+
+    public function testViewSelf(): void
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $user = $this->Users->find()->where(['is_superuser' => false])->first()->toArray();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $count = $this->Roles->find()->count();
         } finally {
             AuthorizationContextHolder::pop();
         }

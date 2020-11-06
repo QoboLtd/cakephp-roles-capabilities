@@ -68,3 +68,29 @@ class AppController extends Controller
         ]);
     }
 ```
+
+## AuthorizationContext (EXPERIMENTAL)
+
+### Setup
+Add the AuthorizationContextMiddleware in your middleware queue.
+
+In your controller:
+
+```
+use RolesCapabilities\EntityAccess\AuthorizationContext;
+use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
+
+class AppController extends Controller
+{
+    public function initialize()
+    {
+        parent::initialize();
+        ...
+        $user = $this->Auth->user();
+        if (!empty($user)) {
+            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
+        } else {
+            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
+        }
+        ...
+```

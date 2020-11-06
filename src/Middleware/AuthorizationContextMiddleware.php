@@ -7,6 +7,8 @@ use Cake\Http\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
+use RolesCapabilities\EntityAccess\SubjectInterface;
+use RolesCapabilities\EntityAccess\UserWrapper;
 
 /**
  * Middleware that initializes the AuthorizationContext.
@@ -17,6 +19,17 @@ use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
  */
 class AuthorizationContextMiddleware
 {
+    /**
+     * @param mixed $user
+     */
+    protected function wrapIdentity($user): SubjectInterface
+    {
+        if ($user instanceof SubjectInterface) {
+            return $user;
+        }
+
+        return UserWrapper::forUser($user);
+    }
 
     /**
      * Invoke middleware
@@ -29,8 +42,8 @@ class AuthorizationContextMiddleware
     public function __invoke(ServerRequest $request, ResponseInterface $response, callable $next): ResponseInterface
     {
         $user = $request->getAttribute('identity');
-        if ($user !== null) {
-            $ctx = AuthorizationContext::asUser($user, $request);
+        if (!empty($user)) {
+            $ctx = AuthorizationContext::asUser($this->wrapIdentity($user), $request);
         } else {
             $ctx = AuthorizationContext::asAnonymous($request);
         }

@@ -13,7 +13,7 @@ class AuthorizationContext
     private $request;
 
     /**
-     * @var ?array
+     * @var ?SubjectInterface
      */
     private $subject;
 
@@ -25,11 +25,11 @@ class AuthorizationContext
     /**
      * Private constructor. Use one of the asXXX functions.
      *
-     * @param ?array $subject The subject (ie user)
+     * @param ?SubjectInterface $subject The subject (ie user)
      * @param bool $system Whether this is a system operation
      * @param ?ServerRequest $request The request (if applicable)
      */
-    private function __construct(?array $subject, bool $system, ?ServerRequest $request)
+    private function __construct(?SubjectInterface $subject, bool $system, ?ServerRequest $request)
     {
         $this->subject = $subject;
         $this->system = $system;
@@ -50,11 +50,11 @@ class AuthorizationContext
     /**
      * Creates a new context for the given subject.
      *
-     * @param mixed[] $subject The user
+     * @param SubjectInterface $subject The user
      * @param ?ServerRequest $request The request
      * @return AuthorizationContext
      */
-    public static function asUser(array $subject, ?ServerRequest $request): AuthorizationContext
+    public static function asUser(SubjectInterface $subject, ?ServerRequest $request): AuthorizationContext
     {
         return new AuthorizationContext($subject, false, $request);
     }
@@ -73,9 +73,9 @@ class AuthorizationContext
     /**
      * The subject for this context.
      *
-     * @return ?array The subject or null
+     * @return ?SubjectInterface The subject or null
      */
-    public function subject(): ?array
+    public function subject(): ?SubjectInterface
     {
         return $this->subject;
     }

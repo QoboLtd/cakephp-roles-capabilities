@@ -31,7 +31,7 @@ trait ControllerAuthorizeTrait
 
         $entityId = $this->getEntityId();
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser($user, $request));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $request));
         try {
             return $this->authorizeControllerAction($this, $action, $entityId);
         } finally {

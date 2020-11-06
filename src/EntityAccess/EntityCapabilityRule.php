@@ -126,7 +126,7 @@ class EntityCapabilityRule implements AuthorizationRule
 
         $roles = $table->getAssociation('Roles')->getTarget();
 
-        $groups = $roles->get('Groups');
+        $groups = $roles->getAssociation('Groups')->getTarget();
         Assert::isInstanceOf($groups, GroupsTable::class);
         $userGroups = $groups->find()->select(['id'])->matching('Users', function (Query $q) {
             return $q->where(['Users.id' => $this->subject]);

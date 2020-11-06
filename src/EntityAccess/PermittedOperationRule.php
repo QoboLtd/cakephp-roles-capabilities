@@ -44,7 +44,7 @@ class PermittedOperationRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if ($this->subject == null || $this->entityId === null) {
+        if ($this->entityId === null) {
             return false;
         }
 
