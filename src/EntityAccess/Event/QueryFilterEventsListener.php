@@ -185,7 +185,6 @@ class QueryFilterEventsListener implements EventListenerInterface
             if ($expression !== null) {
                 $query->where($expression);
             }
-
         } finally {
             AuthorizationContextHolder::pop();
         }
