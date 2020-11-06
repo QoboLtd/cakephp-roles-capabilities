@@ -60,7 +60,10 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     private function pluginMatch(array $publicAction, ?string $plugin): bool
     {
-        return (empty($publicAction['plugin']) && empty($plugin)) || $publicAction['plugin'] === $plugin;
+        return (
+                   (empty($publicAction['plugin']) && empty($plugin))
+                || (!empty($publicAction['plugin']) && $publicAction['plugin'] === $plugin)
+                );
     }
 
     /**
@@ -178,12 +181,13 @@ class QueryFilterEventsListener implements EventListenerInterface
             $policy = $this->policy($ctx, $event, null, Operation::VIEW);
 
             $expression = $policy->expression($query);
+
+            if ($expression !== null) {
+                $query->where($expression);
+            }
+
         } finally {
             AuthorizationContextHolder::pop();
-        }
-
-        if ($expression !== null) {
-            $query->where($expression);
         }
     }
 
