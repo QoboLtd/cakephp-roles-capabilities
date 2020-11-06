@@ -67,11 +67,9 @@ class PolicyBuilder
             new EntityCapabilityRule($this->subject->getId(), $this->table, $this->operation, $this->entityId),
         ];
 
-        if ($this->subject->isSupervisor()) {
-            foreach ($this->subject->getSubordinates() as $subordinate) {
-                $builder = new PolicyBuilder($subordinate, $this->table, $this->operation, $this->entityId);
-                $userRules[] = $builder->build();
-            }
+        foreach ($this->subject->getSubordinates() as $subordinate) {
+            $builder = new PolicyBuilder($subordinate, $this->table, $this->operation, $this->entityId);
+            $userRules[] = $builder->build();
         }
 
         return MultiRule::any(...$userRules);

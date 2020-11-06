@@ -50,9 +50,11 @@ class UserWrapper implements SubjectInterface
     }
 
     /**
-     * @inheritdoc
+     * Whether the user is a supervisor.
+     *
+     * @return bool
      */
-    public function isSupervisor(): bool
+    private function isSupervisor(): bool
     {
         if (!isset($this->user['is_supervisor'])) {
             return false;
@@ -79,6 +81,11 @@ class UserWrapper implements SubjectInterface
     public function getSubordinates(): array
     {
         $subs = [];
+
+        if (!$this->isSupervisor()) {
+            return $subs;
+        }
+
         Utils::getReportToUsers($this->getId());
 
         foreach (Utils::getReportToUsers($this->getId()) as $subordinate) {

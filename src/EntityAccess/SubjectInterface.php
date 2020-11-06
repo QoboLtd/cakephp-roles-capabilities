@@ -19,13 +19,6 @@ interface SubjectInterface
     public function isSuperuser(): bool;
 
     /**
-     * Whether the user is a supervisor.
-     *
-     * @return bool
-     */
-    public function isSupervisor(): bool;
-
-    /**
      * @return SubjectInterface[] The subordinates
      */
     public function getSubordinates(): array;
