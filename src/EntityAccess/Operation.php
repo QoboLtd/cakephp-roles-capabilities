@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use InvalidArgumentException;
 use ReflectionClass;
 
 abstract class Operation
@@ -11,6 +12,12 @@ abstract class Operation
     const VIEW = 'view';
     const EDIT = 'edit';
     const DELETE = 'delete';
+
+    private static $aliases = [
+        'list' => VIEW,
+        'index' => VIEW,
+        'add' => CREATE,
+    ];
 
     /**
      * Returns all values
@@ -21,5 +28,26 @@ abstract class Operation
         $constants = (new ReflectionClass(static::class))->getConstants();
 
         return array_values($constants);
+    }
+
+    /**
+     * Returns the standard operation for the given value
+     *
+     * @param string $value The operation name or alias
+     * @return ?string The operation or null if not recognised
+     */
+    public static function value(string $value): ?string
+    {
+        $values = self::values();
+
+        if (in_array($value, $values)) {
+            return $value;
+        }
+
+        if (isset(self::$aliases[$value])) {
+            return self::$aliases[$value];
+        }
+
+        return null;
     }
 }
