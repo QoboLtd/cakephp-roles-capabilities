@@ -9,8 +9,11 @@ use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 
 /**
- * Middleware to integrate with cake Authentication Middleware
- * Add this after Authentication middleware
+ * Middleware that initializes the AuthorizationContext.
+ * MUST be added after routing middleware.
+ *
+ * If your application uses Cake's Authentication Middleware,
+ * add this after Authentication middleware.
  */
 class AuthorizationContextMiddleware
 {
