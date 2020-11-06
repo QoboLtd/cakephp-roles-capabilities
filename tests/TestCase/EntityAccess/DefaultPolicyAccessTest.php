@@ -22,7 +22,9 @@ class DefaultPolicyAccessTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.RolesCapabilities.ExtendedCapabilities',
         'plugin.RolesCapabilities.Groups',
+        'plugin.RolesCapabilities.GroupsUsers',
         'plugin.RolesCapabilities.Permissions',
         'plugin.RolesCapabilities.Roles',
         'plugin.RolesCapabilities.Users',
@@ -81,7 +83,10 @@ class DefaultPolicyAccessTest extends TestCase
     {
         AuthorizationContextHolder::asSystem();
         try {
-            $user = $this->Users->find()->where(['is_superuser' => false])->first()->toArray();
+            $user = $this->Users->find()->where([
+                'is_superuser' => false,
+                'is_supervisor' => false,
+            ])->first()->toArray();
         } finally {
             AuthorizationContextHolder::pop();
         }
