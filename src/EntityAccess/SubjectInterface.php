@@ -22,4 +22,16 @@ interface SubjectInterface
      * @return SubjectInterface[] The subordinates
      */
     public function getSubordinates(): array;
+
+    /**
+     * @return string[] The groups this user is part of
+     */
+    public function getGroups(): array;
+
+    /**
+     * Gets the roles this user has
+     *
+     * @return string[] The roles
+     */
+    public function getRoles(): array;
 }

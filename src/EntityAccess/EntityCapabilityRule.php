@@ -9,7 +9,6 @@ use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Groups\Model\Table\GroupsTable;
 use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
 use Webmozart\Assert\Assert;
 
@@ -21,6 +20,9 @@ class EntityCapabilityRule implements AuthorizationRule
 {
     use LogTrait;
 
+    /**
+     * @var SubjectInterface
+     */
     private $subject;
 
     /**
@@ -33,11 +35,11 @@ class EntityCapabilityRule implements AuthorizationRule
     private $entityId;
 
     /**
-     * @param string $subject The subject (ie userId)
+     * @param SubjectInterface $subject The subject (ie userId)
      * @param Table $table The resource for this operation
      * @param string $operation The operation
      */
-    public function __construct(string $subject, Table $table, string $operation, ?string $entityId)
+    public function __construct(SubjectInterface $subject, Table $table, string $operation, ?string $entityId)
     {
         $this->subject = $subject;
         $this->table = $table;
@@ -54,32 +56,25 @@ class EntityCapabilityRule implements AuthorizationRule
             return false;
         }
 
+        $roles = $this->subject->getRoles();
+        if (count($roles) === 0) {
+            return false;
+        }
+
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
         Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
-
-        $roles = $table->getAssociation('Roles')->getTarget();
-
-        $groups = $roles->get('Groups');
-        Assert::isInstanceOf($groups, GroupsTable::class);
-        $userGroups = $groups->find()->select(['id'])->matching('Users', function (Query $q) {
-            return $q->where(['Users.id' => $this->subject]);
-        });
-
-        $userRoles = $roles->find()->select(['id'])->where(
-            ['group_id IN' => $userGroups]
-        );
 
         $capabilities = $table->find()
         ->where([
             'resource' => $this->table->getTable(),
             'operation' => $this->operation,
         ])
-        ->matching('Roles', function (Query $q) use ($userRoles) {
+        ->matching('Roles', function (Query $q) use ($roles) {
             return $q->where([
-                'role_id IN' => $userRoles,
+                'role_id IN' => $roles,
             ]);
         })
-        ->applyOptions(['accessCheck' => false])
+        ->applyOptions(['filterQuery' => false])
         ->order(['association']);
 
         foreach ($capabilities as $capability) {
@@ -97,21 +92,20 @@ class EntityCapabilityRule implements AuthorizationRule
             $primaryKey = $association->getTarget()->getPrimaryKey();
             Assert::string($primaryKey);
 
-            // TODO Check if association matches subject.
             $query = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
         }
 
         $primaryKey = $this->table->getPrimaryKey();
         Assert::string($primaryKey);
 
-        $query = $this->table->find()->where([$this->table->aliasField($primaryKey) => $this->entityId]);
+        $query = $this->table->find()->applyOptions(['filterQuery' => true])->where([$this->table->aliasField($primaryKey) => $this->entityId]);
 
         $expression = $this->expression($query);
         if ($expression === null) {
             return true;
         }
 
-        $entity = $query->where($expression)->first();
+        $entity = $query->applyOptions(['filterQuery' => true])->where($expression)->first();
 
         return $entity !== null;
     }
@@ -121,29 +115,23 @@ class EntityCapabilityRule implements AuthorizationRule
      */
     public function expression(Query $query): ?QueryExpression
     {
+        $roles = $this->subject->getRoles();
+        if (count($roles) === 0) {
+            return null;
+        }
+
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
         Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
 
-        $roles = $table->getAssociation('Roles')->getTarget();
-
-        $groups = $roles->getAssociation('Groups')->getTarget();
-        Assert::isInstanceOf($groups, GroupsTable::class);
-        $userGroups = $groups->find()->select(['id'])->matching('Users', function (Query $q) {
-            return $q->where(['Users.id' => $this->subject]);
-        });
-
-        $userRoles = $roles->find()->select(['id'])->where(
-            ['group_id IN' => $userGroups]
-        );
-
         $capabilities = $table->find()
+        ->applyOptions(['filterQuery' => true])
         ->where([
             'resource' => $this->table->getTable(),
             'operation' => $this->operation,
         ])
-        ->matching('Roles', function (Query $q) use ($userRoles) {
+        ->matching('Roles', function (Query $q) use ($roles) {
             return $q->where([
-                'role_id IN' => $userRoles,
+                'role_id IN' => $roles,
             ]);
         });
 
@@ -163,7 +151,8 @@ class EntityCapabilityRule implements AuthorizationRule
             $primaryKey = $association->getTarget()->getPrimaryKey();
             Assert::string($primaryKey);
 
-            $expressions[] = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
+            $expressions[] = $association->getTarget()->query()->applyOptions(['filterQuery' => true])
+                        ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
         }
 
         $exp = $query->newExpr();

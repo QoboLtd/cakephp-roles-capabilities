@@ -4,7 +4,11 @@ declare(strict_types=1);
 namespace RolesCapabilities\EntityAccess;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\TableRegistry;
+use Groups\Model\Table\GroupsTable;
 use RolesCapabilities\Access\Utils;
+use RolesCapabilities\Model\Table\RolesTable;
+use Webmozart\Assert\Assert;
 
 class UserWrapper implements SubjectInterface
 {
@@ -93,6 +97,56 @@ class UserWrapper implements SubjectInterface
         }
 
         return $subs;
+    }
+
+    /**
+     * @param mixed[] $data The data
+     * @return string[] The ids
+     */
+    private function toIds(array $data): array
+    {
+        $ids = [];
+        foreach ($data as $group) {
+            $ids[] = $group['id'];
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getGroups(): array
+    {
+        $table = TableRegistry::get('Groups.Groups');
+        Assert::isInstanceOf($table, GroupsTable::class);
+
+        $data = $table->getUserGroups($this->getId(), [
+            'fields' => ['id'],
+            'contain' => [],
+            'filterQuery' => true,
+        ]);
+
+        return $this->toIds($data);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRoles(): array
+    {
+        $userGroups = $this->getGroups();
+        if (count($userGroups) === 0) {
+            return [];
+        }
+
+        $roles = TableRegistry::get('RoleCapabilities.Roles');
+        Assert::isInstanceOf($roles, RolesTable::class);
+
+        $userRoles = $roles->find()->applyOptions(['filterQuery' => true])
+            ->select(['id'])->where(['group_id IN' => $userGroups])->toArray();
+
+        return $this->toIds($userRoles);
     }
 
     /**

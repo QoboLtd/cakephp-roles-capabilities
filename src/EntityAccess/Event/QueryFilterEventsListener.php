@@ -166,6 +166,10 @@ class QueryFilterEventsListener implements EventListenerInterface
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options): void
     {
+        if (isset($options['filterQuery'])) {
+            return;
+        }
+
         $ctx = AuthorizationContextHolder::context();
         if ($ctx === null || $ctx->system()) {
             return;
@@ -181,7 +185,6 @@ class QueryFilterEventsListener implements EventListenerInterface
             $policy = $this->policy($ctx, $event, null, Operation::VIEW);
 
             $expression = $policy->expression($query);
-
             if ($expression !== null) {
                 $query->where($expression);
             }

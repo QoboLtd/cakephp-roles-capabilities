@@ -18,6 +18,9 @@ use Webmozart\Assert\Assert;
  */
 class GroupPermittedOperationRule implements AuthorizationRule
 {
+    /**
+     * @var SubjectInterface
+     */
     private $subject;
 
     private $table;
@@ -27,12 +30,12 @@ class GroupPermittedOperationRule implements AuthorizationRule
     private $entityId;
 
     /**
-     * @param string $subject The subject (ie userId)
+     * @param SubjectInterface $subject The subject
      * @param Table $table The table for this operation
      * @param string $operation The operation
      * @param ?string $entityId The id for the entity (if not list)
      */
-    public function __construct(string $subject, Table $table, string $operation, ?string $entityId = null)
+    public function __construct(SubjectInterface $subject, Table $table, string $operation, ?string $entityId = null)
     {
         $this->subject = $subject;
         $this->table = $table;
@@ -49,16 +52,13 @@ class GroupPermittedOperationRule implements AuthorizationRule
             return false;
         }
 
-        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
-        Assert::isInstanceOf($table, PermissionsTable::class);
+        $permissions = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
+        Assert::isInstanceOf($permissions, PermissionsTable::class);
 
-        $groups = TableRegistry::getTableLocator()->get('Groups.Groups');
-        Assert::isInstanceOf($groups, GroupsTable::class);
-        $userGroups = $groups->find()->select(['id'])->matching('Users', function ($q) {
-            return $q->where(['Users.id' => $this->subject]);
-        });
+        $userGroups = $this->subject->getGroups();
 
-        $entity = $table->find()
+        $entity = $permissions->find()
+        ->applyOptions(['filterQuery' => true])
         ->where([
             'owner_model' => 'Groups',
             'model' => $this->table->getTable(),
@@ -66,24 +66,21 @@ class GroupPermittedOperationRule implements AuthorizationRule
             'foreign_key' => $this->entityId,
             'type' => $this->operation,
         ])
-        ->applyOptions(['accessCheck' => false])
         ->count() > 0;
     }
 
     /**
      * @inheritdoc
      */
-    public function expression(Query $query): QueryExpression
+    public function expression(Query $query): ?QueryExpression
     {
-        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
-        Assert::isInstanceOf($table, PermissionsTable::class);
+        $userGroups = $this->subject->getGroups();
+        if (count($userGroups) === 0) {
+            return null;
+        }
 
-        $groups = TableRegistry::getTableLocator()->get('Groups.Groups');
-        Assert::isInstanceOf($groups, GroupsTable::class);
-
-        $userGroups = $groups->find()->select(['id'])->matching('Users', function ($q) {
-            return $q->where(['Users.id' => $this->subject]);
-        });
+        $permissions = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
+        Assert::isInstanceOf($permissions, PermissionsTable::class);
 
         $conditions = [
             'owner_model' => 'Groups',
@@ -95,10 +92,12 @@ class GroupPermittedOperationRule implements AuthorizationRule
             $conditions['foreign_key'] = $this->entityId;
         }
 
-        $conditions['owner_foreign_key IN '] = $userGroups;
+        $conditions['owner_foreign_key IN'] = $userGroups;
+
+        error_log($query->sql());
 
         return $query->newExpr()->exists(
-            $table->find()
+            $permissions->query()->applyOptions(['filterQuery' => true])
                 ->select(['foreign_key'])
                 ->where(['foreign_key = ' . $this->table->aliasField('id')])
                 ->where($conditions)

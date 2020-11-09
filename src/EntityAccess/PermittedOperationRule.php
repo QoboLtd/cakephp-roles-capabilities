@@ -17,6 +17,9 @@ use Webmozart\Assert\Assert;
  */
 class PermittedOperationRule implements AuthorizationRule
 {
+    /**
+     * @var SubjectInterface
+     */
     private $subject;
 
     private $table;
@@ -26,12 +29,12 @@ class PermittedOperationRule implements AuthorizationRule
     private $entityId;
 
     /**
-     * @param string $subject The subject
+     * @param SubjectInterface $subject The subject
      * @param Table $table The table
      * @param string $operation The operation
      * @param ?string $entityId The entityId
      */
-    public function __construct(string $subject, Table $table, string $operation, ?string $entityId = null)
+    public function __construct(SubjectInterface $subject, Table $table, string $operation, ?string $entityId = null)
     {
         $this->subject = $subject;
         $this->table = $table;
@@ -51,15 +54,14 @@ class PermittedOperationRule implements AuthorizationRule
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
         Assert::isInstanceOf($table, PermissionsTable::class);
 
-        $entity = $table->find()
+        $entity = $table->query()->applyOptions(['filterQuery' => true])
         ->where([
             'owner_model' => 'Users',
             'model' => $this->table,
-            'owner_foreign_key' => $this->subject,
+            'owner_foreign_key' => $this->subject->getId(),
             'foreign_key' => $this->entityId,
             'type' => $this->operation,
         ])
-        ->applyOptions(['accessCheck' => false])
         ->count() > 0;
     }
 
@@ -68,13 +70,13 @@ class PermittedOperationRule implements AuthorizationRule
      */
     public function expression(Query $query): QueryExpression
     {
-        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
-        Assert::isInstanceOf($table, PermissionsTable::class);
+        $permissions = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
+        Assert::isInstanceOf($permissions, PermissionsTable::class);
 
         $conditions = [
             'owner_model' => 'Users',
             'model' => $this->table->getTable(),
-            'owner_foreign_key' => $this->subject,
+            'owner_foreign_key' => $this->subject->getId(),
             'type' => $this->operation,
         ];
 
@@ -82,10 +84,13 @@ class PermittedOperationRule implements AuthorizationRule
             $conditions['foreign_key'] = $this->entityId;
         }
 
-        return $query->newExpr()->exists(
-            $table->find()->select(['foreign_key'])
+        $expression = $permissions->query()->applyOptions(['filterQuery' => true])
+                ->select(['foreign_key'])
                 ->where('foreign_key = ' . $this->table->aliasField('id'))
-                ->where($conditions)
+                ->where($conditions);
+
+        return $query->newExpr()->exists(
+            $expression
         );
     }
 }

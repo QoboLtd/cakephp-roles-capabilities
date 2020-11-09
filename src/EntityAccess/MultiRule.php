@@ -117,6 +117,6 @@ class MultiRule implements AuthorizationRule
             return $expressions[0];
         }
 
-        return new QueryExpression($expressions, $query->getTypeMap(), $this->conjunction);
+        return $query->newExpr($expressions)->setConjunction($this->conjunction);
     }
 }
