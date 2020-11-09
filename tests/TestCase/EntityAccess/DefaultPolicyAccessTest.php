@@ -93,10 +93,10 @@ class DefaultPolicyAccessTest extends TestCase
 
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
-            $count = $this->Roles->find()->count();
+            $count = $this->Users->find()->count();
         } finally {
             AuthorizationContextHolder::pop();
         }
-        $this->assertGreaterThan(0, $count);
+        $this->assertEquals(1, $count);
     }
 }
