@@ -48,5 +48,13 @@ class GroupsFixture extends TestFixture
             'modified' => '2016-02-04 11:12:29',
             'trashed' => null,
         ],
+        [
+            'id' => '969b9de4-07c7-4032-a9a0-0d075ca2c633',
+            'name' => 'Test group',
+            'remote_group_id' => null,
+            'created' => '2016-02-04 11:12:29',
+            'modified' => '2016-02-04 11:12:29',
+            'trashed' => null,
+        ],
     ];
 }

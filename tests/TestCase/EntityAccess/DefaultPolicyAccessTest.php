@@ -37,6 +37,8 @@ class DefaultPolicyAccessTest extends TestCase
 
     private $Users;
 
+    private $Groups;
+
     /**
      * @var QueryFilterEventsListener
      */
@@ -52,6 +54,7 @@ class DefaultPolicyAccessTest extends TestCase
 
         $this->Roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
         $this->Users = TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
+        $this->Groups = TableRegistry::getTableLocator()->get('Groups.Groups');
     }
 
     public function tearDown()
@@ -84,8 +87,7 @@ class DefaultPolicyAccessTest extends TestCase
         AuthorizationContextHolder::asSystem();
         try {
             $user = $this->Users->find()->where([
-                'is_superuser' => false,
-                'is_supervisor' => false,
+                'name' => 'user3',
             ])->first()->toArray();
         } finally {
             AuthorizationContextHolder::pop();
@@ -94,6 +96,28 @@ class DefaultPolicyAccessTest extends TestCase
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
             $count = $this->Users->find()->count();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertEquals(1, $count);
+    }
+
+    public function testViewOwnGroup(): void
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $user = $this->Users->find()->where([
+                'name' => 'user3',
+            ])->first()->toArray();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $q = $this->Groups->find();
+            error_log(print_r($q, true));
+            $count = $q->count();
         } finally {
             AuthorizationContextHolder::pop();
         }
