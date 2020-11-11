@@ -11,5 +11,5 @@ Configure::load('RolesCapabilities.roles_capabilities');
 
 $events = EventManager::instance();
 
-$events->on(new ModelBeforeFindEventsListener());
+//$events->on(new ModelBeforeFindEventsListener());
 $events->on(new QueryFilterEventsListener());
