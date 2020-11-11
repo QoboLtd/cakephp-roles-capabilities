@@ -47,6 +47,62 @@ class EntityCapabilityRule implements AuthorizationRule
         $this->entityId = $entityId;
     }
 
+    private const CAPS = [
+        'Groups.Groups' => [
+            ['operation' => Operation::VIEW, 'association' => 'users', 'name' => 'Member Of'],
+        ],
+       /* 'RolesCapabilities.Roles' => [
+            ['operation' => Operation::VIEW, 'association' => 'Groups.Users'],
+        ],
+        */
+    ];
+
+    protected function getStaticCapabilities(string $resource, string $operation): array
+    {
+        if (!isset(self::CAPS[$resource])) {
+            return [];
+        }
+
+        $caps = [];
+        foreach (self::CAPS[$resource] as $cap) {
+            if ($cap['operation'] === $operation) {
+                $caps[] = $cap;
+            }
+        }
+
+        return $caps;
+    }
+
+    protected function getCapabilities(): array
+    {
+        $resource = $this->table->getRegistryAlias();
+
+        $staticCapabilities = $this->getStaticCapabilities($resource, $this->operation);
+
+        $roles = $this->subject->getRoles();
+        if (count($roles) === 0) {
+            return $staticCapabilities;
+        }
+
+        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
+        Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
+
+        $dynamicCapabilities = $table->find()
+        ->where([
+            'resource' => $resource,
+            'operation' => $this->operation,
+        ])
+        ->matching('Roles', function (Query $q) use ($roles) {
+            return $q->where([
+                'role_id IN' => $roles,
+            ]);
+        })
+        ->applyOptions(['filterQuery' => false])
+        ->order(['association'])->toArray();
+
+        return array_merge($staticCapabilities, $dynamicCapabilities);
+    }
+
     /**
      * @inheritdoc
      */
@@ -56,29 +112,11 @@ class EntityCapabilityRule implements AuthorizationRule
             return false;
         }
 
-        $roles = $this->subject->getRoles();
-        if (count($roles) === 0) {
-            return false;
-        }
+        $capabilities = $this->getCapabilities();
 
-        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
-        Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
-
-        $capabilities = $table->find()
-        ->where([
-            'resource' => $this->table->getTable(),
-            'operation' => $this->operation,
-        ])
-        ->matching('Roles', function (Query $q) use ($roles) {
-            return $q->where([
-                'role_id IN' => $roles,
-            ]);
-        })
-        ->applyOptions(['filterQuery' => false])
-        ->order(['association']);
-
+        $expressions = [];
         foreach ($capabilities as $capability) {
-            $associationName = $capability->get('association');
+            $associationName = $capability['association'];
             if ($associationName === '') {
                 return true;
             }
@@ -92,20 +130,27 @@ class EntityCapabilityRule implements AuthorizationRule
             $primaryKey = $association->getTarget()->getPrimaryKey();
             Assert::string($primaryKey);
 
-            $query = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
+            $expressions[] = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId() ]);
+        }
+
+        if (count($expressions) === 0) {
+            return false;
         }
 
         $primaryKey = $this->table->getPrimaryKey();
         Assert::string($primaryKey);
 
-        $query = $this->table->find()->applyOptions(['filterQuery' => true])->where([$this->table->aliasField($primaryKey) => $this->entityId]);
+        $query = $this->table->query()->applyOptions(['filterQuery' => true])
+            ->where([$this->table->aliasField($primaryKey) => $this->entityId]);
 
-        $expression = $this->expression($query);
-        if ($expression === null) {
-            return true;
+        $exp = $query->newExpr();
+        $exp->setConjunction('OR');
+
+        foreach ($expressions as $expression) {
+            $exp->exists($expression);
         }
 
-        $entity = $query->applyOptions(['filterQuery' => true])->where($expression)->first();
+        $entity = $query->where($exp)->first();
 
         return $entity !== null;
     }
@@ -115,29 +160,11 @@ class EntityCapabilityRule implements AuthorizationRule
      */
     public function expression(Query $query): ?QueryExpression
     {
-        $roles = $this->subject->getRoles();
-        if (count($roles) === 0) {
-            return null;
-        }
-
-        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
-        Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
-
-        $capabilities = $table->find()
-        ->applyOptions(['filterQuery' => true])
-        ->where([
-            'resource' => $this->table->getTable(),
-            'operation' => $this->operation,
-        ])
-        ->matching('Roles', function (Query $q) use ($roles) {
-            return $q->where([
-                'role_id IN' => $roles,
-            ]);
-        });
+        $capabilities = $this->getCapabilities();
 
         $expressions = [];
         foreach ($capabilities as $capability) {
-            $associationName = $capability->get('association');
+            $associationName = $capability['association'];
             if ($associationName === '') {
                 return null;
             }
@@ -152,10 +179,16 @@ class EntityCapabilityRule implements AuthorizationRule
             Assert::string($primaryKey);
 
             $expressions[] = $association->getTarget()->query()->applyOptions(['filterQuery' => true])
-                        ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject ]);
+                        ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId() ]);
+        }
+
+        if (count($expressions) === 0) {
+            return $query->newExpr('1=0');
         }
 
         $exp = $query->newExpr();
+        $exp->setConjunction('OR');
+
         foreach ($expressions as $expression) {
             $exp->exists($expression);
         }

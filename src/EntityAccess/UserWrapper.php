@@ -90,8 +90,6 @@ class UserWrapper implements SubjectInterface
             return $subs;
         }
 
-        Utils::getReportToUsers($this->getId());
-
         foreach (Utils::getReportToUsers($this->getId()) as $subordinate) {
             $subs[] = self::forUser($subordinate);
         }
@@ -121,7 +119,7 @@ class UserWrapper implements SubjectInterface
         $table = TableRegistry::get('Groups.Groups');
         Assert::isInstanceOf($table, GroupsTable::class);
 
-        $data = $table->getUserGroups($this->getId(), [
+        $data = $table->getUserGroupsAll($this->getId(), [
             'fields' => ['id'],
             'contain' => [],
             'filterQuery' => true,
@@ -140,8 +138,7 @@ class UserWrapper implements SubjectInterface
             return [];
         }
 
-        $roles = TableRegistry::get('RoleCapabilities.Roles');
-        Assert::isInstanceOf($roles, RolesTable::class);
+        $roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
 
         $userRoles = $roles->find()->applyOptions(['filterQuery' => true])
             ->select(['id'])->where(['group_id IN' => $userGroups])->toArray();
