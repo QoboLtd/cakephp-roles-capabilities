@@ -94,8 +94,6 @@ class GroupPermittedOperationRule implements AuthorizationRule
 
         $conditions['owner_foreign_key IN'] = $userGroups;
 
-        error_log($query->sql());
-
         return $query->newExpr()->exists(
             $permissions->query()->applyOptions(['filterQuery' => true])
                 ->select(['foreign_key'])
