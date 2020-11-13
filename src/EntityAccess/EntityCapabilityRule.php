@@ -223,7 +223,7 @@ class EntityCapabilityRule implements AuthorizationRule
             $quotedTable = $driver->quoteIdentifier($this->table->getAlias());
 
             /* Replace the table with it's alias. This is to distinguish this subquery
-             * from other subqueries and the par
+             * from other subqueries and the parent
             */
             $sql = str_replace($quotedTable, $quotedAlias, $sql);
 
