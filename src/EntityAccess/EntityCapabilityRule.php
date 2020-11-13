@@ -170,6 +170,9 @@ class EntityCapabilityRule implements AuthorizationRule
                 return $query->newExpr("'EXTENDED_CAPS'='EXTENDED_CAPS'");
             }
 
+            /**
+             * Fake field association. Simply match field value. NOT WORKING.
+             */
             if ($associationName === 'field') {
                 $expressions[] = $query->newExpr()->eq($this->table->aliasField($capability['field']), $this->subject->getId());
                 continue;
@@ -187,26 +190,38 @@ class EntityCapabilityRule implements AuthorizationRule
             $sourcePrimaryKey = $this->table->getPrimaryKey();
             Assert::string($sourcePrimaryKey);
 
+            /*
+             * Create inner query. We cannot use parameters since we are creating
+             * an sql string.
+             */
             $innerQuery = $this->table->query()
             ->applyOptions(['filterQuery' => true ])
             ->select([$this->table->aliasField($sourcePrimaryKey) ]);
 
+            /* Attach the assocation to the inner query */
             $association->attachTo($innerQuery, ['includeFields' => false ]);
 
-            $quotedAlias = $this->table->getConnection()->getDriver()->quoteIdentifier($this->aliasTable());
+            $driver = $this->table->getConnection()->getDriver();
+            $quotedAlias = $driver->quoteIdentifier($this->aliasTable());
+            $quotedSubject = $driver->quote($this->subject->getId(), \PDO::PARAM_STR);
 
             $innerQuery
                 ->where(
-                    $association->getTarget()->aliasField($primaryKey) . ' = ' . $this->table->getConnection()->getDriver()->quote($this->subject->getId(), \PDO::PARAM_STR)
+                    $association->getTarget()->aliasField($primaryKey) . ' = ' . $quotedSubject
                 )
+                // IMPORTANT: The primary key is not aliased to avoid being replaced later on
                 ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
 
             $sql = $innerQuery->sql();
 
-            $quotedTable = $this->table->getConnection()->getDriver()->quoteIdentifier($this->table->getAlias());
+            $quotedTable = $driver->quoteIdentifier($this->table->getAlias());
 
+            /* Replace the table with it's alias. This is to distinguish this subquery
+             * from other subqueries and the par
+            */
             $sql = str_replace($quotedTable, $quotedAlias, $sql);
 
+            /* Append the raw query to our expressions */
             $expressions[] = $query->newExpr($sql);
         }
 
