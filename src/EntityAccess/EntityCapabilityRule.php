@@ -163,7 +163,11 @@ class EntityCapabilityRule implements AuthorizationRule
     {
         $capabilities = $this->getCapabilities();
 
-        $expressions = [];
+        $exp = $query->newExpr();
+        $exp->setConjunction('OR');
+
+        $isEmpty = true;
+
         foreach ($capabilities as $capability) {
             $associationName = $capability['association'];
             if ($associationName === '') {
@@ -174,7 +178,8 @@ class EntityCapabilityRule implements AuthorizationRule
              * Fake field association. Simply match field value. NOT WORKING.
              */
             if ($associationName === 'field') {
-                $expressions[] = $query->newExpr()->eq($this->table->aliasField($capability['field']), $this->subject->getId());
+                $isEmpty = false;
+                $exp->eq($this->table->aliasField($capability['field']), $this->subject->getId());
                 continue;
             }
 
@@ -182,6 +187,7 @@ class EntityCapabilityRule implements AuthorizationRule
                 error_log('Unknown association ' . $associationName . ' for Table ' . $this->table->getTable());
                 continue;
             }
+            $isEmpty = false;
 
             $association = $this->table->getAssociation($associationName);
             $primaryKey = $association->getTarget()->getPrimaryKey();
@@ -222,18 +228,11 @@ class EntityCapabilityRule implements AuthorizationRule
             $sql = str_replace($quotedTable, $quotedAlias, $sql);
 
             /* Append the raw query to our expressions */
-            $expressions[] = $query->newExpr($sql);
+            $exp->exists($query->newExpr($sql));
         }
 
-        if (count($expressions) === 0) {
+        if ($isEmpty) {
             return $query->newExpr("'EXTENDED_CAPS'='NONE'");
-        }
-
-        $exp = $query->newExpr();
-        $exp->setConjunction('OR');
-
-        foreach ($expressions as $expression) {
-            $exp->exists($expression);
         }
 
         return $exp;
