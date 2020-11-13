@@ -111,15 +111,13 @@ class DefaultPolicyAccessTest extends TestCase
         try {
             $q = $this->GroupsUsers->find()->where([ $this->GroupsUsers->aliasField('user_id') => '00000000-0000-0000-0000-000000000003']);
             $count = $q->count();
-
-            //error_log('TEST ' . print_r($q, true));
         } finally {
             AuthorizationContextHolder::pop();
         }
         $this->assertEquals(1, $count);
     }
 
-    public function testViewOwnGroupMembership(): void
+    public function testViewGroupMembership(): void
     {
         AuthorizationContextHolder::asSystem();
         try {
@@ -134,8 +132,6 @@ class DefaultPolicyAccessTest extends TestCase
         try {
             $q = $this->GroupsUsers->find();
             $count = $q->count();
-
-            //error_log(print_r($q, true));
         } finally {
             AuthorizationContextHolder::pop();
         }
