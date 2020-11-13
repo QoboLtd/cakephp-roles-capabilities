@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace RolesCapabilities\EntityAccess;
 
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\ValueBinder;
 use Cake\Log\LogTrait;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
@@ -35,6 +36,11 @@ class EntityCapabilityRule implements AuthorizationRule
     private $entityId;
 
     /**
+     * @var int
+     */
+    private $aliasCounter;
+
+    /**
      * @param SubjectInterface $subject The subject (ie userId)
      * @param Table $table The resource for this operation
      * @param string $operation The operation
@@ -45,6 +51,8 @@ class EntityCapabilityRule implements AuthorizationRule
         $this->table = $table;
         $this->operation = $operation;
         $this->entityId = $entityId;
+
+        $this->aliasCounter = 0;
     }
 
     private const CAPS = [
@@ -60,6 +68,8 @@ class EntityCapabilityRule implements AuthorizationRule
     ];
 
     /**
+     * @param string $resource The resource
+     * @param string $operation The operation
      * @return mixed[]
      */
     protected function getStaticCapabilities(string $resource, string $operation): array
@@ -135,6 +145,17 @@ class EntityCapabilityRule implements AuthorizationRule
         return $entity !== null;
     }
 
+    /** Create unique alias for the table
+     *
+     * @return string unique alias for this table
+     */
+    private function aliasTable(): string
+    {
+        $this->aliasCounter++;
+
+        return $this->table->getAlias() . '_' . $this->aliasCounter;
+    }
+
     /**
      * @inheritdoc
      */
@@ -166,19 +187,28 @@ class EntityCapabilityRule implements AuthorizationRule
             $sourcePrimaryKey = $this->table->getPrimaryKey();
             Assert::string($sourcePrimaryKey);
 
-            $aliasedField = $sourcePrimaryKey . '__alias';
             $innerQuery = $this->table->query()
             ->applyOptions(['filterQuery' => true ])
-            ->select([ $aliasedField => $this->table->aliasField($sourcePrimaryKey) ]);
+            ->select([$this->table->aliasField($sourcePrimaryKey) ]);
 
             $association->attachTo($innerQuery, ['includeFields' => false ]);
 
+            $quotedAlias = $this->table->getConnection()->getDriver()->quoteIdentifier($this->aliasTable());
+
             $innerQuery
-                ->where([$this->table->aliasField($sourcePrimaryKey) . '=' . $aliasedField ])
                 ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId()]);
 
-            error_log(print_r($innerQuery, true));
-            $expressions[] = $innerQuery;
+            $innerQuery
+                ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
+
+            $sql = $innerQuery->sql();
+
+            $quotedTable = $this->table->getConnection()->getDriver()->quoteIdentifier($this->table->getAlias());
+
+            $sql = str_replace($quotedTable, $quotedAlias, $sql);
+            $sql = str_replace(':c0', $this->table->getConnection()->getDriver()->quote($this->subject->getId(), \PDO::PARAM_STR), $sql);
+
+            $expressions[] = $query->newExpr($sql);
         }
 
         if (count($expressions) === 0) {
@@ -189,7 +219,7 @@ class EntityCapabilityRule implements AuthorizationRule
         $exp->setConjunction('OR');
 
         foreach ($expressions as $expression) {
-            $exp->add($expression);
+            $exp->exists($expression);
         }
 
         return $exp;
