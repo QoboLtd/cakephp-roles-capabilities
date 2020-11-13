@@ -15,7 +15,7 @@ class UserWrapper implements SubjectInterface
     /**
      * Wraps a user
      *
-     * @param mixed $user The user to wrap
+     * @param EntityInterface|array $user The user to wrap
      * @return SubjectInterface
      */
     public static function forUser($user): SubjectInterface
@@ -25,7 +25,6 @@ class UserWrapper implements SubjectInterface
         }
 
         if (!is_array($user)) {
-            error_log(print_r($user, true));
             throw new \RuntimeException('User not an array');
         }
 

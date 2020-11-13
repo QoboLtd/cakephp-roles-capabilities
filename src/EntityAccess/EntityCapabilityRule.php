@@ -49,14 +49,19 @@ class EntityCapabilityRule implements AuthorizationRule
 
     private const CAPS = [
         'Groups.Groups' => [
-            ['operation' => Operation::VIEW, 'association' => 'users', 'name' => 'Member Of'],
+            ['operation' => Operation::VIEW, 'association' => 'Users', 'name' => 'Member Of'],
         ],
-       /* 'RolesCapabilities.Roles' => [
-            ['operation' => Operation::VIEW, 'association' => 'Groups.Users'],
+        'Groups.GroupsUsers' => [
+            ['operation' => Operation::VIEW, 'association' => 'field', 'field' => 'user_id', 'name' => 'Group Memberships'],
         ],
-        */
+        'RolesCapabilities.Roles' => [
+            ['operation' => Operation::VIEW, 'association' => 'Groups.Users', 'name' => 'User Roles'],
+        ],
     ];
 
+    /**
+     * @return mixed[]
+     */
     protected function getStaticCapabilities(string $resource, string $operation): array
     {
         if (!isset(self::CAPS[$resource])) {
@@ -73,6 +78,9 @@ class EntityCapabilityRule implements AuthorizationRule
         return $caps;
     }
 
+    /**
+     * @return mixed[]
+     */
     protected function getCapabilities(): array
     {
         $resource = $this->table->getRegistryAlias();
@@ -112,43 +120,15 @@ class EntityCapabilityRule implements AuthorizationRule
             return false;
         }
 
-        $capabilities = $this->getCapabilities();
-
-        $expressions = [];
-        foreach ($capabilities as $capability) {
-            $associationName = $capability['association'];
-            if ($associationName === '') {
-                return true;
-            }
-
-            if (!$this->table->hasAssociation($associationName)) {
-                $this->log('Unknown association ' . $associationName . ' for Table ' . $this->table->getTable());
-                continue;
-            }
-
-            $association = $this->table->getAssociation($associationName);
-            $primaryKey = $association->getTarget()->getPrimaryKey();
-            Assert::string($primaryKey);
-
-            $expressions[] = $association->find()->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId() ]);
-        }
-
-        if (count($expressions) === 0) {
-            return false;
-        }
-
         $primaryKey = $this->table->getPrimaryKey();
         Assert::string($primaryKey);
 
-        $query = $this->table->query()->applyOptions(['filterQuery' => true])
+        $query = $this->table->query()
+            ->applyOptions(['filterQuery' => true])
+            ->select([$this->table->aliasField($primaryKey)])
             ->where([$this->table->aliasField($primaryKey) => $this->entityId]);
 
-        $exp = $query->newExpr();
-        $exp->setConjunction('OR');
-
-        foreach ($expressions as $expression) {
-            $exp->exists($expression);
-        }
+        $exp = $this->expression($query);
 
         $entity = $query->where($exp)->first();
 
@@ -158,7 +138,7 @@ class EntityCapabilityRule implements AuthorizationRule
     /**
      * @inheritdoc
      */
-    public function expression(Query $query): ?QueryExpression
+    public function expression(Query $query): QueryExpression
     {
         $capabilities = $this->getCapabilities();
 
@@ -166,11 +146,16 @@ class EntityCapabilityRule implements AuthorizationRule
         foreach ($capabilities as $capability) {
             $associationName = $capability['association'];
             if ($associationName === '') {
-                return null;
+                return $query->newExpr("'EXTENDED_CAPS'='EXTENDED_CAPS'");
+            }
+
+            if ($associationName === 'field') {
+                $expressions[] = $query->newExpr()->eq($this->table->aliasField($capability['field']), $this->subject->getId());
+                continue;
             }
 
             if (!$this->table->hasAssociation($associationName)) {
-                $this->log('Unknown association ' . $associationName . ' for Table ' . $this->table->getTable());
+                error_log('Unknown association ' . $associationName . ' for Table ' . $this->table->getTable());
                 continue;
             }
 
@@ -178,19 +163,33 @@ class EntityCapabilityRule implements AuthorizationRule
             $primaryKey = $association->getTarget()->getPrimaryKey();
             Assert::string($primaryKey);
 
-            $expressions[] = $association->getTarget()->query()->applyOptions(['filterQuery' => true])
-                        ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId() ]);
+            $sourcePrimaryKey = $this->table->getPrimaryKey();
+            Assert::string($sourcePrimaryKey);
+
+            $aliasedField = $sourcePrimaryKey . '__alias';
+            $innerQuery = $this->table->query()
+            ->applyOptions(['filterQuery' => true ])
+            ->select([ $aliasedField => $this->table->aliasField($sourcePrimaryKey) ]);
+
+            $association->attachTo($innerQuery, ['includeFields' => false ]);
+
+            $innerQuery
+                ->where([$this->table->aliasField($sourcePrimaryKey) . '=' . $aliasedField ])
+                ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId()]);
+
+            error_log(print_r($innerQuery, true));
+            $expressions[] = $innerQuery;
         }
 
         if (count($expressions) === 0) {
-            return $query->newExpr('1=0');
+            return $query->newExpr("'EXTENDED_CAPS'='NONE'");
         }
 
         $exp = $query->newExpr();
         $exp->setConjunction('OR');
 
         foreach ($expressions as $expression) {
-            $exp->exists($expression);
+            $exp->add($expression);
         }
 
         return $exp;

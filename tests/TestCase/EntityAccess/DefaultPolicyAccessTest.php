@@ -39,6 +39,8 @@ class DefaultPolicyAccessTest extends TestCase
 
     private $Groups;
 
+    private $GroupsUsers;
+
     /**
      * @var QueryFilterEventsListener
      */
@@ -55,6 +57,7 @@ class DefaultPolicyAccessTest extends TestCase
         $this->Roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
         $this->Users = TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
         $this->Groups = TableRegistry::getTableLocator()->get('Groups.Groups');
+        $this->GroupsUsers = TableRegistry::getTableLocator()->get('Groups.GroupsUsers');
     }
 
     public function tearDown()
@@ -102,12 +105,49 @@ class DefaultPolicyAccessTest extends TestCase
         $this->assertEquals(1, $count);
     }
 
+    public function testTest(): void
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $q = $this->GroupsUsers->find()->where([ $this->GroupsUsers->aliasField('user_id') => '00000000-0000-0000-0000-000000000003']);
+            $count = $q->count();
+
+            //error_log('TEST ' . print_r($q, true));
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertEquals(1, $count);
+    }
+
+    public function testViewOwnGroupMembership(): void
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $user = $this->Users->find()->where([
+                'id' => '00000000-0000-0000-0000-000000000003',
+            ])->first()->toArray();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $q = $this->GroupsUsers->find();
+            $count = $q->count();
+
+            //error_log(print_r($q, true));
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertEquals(1, $count);
+    }
+
     public function testViewOwnGroup(): void
     {
         AuthorizationContextHolder::asSystem();
         try {
             $user = $this->Users->find()->where([
-                'name' => 'user3',
+                'id' => '00000000-0000-0000-0000-000000000003',
             ])->first()->toArray();
         } finally {
             AuthorizationContextHolder::pop();
@@ -116,7 +156,6 @@ class DefaultPolicyAccessTest extends TestCase
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
             $q = $this->Groups->find();
-            error_log(print_r($q, true));
             $count = $q->count();
         } finally {
             AuthorizationContextHolder::pop();

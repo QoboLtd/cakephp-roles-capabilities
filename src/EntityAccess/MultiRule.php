@@ -53,10 +53,14 @@ class MultiRule implements AuthorizationRule
      * Any rule must match
      *
      * @param AuthorizationRule ...$rules The rules
-     * @return MultiRule A rule that combines all rules.
+     * @return AuthorizationRule A rule that combines all rules.
      */
-    public static function any(AuthorizationRule ...$rules): MultiRule
+    public static function any(AuthorizationRule ...$rules): AuthorizationRule
     {
+        if (empty($rules)) {
+            return new DenyRule();
+        }
+
         return new MultiRule('OR', ...$rules);
     }
 
@@ -64,10 +68,14 @@ class MultiRule implements AuthorizationRule
      * All rules must match
      *
      * @param AuthorizationRule ...$rules The rules
-     * @return MultiRule A rule that combines all rules.
+     * @return AuthorizationRule A rule that combines all rules.
      */
-    public static function all(AuthorizationRule ...$rules): MultiRule
+    public static function all(AuthorizationRule ...$rules): AuthorizationRule
     {
+        if (empty($rules)) {
+            return new DenyRule();
+        }
+
         return new MultiRule('AND', ...$rules);
     }
 
@@ -76,10 +84,6 @@ class MultiRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if (count($this->rules) === 0) {
-            return true;
-        }
-
         foreach ($this->rules as $rule) {
             if (!($rule instanceof AuthorizationRule)) {
                 throw new RuntimeException('Invalid rule');
@@ -98,7 +102,7 @@ class MultiRule implements AuthorizationRule
     /** @inheritdoc
      *
      */
-    public function expression(Query $query): ?QueryExpression
+    public function expression(Query $query): QueryExpression
     {
         $expressions = [];
 
@@ -110,7 +114,7 @@ class MultiRule implements AuthorizationRule
         }
 
         if (count($expressions) === 0) {
-            return null;
+            return $query->newExpr('1=0');
         }
 
         if (count($expressions) === 1) {

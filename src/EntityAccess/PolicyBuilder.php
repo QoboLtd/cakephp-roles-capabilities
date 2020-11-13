@@ -62,12 +62,11 @@ class PolicyBuilder
         }
 
         $userRules = [
+            new SelfAccessRule($this->subject, $this->table, $this->operation, $this->entityId),
             new PermittedOperationRule($this->subject, $this->table, $this->operation, $this->entityId),
             new GroupPermittedOperationRule($this->subject, $this->table, $this->operation, $this->entityId),
             new EntityCapabilityRule($this->subject, $this->table, $this->operation, $this->entityId),
         ];
-
-        $userRules[] = new SelfAccessRule($this->subject, $this->table, $this->operation, $this->entityId);
 
         foreach ($this->subject->getSubordinates() as $subordinate) {
             $builder = new PolicyBuilder($subordinate, $this->table, $this->operation, $this->entityId);

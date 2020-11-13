@@ -72,11 +72,11 @@ class GroupPermittedOperationRule implements AuthorizationRule
     /**
      * @inheritdoc
      */
-    public function expression(Query $query): ?QueryExpression
+    public function expression(Query $query): QueryExpression
     {
         $userGroups = $this->subject->getGroups();
         if (count($userGroups) === 0) {
-            return null;
+            return $query->newExpr('1=0');
         }
 
         $permissions = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');

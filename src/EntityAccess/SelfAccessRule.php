@@ -47,7 +47,8 @@ class SelfAccessRule implements AuthorizationRule
      *
      * @return bool
      */
-    protected function isUsersTable(): bool {
+    protected function isUsersTable(): bool
+    {
         return $this->table === TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
     }
 

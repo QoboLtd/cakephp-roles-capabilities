@@ -33,6 +33,6 @@ class DenyRule implements AuthorizationRule
      */
     public function expression(Query $query): QueryExpression
     {
-        return $query->newExpr('0=1');
+        return $query->newExpr('1=0');
     }
 }

@@ -31,8 +31,8 @@ class AllowRule implements AuthorizationRule
     /**
      * @inheritdoc
      */
-    public function expression(Query $query): ?QueryExpression
+    public function expression(Query $query): QueryExpression
     {
-        return null;
+        return $query->newExpr('1=1');
     }
 }

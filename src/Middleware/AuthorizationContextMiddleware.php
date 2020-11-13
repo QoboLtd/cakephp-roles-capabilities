@@ -20,7 +20,9 @@ use RolesCapabilities\EntityAccess\UserWrapper;
 class AuthorizationContextMiddleware
 {
     /**
-     * @param mixed $user
+     * @param mixed $user The user to wrap
+     *
+     * @return SubjectInterface The wrapped user
      */
     protected function wrapIdentity($user): SubjectInterface
     {

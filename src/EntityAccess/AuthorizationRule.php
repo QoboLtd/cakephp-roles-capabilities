@@ -38,5 +38,5 @@ interface AuthorizationRule
      *
      * @return QueryExpression query expression to apply on query.
      */
-    public function expression(Query $query): ?QueryExpression;
+    public function expression(Query $query): QueryExpression;
 }
