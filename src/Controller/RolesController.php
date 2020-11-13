@@ -44,12 +44,6 @@ class RolesController extends AppController
             'contain' => ['Groups'],
         ]);
 
-        $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
-
-        $capabilities = $this->formatCapabilities(Utils::getAllCapabilities());
-
-        $this->set('capabilities', $capabilities);
-        $this->set('roleCaps', $roleCaps);
         $this->set('role', $role);
         $this->set('_serialize', ['role']);
     }
@@ -68,12 +62,6 @@ class RolesController extends AppController
              * @var \RolesCapabilities\Model\Entity\Role $role
              */
             $role = $this->Roles->patchEntity($role, $data);
-            // prepare associated capability records for creation
-            if (!empty($data['capabilities'])) {
-                $role->capabilities = $this->Roles->prepareCapabilities(
-                    json_decode($data['capabilities'], true)
-                );
-            }
 
             if ($this->Roles->save($role)) {
                 $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
@@ -85,9 +73,7 @@ class RolesController extends AppController
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
 
-        $capabilities = $this->formatCapabilities(Utils::getAllCapabilities());
-
-        $this->set(compact('role', 'groups', 'capabilities'));
+        $this->set(compact('role', 'groups'));
         $this->set('_serialize', ['role']);
     }
 
@@ -108,14 +94,6 @@ class RolesController extends AppController
              * @var \RolesCapabilities\Model\Entity\Role
              */
             $role = $this->Roles->patchEntity($role, $data);
-            // prepare associated capability records for creation
-            if (!empty($data['capabilities'])) {
-                $role->capabilities = $this->Roles->prepareCapabilities(
-                    json_decode($data['capabilities'], true)
-                );
-            }
-            // delete existing role capabilities
-            $this->Roles->Capabilities->deleteAll(['role_id' => $id]);
 
             if ($this->Roles->save($role)) {
                 $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
@@ -126,12 +104,8 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
-        // fetch role capabilities
-        $roleCaps = $this->Roles->Capabilities->find('list')->where(['role_id' => $id])->toArray();
 
-        $capabilities = $this->formatCapabilities(Utils::getAllCapabilities());
-
-        $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
+        $this->set(compact('role', 'groups'));
         $this->set('_serialize', ['role']);
     }
 

@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
+use Cake\ORM\Table;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\PolicyBuilder;
 
@@ -14,38 +16,6 @@ use RolesCapabilities\EntityAccess\PolicyBuilder;
  */
 trait AccessControlTrait
 {
-    /**
-     * Checks authorization for access to this request.
-     * @param ServerRequest $request The request to authorize
-     * @return bool
-     */
-    public function authorizeAccess(ServerRequest $request): bool
-    {
-        $ctx = AuthorizationContextHolder::context();
-        if ($ctx === null) {
-            return true;
-        }
-
-        $plugin = $req->getParam('plugin');
-        $resource = $req->getParam('controller');
-        $action = $req->getParam('action');
-
-        if (!empty($plugin)) {
-            $resource = $plugin . '_' . $plugin;
-        }
-
-        $builder = new ResourcePolicyBuilder($ctx->subject(), $resource, $action);
-
-        AuthorizationContextHolder::asSystem();
-        try {
-            $policy = $builder->build();
-
-            return $policy->allow();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
-    }
-
     /**
      * Checks authorization for access to this controller action.
      *
@@ -63,6 +33,9 @@ trait AccessControlTrait
         }
 
         $table = $controller->loadModel();
+        if (!($table instanceof Table)) {
+            return true;
+        }
 
         $builder = new PolicyBuilder($ctx->subject(), $table, $action, $entityId);
         AuthorizationContextHolder::asSystem();

@@ -1,39 +1,41 @@
 <?php
 declare(strict_types=1);
 
-namespace RoleCapabilities\EntityAccess;
+namespace RolesCapabilities\EntityAccess;
+
+use Cake\Controller\Controller;
 
 trait ControllerAuthorizeTrait
 {
     use AccessControlTrait;
 
     /**
-     * Gets the entityId from the request parameter 'id'
-     * Override to change where the id comes from.
-     */
-    protected function getEntityId(): ?string
-    {
-        return $this->getRequest()->getParam('id');
-    }
-
-    /**
      * Checks whether this action is authorized
+     *
+     * @param Controller $controller The controller to check
+     * @param string $action The action to check
+     * @param ?mixed $user The user
+     *
+     * @return bool
      */
-    public function isAuthorized($user = null): bool
+    public function isActionAuthorized(Controller $controller, string $action, $user = null): bool
     {
-        $request = $this->getRequest();
+        $request = $controller->getRequest();
 
-        $action = $request->getParam('action');
-        $op = Operation::value();
+        $op = Operation::value($action);
         if ($op === null) {
             $op = $action;
         }
 
-        $entityId = $this->getEntityId();
+        $entityId = $controller->getRequest()->getParam('id');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $request));
+        if ($user === null) {
+            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($request));
+        } else {
+            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $request));
+        }
         try {
-            return $this->authorizeControllerAction($this, $action, $entityId);
+            return $this->authorizeControllerAction($controller, $action, $entityId);
         } finally {
             AuthorizationContextHolder::pop();
         }

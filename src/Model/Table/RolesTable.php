@@ -42,12 +42,6 @@ class RolesTable extends Table
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');
 
-        $this->hasMany('Capabilities', [
-            'foreignKey' => 'role_id',
-            'className' => 'RolesCapabilities.Capabilities',
-            'dependent' => true,
-        ]);
-
         $this->hasMany('ExtendedCapabilities', [
             'foreignKey' => 'role_id',
             'className' => 'RolesCapabilities.ExtendedCapabilities',

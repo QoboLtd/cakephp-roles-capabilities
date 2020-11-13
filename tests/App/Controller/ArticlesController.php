@@ -2,11 +2,11 @@
 namespace RolesCapabilities\Test\App\Controller;
 
 use Cake\Controller\Controller;
-use RolesCapabilities\CapabilityTrait;
+use RolesCapabilities\EntityAccess\ControllerAuthorizeTrait;
 
 class ArticlesController extends Controller
 {
-    use CapabilityTrait;
+    use ControllerAuthorizeTrait;
 
     /**
      * @return \Cake\Http\Response|void|null

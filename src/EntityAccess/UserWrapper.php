@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Groups\Model\Table\GroupsTable;
@@ -89,11 +90,29 @@ class UserWrapper implements SubjectInterface
             return $subs;
         }
 
-        foreach (Utils::getReportToUsers($this->getId()) as $subordinate) {
+        foreach (self::getReportToUsers($this->getId()) as $subordinate) {
             $subs[] = self::forUser($subordinate);
         }
 
         return $subs;
+    }
+
+    /**
+     * @param string $userId The userId
+     * @return mixed[] The subordinates
+     */
+    private static function getReportToUsers(string $userId): array
+    {
+        $table = TableRegistry::get(Configure::read('Users.table'));
+        $users = $table->find()
+            ->applyOptions(['filterQuery' => true])
+            ->where([
+                'reports_to' => $userId,
+            ])
+            ->all()
+            ->toArray();
+
+        return $users;
     }
 
     /**
