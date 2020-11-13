@@ -209,7 +209,7 @@ class EntityCapabilityRule implements AuthorizationRule
                 ->where(
                     $association->getTarget()->aliasField($primaryKey) . ' = ' . $quotedSubject
                 )
-                // IMPORTANT: The primary key is not aliased to avoid being replaced later on
+                // IMPORTANT: The primary key is not quoted to avoid being replaced later on
                 ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
 
             $sql = $innerQuery->sql();
