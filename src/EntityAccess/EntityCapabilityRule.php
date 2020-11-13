@@ -196,9 +196,9 @@ class EntityCapabilityRule implements AuthorizationRule
             $quotedAlias = $this->table->getConnection()->getDriver()->quoteIdentifier($this->aliasTable());
 
             $innerQuery
-                ->where([$association->getTarget()->aliasField($primaryKey) => $this->subject->getId()]);
-
-            $innerQuery
+                ->where(
+                    $association->getTarget()->aliasField($primaryKey) . ' = ' . $this->table->getConnection()->getDriver()->quote($this->subject->getId(), \PDO::PARAM_STR)
+                )
                 ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
 
             $sql = $innerQuery->sql();
@@ -206,7 +206,6 @@ class EntityCapabilityRule implements AuthorizationRule
             $quotedTable = $this->table->getConnection()->getDriver()->quoteIdentifier($this->table->getAlias());
 
             $sql = str_replace($quotedTable, $quotedAlias, $sql);
-            $sql = str_replace(':c0', $this->table->getConnection()->getDriver()->quote($this->subject->getId(), \PDO::PARAM_STR), $sql);
 
             $expressions[] = $query->newExpr($sql);
         }
