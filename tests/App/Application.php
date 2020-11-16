@@ -19,6 +19,7 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use RolesCapabilities\Plugin as RolesCapabilitiesPlugin;
 
 /**
  * Application setup class.
@@ -28,6 +29,14 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  */
 class Application extends BaseApplication
 {
+    public function bootstrap()
+    {
+        parent::bootstrap();
+
+        $this->addPlugin('CakeDC/Users');
+        $this->addPlugin(RolesCapabilitiesPlugin::class);
+    }
+
     /**
      * Setup the middleware queue your application will use.
      *
