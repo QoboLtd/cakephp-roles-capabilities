@@ -27,6 +27,9 @@ class Plugin extends BasePlugin
         return $middleware;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function bootstrap(PluginApplicationInterface $app)
     {
         // load default plugin config
@@ -37,7 +40,7 @@ class Plugin extends BasePlugin
         if ($qf) {
             $events = EventManager::instance();
             $events->on(new QueryFilterEventsListener());
-       }
+        }
     }
 
     /**

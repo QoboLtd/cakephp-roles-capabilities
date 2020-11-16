@@ -4,12 +4,12 @@ namespace RolesCapabilities\Test\TestCase\Model\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Capability;
-use RolesCapabilities\Model\Table\CapabilitiesTable;
+use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
 
 /**
  * RolesCapabilities\Model\Table\CapabilitiesTable Test Case
  *
- * @property \RolesCapabilities\Model\Table\CapabilitiesTable $Capabilities
+ * @property ExtendedCapabilitiesTable $ExtendedCapabilities
  */
 class ExtendedCapabilitiesTableTest extends TestCase
 {

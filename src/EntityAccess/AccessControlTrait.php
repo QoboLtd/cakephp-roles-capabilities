@@ -26,7 +26,7 @@ trait AccessControlTrait
 
         $table = $controller->loadModel();
         if (!($table instanceof Table)) {
-            return true;
+            return false;
         }
 
         return $this->isTableActionAuthorized($table, $action, $entityId, $user);
