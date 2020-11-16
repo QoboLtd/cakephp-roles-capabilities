@@ -21,7 +21,7 @@ class RolesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.RolesCapabilities.Roles',
-        'plugin.RolesCapabilities.Capabilities',
+        'plugin.RolesCapabilities.ExtendedCapabilities',
     ];
 
     /**

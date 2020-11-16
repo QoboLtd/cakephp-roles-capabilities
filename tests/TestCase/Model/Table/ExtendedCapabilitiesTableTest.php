@@ -11,7 +11,7 @@ use RolesCapabilities\Model\Table\CapabilitiesTable;
  *
  * @property \RolesCapabilities\Model\Table\CapabilitiesTable $Capabilities
  */
-class CapabilitiesTableTest extends TestCase
+class ExtendedCapabilitiesTableTest extends TestCase
 {
 
     /**
@@ -20,7 +20,7 @@ class CapabilitiesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.RolesCapabilities.Capabilities',
+        'plugin.RolesCapabilities.ExtendedCapabilities',
         'plugin.RolesCapabilities.Roles',
     ];
 
@@ -32,12 +32,12 @@ class CapabilitiesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Capabilities') ? [] : ['className' => 'RolesCapabilities\Model\Table\CapabilitiesTable'];
+        $config = TableRegistry::exists('ExtendedCapabilities') ? [] : ['className' => 'RolesCapabilities\Model\Table\ExtendedCapabilitiesTable'];
         /**
-         * @var \RolesCapabilities\Model\Table\CapabilitiesTable $table
+         * @var \RolesCapabilities\Model\Table\ExtendedCapabilitiesTable $table
          */
-        $table = TableRegistry::get('Capabilities', $config);
-        $this->Capabilities = $table;
+        $table = TableRegistry::get('ExtendedCapabilities', $config);
+        $this->ExtendedCapabilities = $table;
     }
 
     /**
@@ -47,7 +47,7 @@ class CapabilitiesTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Capabilities);
+        unset($this->ExtendedCapabilities);
 
         parent::tearDown();
     }
