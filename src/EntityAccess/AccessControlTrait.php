@@ -14,15 +14,14 @@ trait AccessControlTrait
      *
      * @param Controller $controller The controller to check
      * @param string $action The action to check
+     * @param ?string $entityId The entity to check
      * @param ?mixed $user The user
      *
      * @return bool
      */
-    public function isActionAuthorized(Controller $controller, string $action, $user = null): bool
+    public function isActionAuthorized(Controller $controller, string $action, ?string $entityId, $user = null): bool
     {
         $request = $controller->getRequest();
-
-        $entityId = $controller->getRequest()->getParam('id');
 
         $table = $controller->loadModel();
         if (!($table instanceof Table)) {
