@@ -14,9 +14,9 @@ abstract class Operation
     const DELETE = 'delete';
 
     private static $aliases = [
-        'list' => VIEW,
-        'index' => VIEW,
-        'add' => CREATE,
+        'list' => Operation::VIEW,
+        'index' => Operation::VIEW,
+        'add' => Operation::CREATE,
     ];
 
     /**
