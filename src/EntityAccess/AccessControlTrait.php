@@ -4,42 +4,54 @@ declare(strict_types=1);
 namespace RolesCapabilities\EntityAccess;
 
 use Cake\Controller\Controller;
-use Cake\Core\Configure;
-use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
-use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
-use RolesCapabilities\EntityAccess\PolicyBuilder;
 
-/**
- * Trait to allow a class to perform authorization checks
- *
- */
 trait AccessControlTrait
 {
     /**
-     * Checks authorization for access to this controller action.
+     * Checks whether this action is authorized.
+     * It uses isTableActionAuthorized for authorization.
      *
-     * Please note that standard actions (create, read, update and delete are checked by the query filter)
-     * @param Controller $controller The controller
-     * @param string $action The action
-     * @param ?string $entityId The id of the entity this operation is about (if applicable)
+     * @param Controller $controller The controller to check
+     * @param string $action The action to check
+     * @param ?mixed $user The user
+     *
      * @return bool
      */
-    public function authorizeControllerAction(Controller $controller, string $action, ?string $entityId): bool
+    public function isActionAuthorized(Controller $controller, string $action, $user = null): bool
     {
-        $ctx = AuthorizationContextHolder::context();
-        if ($ctx === null) {
-            return true;
-        }
+        $request = $controller->getRequest();
+
+        $entityId = $controller->getRequest()->getParam('id');
 
         $table = $controller->loadModel();
         if (!($table instanceof Table)) {
             return true;
         }
 
-        $builder = new PolicyBuilder($ctx->subject(), $table, $action, $entityId);
+        return $this->isTableActionAuthorized($table, $action, $entityId, $user);
+    }
+
+    /**
+     * Checks whether this action is authorized
+     *
+     * @param Table $table The table to check
+     * @param string $action The action to check
+     * @param ?string $entityId The entity Id
+     * @param ?mixed $user The user
+     *
+     * @return bool
+     */
+    public function isTableActionAuthorized(Table $table, string $action, ?string $entityId, $user = null): bool
+    {
+        $op = Operation::value($action);
+        if ($op === null) {
+            $op = $action;
+        }
+
         AuthorizationContextHolder::asSystem();
         try {
+            $builder = new PolicyBuilder($user, $table, $action, $entityId);
             $policy = $builder->build();
 
             return $policy->allow();
