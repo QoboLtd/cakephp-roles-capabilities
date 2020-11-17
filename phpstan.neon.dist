@@ -9,6 +9,7 @@ parameters:
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
+    inferPrivatePropertyTypeFromConstructor: true
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
