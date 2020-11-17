@@ -48,14 +48,9 @@ class GroupPermittedOperationRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
-        Assert::isInstanceOf($table, PermissionsTable::class);
-
         $query = $this->table->query();
         $exp = $this->expression($query);
         $query = $query->where($exp);
-
-        error_log(print_r($query, true));
 
         $entity = $query->first();
 
