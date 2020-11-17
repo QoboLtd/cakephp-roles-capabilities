@@ -8,6 +8,8 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\ServerRequest;
 use RolesCapabilities\EntityAccess\AccessControlTrait;
+use RolesCapabilities\EntityAccess\SubjectInterface;
+use RolesCapabilities\EntityAccess\UserWrapper;
 
 class EntityAccessAuthorize extends BaseAuthorize
 {
@@ -40,6 +42,10 @@ class EntityAccessAuthorize extends BaseAuthorize
     {
         if ($this->controller === null) {
             return false;
+        }
+
+        if (!($user instanceof SubjectInterface)) {
+            $user = UserWrapper::forUser($user);
         }
 
         $action = $request->getParam('action');
