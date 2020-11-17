@@ -51,19 +51,25 @@ class DefaultPolicyAccessTest extends TestCase
         parent::setUp();
         AuthorizationContextHolder::push(AuthorizationContext::asAnonymous(null));
 
-        $this->listener = new QueryFilterEventsListener();
-        EventManager::instance()->on($this->listener);
-
         $this->Roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
         $this->Users = TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
         $this->Groups = TableRegistry::getTableLocator()->get('Groups.Groups');
         $this->GroupsUsers = TableRegistry::getTableLocator()->get('Groups.GroupsUsers');
+
+        $this->Roles->addBehavior('RolesCapabilities.Authorized');
+        $this->Users->addBehavior('RolesCapabilities.Authorized');
+        $this->Groups->addBehavior('RolesCapabilities.Authorized');
+        $this->GroupsUsers->addBehavior('RolesCapabilities.Authorized');
     }
 
     public function tearDown()
     {
+        $this->Roles->removeBehavior('RolesCapabilities.Authorized');
+        $this->Users->removeBehavior('RolesCapabilities.Authorized');
+        $this->Groups->removeBehavior('RolesCapabilities.Authorized');
+        $this->GroupsUsers->removeBehavior('RolesCapabilities.Authorized');
+
         AuthorizationContextHolder::pop();
-        EventManager::instance()->off($this->listener);
         parent::tearDown();
     }
 
