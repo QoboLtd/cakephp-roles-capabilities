@@ -9,8 +9,6 @@ parameters:
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
-    ignoreErrors:
-        - '#Call to function is_callable\(\) with array\(string, .*\) will always evaluate to false.#'
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
