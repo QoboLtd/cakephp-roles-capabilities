@@ -7,6 +7,7 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventManager;
+use Cake\Routing\RouteBuilder;
 use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
 use RolesCapabilities\Middleware\AuthorizationContextMiddleware;
 
@@ -19,9 +20,6 @@ class Plugin extends BasePlugin
      */
     public function middleware($middleware)
     {
-        // Add middleware here.
-        $middleware = parent::middleware($middleware);
-
         $middleware->add(new AuthorizationContextMiddleware());
 
         return $middleware;
@@ -32,10 +30,7 @@ class Plugin extends BasePlugin
      */
     public function bootstrap(PluginApplicationInterface $app)
     {
-        // load default plugin config
-        Configure::load('RolesCapabilities.roles_capabilities');
-
-        $qf = (bool)Configure::read('RolesCapabilities.roles_capabilities.queryFilter', true);
+        $qf = (bool)Configure::read('RolesCapabilities.queryFilter', false);
 
         if ($qf) {
             $events = EventManager::instance();
@@ -44,13 +39,17 @@ class Plugin extends BasePlugin
     }
 
     /**
-     * @param \Cake\Routing\RouteBuilder $routes The route builder to update.
+     * @param RouteBuilder $routes The route builder to update.
      * @return void
      */
-    public function routes($routes)
+    public function routes($routes): void
     {
-        // Add routes.
-        // By default will load `config/routes.php` in the plugin.
-        parent::routes($routes);
+        $routes->plugin(
+            'RolesCapabilities',
+            ['path' => '/roles-capabilities'],
+            function ($routes) {
+                $routes->fallbacks('DashedRoute');
+            }
+        );
     }
 }
