@@ -47,22 +47,18 @@ class PermittedOperationRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if ($this->entityId === null) {
-            return false;
-        }
-
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
         Assert::isInstanceOf($table, PermissionsTable::class);
 
-        $entity = $table->query()->applyOptions(['filterQuery' => true])
-        ->where([
-            'owner_model' => 'Users',
-            'model' => $this->table,
-            'owner_foreign_key' => $this->subject->getId(),
-            'foreign_key' => $this->entityId,
-            'type' => $this->operation,
-        ])
-        ->count() > 0;
+        $query = $this->table->query();
+        $exp = $this->expression($query);
+        $query = $query->where($exp);
+
+        error_log(print_r($query, true));
+
+        $entity = $query->first();
+
+        return $entity !== null;
     }
 
     /**
@@ -86,7 +82,7 @@ class PermittedOperationRule implements AuthorizationRule
 
         $expression = $permissions->query()->applyOptions(['filterQuery' => true])
                 ->select(['foreign_key'])
-                ->where('foreign_key = ' . $this->table->aliasField('id'))
+                ->where('foreign_key = ' . $this->table->aliasField($this->table->getPrimaryKey()))
                 ->where($conditions);
 
         return $query->newExpr()->exists(

@@ -48,25 +48,18 @@ class GroupPermittedOperationRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if ($this->subject == null || $this->entityId === null) {
-            return false;
-        }
+        $table = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
+        Assert::isInstanceOf($table, PermissionsTable::class);
 
-        $permissions = TableRegistry::getTableLocator()->get('RolesCapabilities.Permissions');
-        Assert::isInstanceOf($permissions, PermissionsTable::class);
+        $query = $this->table->query();
+        $exp = $this->expression($query);
+        $query = $query->where($exp);
 
-        $userGroups = $this->subject->getGroups();
+        error_log(print_r($query, true));
 
-        $entity = $permissions->find()
-        ->applyOptions(['filterQuery' => true])
-        ->where([
-            'owner_model' => 'Groups',
-            'model' => $this->table->getTable(),
-            'owner_foreign_key IN' => $userGroups,
-            'foreign_key' => $this->entityId,
-            'type' => $this->operation,
-        ])
-        ->count() > 0;
+        $entity = $query->first();
+
+        return $entity !== null;
     }
 
     /**
