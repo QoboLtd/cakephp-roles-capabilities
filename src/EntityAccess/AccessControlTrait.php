@@ -15,14 +15,12 @@ trait AccessControlTrait
      * @param Controller $controller The controller to check
      * @param string $action The action to check
      * @param ?string $entityId The entity to check
-     * @param ?mixed $user The user
+     * @param ?SubjectInterface $user The user
      *
      * @return bool
      */
-    public function isActionAuthorized(Controller $controller, string $action, ?string $entityId, $user = null): bool
+    public function isActionAuthorized(Controller $controller, string $action, ?string $entityId, ?SubjectInterface $user = null): bool
     {
-        $request = $controller->getRequest();
-
         $table = $controller->loadModel();
         if (!($table instanceof Table)) {
             return false;
@@ -37,11 +35,11 @@ trait AccessControlTrait
      * @param Table $table The table to check
      * @param string $action The action to check
      * @param ?string $entityId The entity Id
-     * @param ?mixed $user The user
+     * @param ?SubjectInterface $user The user
      *
      * @return bool
      */
-    public function isTableActionAuthorized(Table $table, string $action, ?string $entityId, $user = null): bool
+    public function isTableActionAuthorized(Table $table, string $action, ?string $entityId, ?SubjectInterface $user = null): bool
     {
         $op = Operation::value($action);
         if ($op === null) {
