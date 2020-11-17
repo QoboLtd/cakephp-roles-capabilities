@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use ArrayAccess;
 use Cake\Core\Configure;
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Groups\Model\Table\GroupsTable;
+use InvalidArgumentException;
 use RolesCapabilities\Access\Utils;
 use RolesCapabilities\Model\Table\RolesTable;
 use Webmozart\Assert\Assert;
@@ -16,31 +17,23 @@ class UserWrapper implements SubjectInterface
     /**
      * Wraps a user
      *
-     * @param EntityInterface|array $user The user to wrap
+     * @param ArrayAccess|array $user The user to wrap
      * @return SubjectInterface
      */
     public static function forUser($user): SubjectInterface
     {
-        if ($user instanceof EntityInterface) {
-            $user = $user->toArray();
-        }
-
-        if (!is_array($user)) {
-            throw new \RuntimeException('User not an array');
-        }
-
         return new UserWrapper($user);
     }
 
     /**
-     * @var array
+     * @var array|ArrayAccess
      */
     private $user;
 
     /**
-     * @param mixed[] $user The user to wrap
+     * @param array|ArrayAccess $user The user to wrap
      */
-    private function __construct(array $user)
+    private function __construct($user)
     {
         $this->user = $user;
     }
@@ -129,13 +122,21 @@ class UserWrapper implements SubjectInterface
         return $ids;
     }
 
+
+    private function getGroupsTable(): GroupsTable
+    {
+        $table = TableRegistry::get('Groups.Groups');
+        Assert::isInstanceOf($table, GroupsTable::class);
+
+        return $table;
+    }
+
     /**
      * @inheritdoc
      */
     public function getGroups(): array
     {
-        $table = TableRegistry::get('Groups.Groups');
-        Assert::isInstanceOf($table, GroupsTable::class);
+        $table = $this->getGroupsTable();
 
         $data = $table->getUserGroupsAll($this->getId(), [
             'fields' => ['id'],
@@ -156,10 +157,14 @@ class UserWrapper implements SubjectInterface
             return [];
         }
 
+        $groupsTable = $this->getGroupsTable();
+
         $roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
 
-        $userRoles = $roles->find()->applyOptions(['filterQuery' => true])
-            ->select(['id'])->where(['group_id IN' => $userGroups])->toArray();
+        $userRoles = $roles->find()->select(['id'])->applyOptions(['filterQuery' => true])
+            ->matching('Groups', function ($q) use ($userGroups, $groupsTable) {
+                return $q->where([$groupsTable->aliasField($groupsTable->getPrimaryKey()) . ' IN' => $userGroups]);
+            })->toArray();
 
         return $this->toIds($userRoles);
     }
@@ -167,9 +172,9 @@ class UserWrapper implements SubjectInterface
     /**
      * Unwraps the user
      *
-     * @return mixed[] The original user
+     * @return array|ArrayAccess The original user
      */
-    public function unwrap(): array
+    public function unwrap()
     {
         return $this->user;
     }
