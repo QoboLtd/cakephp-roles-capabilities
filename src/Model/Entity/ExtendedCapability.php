@@ -14,12 +14,13 @@ namespace RolesCapabilities\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Capability Entity.
+ * ExtendedCapability Entity.
  *
  * @property string $id
- * @property string $name
  * @property string $role_id
- * @property \RolesCapabilities\Model\Entity\Role[] $roles
+ * @property string $resource
+ * @property string $assocation
+ * @property string $operation
  */
 class ExtendedCapability extends Entity
 {
