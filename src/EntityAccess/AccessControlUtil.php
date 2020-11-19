@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use Cake\ORM\Table;
+
 class AccessControlUtil
 {
     use AccessControlTrait;
