@@ -50,7 +50,7 @@ class EntityAccessAuthorize extends BaseAuthorize
 
         $action = $request->getParam('action');
 
-        $entityId = $request->getParam('id');
+        $entityId = $request->getParam('id', null);
 
         return $this->isActionAuthorized($this->controller, $action, $entityId, $user);
     }
