@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
 use Cake\Core\Configure;
+use Cake\Core\Plugin;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
@@ -24,6 +26,7 @@ class DefaultPolicyAccessTest extends TestCase
     public $fixtures = [
         'plugin.RolesCapabilities.ExtendedCapabilities',
         'plugin.RolesCapabilities.Groups',
+        'plugin.RolesCapabilities.GroupsRoles',
         'plugin.RolesCapabilities.GroupsUsers',
         'plugin.RolesCapabilities.Permissions',
         'plugin.RolesCapabilities.Roles',
@@ -46,9 +49,10 @@ class DefaultPolicyAccessTest extends TestCase
      */
     private $listener;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
+
         AuthorizationContextHolder::push(AuthorizationContext::asAnonymous(null));
 
         $this->Roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
@@ -62,13 +66,9 @@ class DefaultPolicyAccessTest extends TestCase
         $this->GroupsUsers->addBehavior('RolesCapabilities.Authorized');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
-        $this->Roles->removeBehavior('RolesCapabilities.Authorized');
-        $this->Users->removeBehavior('RolesCapabilities.Authorized');
-        $this->Groups->removeBehavior('RolesCapabilities.Authorized');
-        $this->GroupsUsers->removeBehavior('RolesCapabilities.Authorized');
-
+        TableRegistry::clear();
         AuthorizationContextHolder::pop();
         parent::tearDown();
     }
