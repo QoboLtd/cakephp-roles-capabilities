@@ -122,7 +122,11 @@ class UserWrapper implements SubjectInterface
         return $ids;
     }
 
-
+    /**
+     * Gets the Groups table
+     *
+     * @return GroupsTable
+     */
     private function getGroupsTable(): GroupsTable
     {
         $table = TableRegistry::get('Groups.Groups');
@@ -161,9 +165,13 @@ class UserWrapper implements SubjectInterface
 
         $roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
 
+        $primaryKey = $groupsTable->getPrimaryKey();
+        Assert::string($primaryKey);
+        $groupField = $groupsTable->aliasField($primaryKey);
+
         $userRoles = $roles->find()->select(['id'])->applyOptions(['filterQuery' => true])
-            ->matching('Groups', function ($q) use ($userGroups, $groupsTable) {
-                return $q->where([$groupsTable->aliasField($groupsTable->getPrimaryKey()) . ' IN' => $userGroups]);
+            ->matching('Groups', function ($q) use ($userGroups, $groupField) {
+                return $q->where([$groupField . ' IN' => $userGroups]);
             })->toArray();
 
         return $this->toIds($userRoles);

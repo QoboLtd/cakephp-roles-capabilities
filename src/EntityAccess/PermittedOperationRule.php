@@ -75,9 +75,12 @@ class PermittedOperationRule implements AuthorizationRule
             $conditions['foreign_key'] = $this->entityId;
         }
 
+        $primaryKey = $this->table->getPrimaryKey();
+        Assert::string($primaryKey);
+
         $expression = $permissions->query()->applyOptions(['filterQuery' => true])
                 ->select(['foreign_key'])
-                ->where('foreign_key = ' . $this->table->aliasField($this->table->getPrimaryKey()))
+                ->where('foreign_key = ' . $this->table->aliasField($primaryKey))
                 ->where($conditions);
 
         return $query->newExpr()->exists(
