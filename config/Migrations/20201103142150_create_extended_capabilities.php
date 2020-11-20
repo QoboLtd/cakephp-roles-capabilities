@@ -37,7 +37,8 @@ class CreateExtendedCapabilities extends AbstractMigration
             ->addColumn('resource', 'string', [ 'null' => false])
             ->addColumn('association', 'string', [ 'null' => false])
             ->addColumn('operation', 'string', [ 'null' => false])
-            ->addIndex(['role_id', 'resource', 'association', 'operation'], ['unique' => true])
+            ->addColumn('field', 'string', [ 'null' => false])
+            ->addIndex(['role_id', 'resource', 'operation', 'association', 'field'], ['unique' => true])
             ->addIndex(['role_id'], [ 'name' => 'idx_extended_capabilities_role', 'unique' => false ])
             ->addForeignKey('role_id', 'qobo_roles', 'id', [ 'delete' => 'CASCADE' ])
             ->create();
