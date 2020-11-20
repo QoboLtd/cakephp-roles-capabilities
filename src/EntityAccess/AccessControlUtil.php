@@ -51,4 +51,14 @@ class AccessControlUtil
     {
         return $this->isTableActionAuthorized($table, $operation, $entityId, $this->subject);
     }
+
+    /**
+     * Gets the subject
+     *
+     * @return ?SubjectInterface
+     */
+    public function getSubject(): ?SubjectInterface
+    {
+        return $this->subject;
+    }
 }
