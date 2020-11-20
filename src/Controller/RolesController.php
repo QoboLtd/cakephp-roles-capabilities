@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -11,15 +13,32 @@
  */
 namespace RolesCapabilities\Controller;
 
-use RolesCapabilities\Access\Utils;
+use RolesCapabilities\EntityAccess\CapabilitiesUtil;
 
 /**
  * Roles Controller
  *
  * @property \RolesCapabilities\Model\Table\RolesTable $Roles
+ * @property \RolesCapabilities\Model\Table\ExtendedCapabilitiesTable $ExtendedCapabilities
  */
 class RolesController extends AppController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->ExtendedCapabilities = $this->loadModel('RolesCapabilities.ExtendedCapabilities');
+    }
+
+    /**
+     * Gets all capabilities
+     */
+    private function getAllCapabilities(): array
+    {
+        return CapabilitiesUtil::getAllCapabilities();
+    }
 
     /**
      * Index method
@@ -44,6 +63,12 @@ class RolesController extends AppController
             'contain' => ['Groups'],
         ]);
 
+        $roleCaps = $this->ExtendedCapabilities->find('list')->where(['role_id' => $id])->toArray();
+
+        $capabilities = $this->getAllCapabilities();
+
+        $this->set('capabilities', $capabilities);
+        $this->set('roleCaps', $roleCaps);
         $this->set('role', $role);
         $this->set('_serialize', ['role']);
     }
@@ -63,6 +88,12 @@ class RolesController extends AppController
              */
             $role = $this->Roles->patchEntity($role, $data);
 
+            if (!empty($data['capabilities'])) {
+                $role->capabilities = $this->ExtendedCapabilities->newEntities(
+                    json_decode($data['capabilities'], true)
+                );
+            }
+
             if ($this->Roles->save($role)) {
                 $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
 
@@ -73,7 +104,9 @@ class RolesController extends AppController
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
 
-        $this->set(compact('role', 'groups'));
+        $capabilities = $this->getAllCapabilities();
+
+        $this->set(compact('role', 'groups', 'capabilities'));
         $this->set('_serialize', ['role']);
     }
 
@@ -95,6 +128,14 @@ class RolesController extends AppController
              */
             $role = $this->Roles->patchEntity($role, $data);
 
+            // delete existing role capabilities
+            $this->ExtendedCapabilities->deleteAll(['role_id' => $id]);
+            if (!empty($data['capabilities'])) {
+                $role->capabilities = $this->ExtendedCapabilities->newEntities(
+                    json_decode($data['capabilities'], true)
+                );
+            }
+
             if ($this->Roles->save($role)) {
                 $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
 
@@ -104,8 +145,12 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
+        // fetch role capabilities
+        $roleCaps = $this->ExtendedCapabilities->find('list')->where(['role_id' => $id])->toArray();
 
-        $this->set(compact('role', 'groups'));
+        $capabilities = $this->getAllCapabilities();
+
+        $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);
     }
 
@@ -126,29 +171,5 @@ class RolesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
-    }
-
-    /**
-     * formatCapabilities method
-     *
-     * @param mixed[] $data to process
-     * @return mixed[]
-     */
-    private function formatCapabilities(array $data): array
-    {
-        $result = [];
-        foreach ($data as $controller => $list) {
-            $newList = [];
-            foreach ($list as $type => $caps) {
-                foreach ($caps as $cap) {
-                    $field = $cap->getField();
-                    $key = !empty($field) ? "${type}_(_${field}_)" : $type;
-                    $newList[$key][] = $cap;
-                }
-            }
-            $result[$controller] = $newList;
-        }
-
-        return $result;
     }
 }
