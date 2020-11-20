@@ -30,12 +30,6 @@ use Webmozart\Assert\Assert;
 
 class QueryFilterEventsListener implements EventListenerInterface
 {
-
-    /**
-     * @var ?array
-     */
-    private $user;
-
     /**
      * Implemented Events
      *
