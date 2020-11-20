@@ -100,30 +100,4 @@ class RolesTable extends Table
         return $rules;
     }
 
-    /**
-     * Method that prepares associated
-     * Capabilities records to be created.
-     * @param  mixed[]  $capabilities Capabilities to be created
-     * @return mixed[]                Capability objects
-     */
-    public function prepareCapabilities(array $capabilities = []): array
-    {
-        if (empty($capabilities)) {
-            return [];
-        }
-
-        $result = [];
-        foreach ($capabilities as $capName => $checked) {
-            $checked = (bool)$checked;
-            if (!$checked) {
-                continue;
-            }
-
-            $capEntity = $this->Capabilities->newEntity();
-            $capEntity->name = $capName;
-            $result[] = $capEntity;
-        }
-
-        return $result;
-    }
 }
