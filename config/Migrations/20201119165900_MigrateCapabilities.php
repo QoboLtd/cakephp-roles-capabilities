@@ -73,6 +73,6 @@ class MigrateCapabilities extends AbstractMigration
 
         $this->table('qobo_extended_capabilities')->insert($newcaps)->save();
 
-        $this->table('qobo_capabilities')->drop->save();
+        $this->table('qobo_capabilities')->drop()->save();
     }
 }
