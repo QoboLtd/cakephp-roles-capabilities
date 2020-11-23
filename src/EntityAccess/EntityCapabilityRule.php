@@ -92,11 +92,7 @@ class EntityCapabilityRule implements AuthorizationRule
     {
         $resource = $this->table->getRegistryAlias();
 
-        $tableCapabilities = [];
-
-        if (method_exists($this->table, '_getCaps')) {
-            $tableCapabilities = $this->table->_getCaps();
-        }
+        $tableCapabilities = CapabilitiesUtil::getModelStaticCapabities();
 
         $staticCapabilities = array_merge(
             $this->getStaticCapabilities($resource, $this->operation),
@@ -181,7 +177,7 @@ class EntityCapabilityRule implements AuthorizationRule
             }
 
             /**
-             * Fake field association. Simply match field value. NOT WORKING.
+             * Fake field association. Simply match field value.
              */
             if ($associationName === 'field') {
                 $isEmpty = false;

@@ -32,6 +32,13 @@ class RolesTable extends Table
         ];
     }
 
+    public function _getCapabilityAssociations(): array
+    {
+        return [
+            'Group.Users' => 'Assigned Roles',
+        ];
+    }
+
     /**
      * Initialize method
      *

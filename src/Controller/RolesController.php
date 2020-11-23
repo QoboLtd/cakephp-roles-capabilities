@@ -63,7 +63,7 @@ class RolesController extends AppController
             'contain' => ['Groups'],
         ]);
 
-        $roleCaps = $this->ExtendedCapabilities->find('list')->where(['role_id' => $id])->toArray();
+        $roleCaps = $this->ExtendedCapabilities->find('all')->where(['role_id' => $id])->toArray();
 
         $capabilities = $this->getAllCapabilities();
 

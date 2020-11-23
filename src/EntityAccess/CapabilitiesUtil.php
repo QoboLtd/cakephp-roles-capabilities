@@ -59,13 +59,28 @@ class CapabilitiesUtil
     {
         $operations = Operation::values();
         $associations = [
-            '' => 'Always',
+            '' => 'All',
         ];
+
+        if (method_exists($table, '_getCapabilityAssociations')) {
+            $associations = array_merge($associations, $table->_getCapabilityAssociations());
+        }
 
         return [
             'operations' => $operations,
             'associations' => $associations,
         ];
+    }
+
+    public static function getModelStaticCapabities(Table $table): array
+    {
+        $tableCapabilities = [];
+
+        if (method_exists($table, '_getCaps')) {
+            $tableCapabilities = $table->_getCaps();
+        }
+
+        return $tableCapabilities;
     }
 
     public static function getAllCapabilities(): array

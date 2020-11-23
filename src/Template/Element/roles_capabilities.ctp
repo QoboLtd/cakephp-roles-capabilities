@@ -10,16 +10,17 @@ ksort($capabilities);
     <div class="col-md-2">
         <div class="fixed-height-box">
         <ul class="nav nav-pills nav-stacked">
-        <?php foreach ($capabilities as $groupName => $groupCaps) : ?>
+        <?php // List tables  
+            foreach ($capabilities as $tableName => $tableCaps) : ?>
             <?php
-            if (empty($groupCaps)) {
-                continue;
-            }
+                if (empty($tableCaps)) {
+                    continue;
+                }
 
                 $active = ++$count == 1 ? 'active' : '';
-                $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
+                $tabId = Inflector::underscore(preg_replace('/[^a-zA-Z0-9]+/', '_', $tableName));
             ?>
-            <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $this->cell('RolesCapabilities.Capability::groupName', [$groupName]) ?></a></li>
+            <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $this->cell('RolesCapabilities.Capability::groupName', [$tableName]) ?></a></li>
         <?php endforeach; ?>
         </ul>
         </div>
@@ -27,70 +28,45 @@ ksort($capabilities);
     <div class="col-md-10">
         <div class="tab-content clearfix">
         <?php $count = 0; ?>
-        <?php foreach ($capabilities as $groupName => $groupCaps) : ?>
+        <?php 
+        foreach ($capabilities as $tableName => $tableCaps) : ?>
             <?php
-            if (empty($groupCaps)) {
+            if (empty($tableCaps)) {
                 continue;
             }
                 $active = ++$count == 1 ? 'active' : '';
-                $tabId = Inflector::underscore(preg_replace('/\\\/', '', $groupName));
+                $tabId = Inflector::underscore(preg_replace('/[^a-zA-Z0-9]+/', '_', $tableName));
             ?>
             <div id="<?= $tabId ?>" class="tab-pane <?= $active ?>">
-            <ul class="nav nav-tabs">
-            <?php
-            $sCount = 0;
-            foreach ($groupCaps as $type => $caps) {
-                usort($caps, function ($a, $b) {
-                    return strcmp($a->getDescription(), $b->getDescription());
-                });
+            <table class="table table-hover table-condensed table-vertical-align table-datatable">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <?php foreach ($tableCaps['associations'] as $association) : ?>
+                        <th><?= Inflector::humanize($association) ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
 
-                $title = Inflector::humanize($type) . ' ' . __d('Qobo/RolesCapabilities', 'Access');
-                $type = preg_replace('/(\(|\))/', '', $type);
-                $slug = $tabId . '_' . $type . '_' . 'access';
-
-                $sActive = ++$sCount == 1 ? 'active' : '';
-                echo '<li class="' . $sActive . '"><a href="#' . $slug . '" data-toggle="tab">' . $title . '</a>';
-            }
-            ?>
-            </ul>
-            <div class="tab-content clearfix">
-            <?php
-            $sCount = 0;
-            foreach ($groupCaps as $type => $caps) {
-                usort($caps, function ($a, $b) {
-                    return strcmp($a->getDescription(), $b->getDescription());
-                });
-
-                $title = Inflector::humanize($type) . ' ' . __d('Qobo/RolesCapabilities', 'Access');
-                $type = preg_replace('/(\(|\))/', '', $type);
-                $slug = $tabId . '_' . $type . '_' . 'access';
-
-                $sActive = ++$sCount == 1 ? 'active' : '';
-                echo '<div id="' . $slug . '" class="tab-pane ' . $sActive . '">';
-
-                echo $this->Form->input($slug, [
-                    'type' => 'checkbox',
-                    'label' => 'Select All',
-                    'class' => 'select_all',
-                    'div' => false,
-                    'disabled' => $disabled,
-                ]);
-                echo '<hr/>';
-
-                foreach ($caps as $cap) {
-                    echo $this->Form->input($cap->getName(), [
-                        'type' => 'checkbox',
-                        'label' => $cap->getDescription(),
+            <?php foreach ($tableCaps['operations'] as $operation) : ?>
+            <tr>
+                <td><?= Inflector::humanize($operation)?></td>
+                <?php foreach ($tableCaps['associations'] as $association => $desc) : 
+                    $inputId = $operation . '@'. $association;
+                    $checked = false;
+                ?>
+                <td>
+                     <?= $this->Form->checkbox($inputId, [
                         'class' => 'checkbox-capability',
-                        'div' => false,
                         'disabled' => $disabled,
-                        'checked' => in_array($cap->getName(), $roleCaps)
-                    ]);
-                }
-                echo '</div>';
-            }
-            ?>
-            </div>
+                        'checked' => $checked
+                    ])
+                    ?>
+                </td>
+                <?php endforeach; ?>
+            </tr>
+            <?php endforeach; ?>
+            </table>
         </div>
         <?php endforeach; ?>
         </div>
