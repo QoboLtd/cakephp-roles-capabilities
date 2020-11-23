@@ -202,27 +202,21 @@ class EntityCapabilityRule implements AuthorizationRule
             $sourcePrimaryKey = $this->table->getPrimaryKey();
             Assert::string($sourcePrimaryKey);
 
+            $driver = $this->table->getConnection()->getDriver();
+            $quotedAlias = $driver->quoteIdentifier($this->aliasTable());
+            $quotedSubject = $driver->quote($this->subject->getId(), \PDO::PARAM_STR);
+
             /*
              * Create inner query. We cannot use parameters since we are creating
              * an sql string.
              */
             $innerQuery = $this->table->query()
             ->applyOptions(['filterQuery' => true ])
-            ->select([$this->table->aliasField($sourcePrimaryKey) ]);
-
-            /* Attach the assocation to the inner query */
-            $association->attachTo($innerQuery, ['includeFields' => false ]);
-
-            $driver = $this->table->getConnection()->getDriver();
-            $quotedAlias = $driver->quoteIdentifier($this->aliasTable());
-            $quotedSubject = $driver->quote($this->subject->getId(), \PDO::PARAM_STR);
-
-            $innerQuery
-                ->where(
-                    $association->getTarget()->aliasField($primaryKey) . ' = ' . $quotedSubject
-                )
-                // IMPORTANT: The primary key is not quoted to avoid being replaced later on
-                ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
+            ->select([$this->table->aliasField($sourcePrimaryKey) ])
+            ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey))
+            ->matching($associationName, function ($q) use ($association, $primaryKey, $quotedSubject) {
+                return $q->where($association->getTarget()->aliasField($primaryKey) . ' = ' . $quotedSubject);
+            });
 
             $sql = $innerQuery->sql();
 
