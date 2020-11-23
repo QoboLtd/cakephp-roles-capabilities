@@ -81,7 +81,7 @@ $cache = [
 ];
 
 Cake\Cache\Cache::setConfig($cache);
-Cake\Core\Configure::write('Session', [
+Configure::write('Session', [
     'defaults' => 'php',
 ]);
 
@@ -100,6 +100,21 @@ Cake\Datasource\ConnectionManager::setConfig('test', [
     'url' => getenv('db_dsn'),
     'quoteIdentifiers' => true,
     'timezone' => 'UTC',
+]);
+
+Configure::write('RolesCapabilities.Roles', [
+    [
+        'name' => 'Admins',
+        'description' => 'Administrators role',
+        'deny_edit' => true,
+        'deny_delete' => true,
+    ],
+    [
+        'name' => 'Everyone',
+        'description' => 'Generic role',
+        'deny_edit' => false,
+        'deny_delete' => true,
+    ],
 ]);
 
 // Alias AppController to the test App
