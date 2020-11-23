@@ -18,8 +18,7 @@ use Cake\Validation\Validator;
 /**
  * Roles Model
  *
- * @property \Cake\ORM\Association\HasMany $Capabilities
- * @property \Cake\ORM\Association\BelongsToMany $Capabilities
+ * @property \Cake\ORM\Association\HasMany $ExtendedCapabilities
  * @property \Cake\ORM\Association\BelongsToMany $Groups
  */
 class RolesTable extends Table
