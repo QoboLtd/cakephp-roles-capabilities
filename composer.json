@@ -22,11 +22,11 @@
         "optimize-autoloader": true
     },
     "require": {
-        "qobo/cakephp-utils": "^13.0",
-        "qobo/cakephp-groups": "^11.0"
+        "qobo/cakephp-utils": "^13.2.9",
+        "qobo/cakephp-groups": "^11.5.1"
     },
     "require-dev": {
-        "qobo/cakephp-composer-dev": "^v1.0"
+        "qobo/cakephp-composer-dev": "^v1.3.1"
     },
     "autoload": {
         "psr-4": {
@@ -48,8 +48,7 @@
         "test-coverage": [
             "phpcs",
             "phpunit"
-        ],
-        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
+        ]
     },
     "scripts-descriptions": {
         "test": "Runs phpcs and phpunit without coverage",
