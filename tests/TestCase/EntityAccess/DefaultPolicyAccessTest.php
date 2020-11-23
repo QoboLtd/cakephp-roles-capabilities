@@ -164,4 +164,25 @@ class DefaultPolicyAccessTest extends TestCase
         }
         $this->assertEquals(1, $count);
     }
+
+    public function testViewOwnRole(): void
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $user = $this->Users->find()->where([
+                'id' => '00000000-0000-0000-0000-000000000003',
+            ])->first()->toArray();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $q = $this->Roles->find();
+            $count = $q->count();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertEquals(1, $count);
+    }
 }

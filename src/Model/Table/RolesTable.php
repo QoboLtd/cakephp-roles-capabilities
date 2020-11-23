@@ -14,6 +14,7 @@ namespace RolesCapabilities\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use RolesCapabilities\EntityAccess\Operation;
 
 /**
  * Roles Model
@@ -23,6 +24,13 @@ use Cake\Validation\Validator;
  */
 class RolesTable extends Table
 {
+
+    public function _getCaps(): array
+    {
+        return [
+            ['operation' => Operation::VIEW, 'association' => 'Groups.Users', 'name' => 'User Roles'],
+        ];
+    }
 
     /**
      * Initialize method

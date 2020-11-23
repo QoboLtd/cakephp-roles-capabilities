@@ -62,9 +62,6 @@ class EntityCapabilityRule implements AuthorizationRule
         'Groups.GroupsUsers' => [
             ['operation' => Operation::VIEW, 'association' => 'field', 'field' => 'user_id', 'name' => 'Group Memberships'],
         ],
-        'RolesCapabilities.Roles' => [
-            ['operation' => Operation::VIEW, 'association' => 'Groups.Users', 'name' => 'User Roles'],
-        ],
     ];
 
     /**
@@ -95,7 +92,16 @@ class EntityCapabilityRule implements AuthorizationRule
     {
         $resource = $this->table->getRegistryAlias();
 
-        $staticCapabilities = $this->getStaticCapabilities($resource, $this->operation);
+        $tableCapabilities = [];
+
+        if (method_exists($this->table, '_getCaps')) {
+            $tableCapabilities = $this->table->_getCaps();
+        }
+
+        $staticCapabilities = array_merge(
+            $this->getStaticCapabilities($resource, $this->operation),
+            $tableCapabilities,
+        );
 
         $roles = $this->subject->getRoles();
         if (count($roles) === 0) {
