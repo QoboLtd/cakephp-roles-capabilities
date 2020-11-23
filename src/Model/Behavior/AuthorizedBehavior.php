@@ -22,6 +22,24 @@ use Webmozart\Assert\Assert;
 
 class AuthorizedBehavior extends Behavior
 {
+    private static $ASSOCIATIONS = [
+        '' => 'All',
+    ];
+
+    public function getAssociations(): array
+    {
+        return array_merge(self::$ASSOCIATIONS, $this->getConfig('associations', []));
+    }
+
+    public function getOperations(): array
+    {
+        return array_merge(Operation::values(), $this->getConfig('operations', []));
+    }
+
+    public function getCapabilities(): array
+    {
+        return $this->getConfig('capabilities', []);
+    }
 
     /**
      * {@inheritDoc}

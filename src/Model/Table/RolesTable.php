@@ -24,21 +24,6 @@ use RolesCapabilities\EntityAccess\Operation;
  */
 class RolesTable extends Table
 {
-
-    public function _getCaps(): array
-    {
-        return [
-            ['operation' => Operation::VIEW, 'association' => 'Groups.Users', 'name' => 'User Roles'],
-        ];
-    }
-
-    public function _getCapabilityAssociations(): array
-    {
-        return [
-            'Group.Users' => 'Assigned Roles',
-        ];
-    }
-
     /**
      * Initialize method
      *
@@ -55,6 +40,14 @@ class RolesTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');
+        $this->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'Group.Users' => 'Assigned Roles',
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'Groups.Users', 'name' => 'User Roles'],
+            ],
+        ]);
 
         $this->hasMany('ExtendedCapabilities', [
             'foreignKey' => 'role_id',

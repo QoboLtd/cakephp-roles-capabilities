@@ -6,6 +6,9 @@ namespace RolesCapabilities\EntityAccess;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Qobo\Utils\Module\Exception\MissingModuleException;
+use RolesCapabilities\Model\Behavior\AuthorizedBehavior;
+use Webmozart\Assert\Assert;
 
 class CapabilitiesUtil
 {
@@ -50,34 +53,15 @@ class CapabilitiesUtil
         return $tables;
     }
 
-    /**
-     * Gets the capabilities for the table.
-     *
-     * @return mixed[]
-     */
-    public static function getModelCapabilities(Table $table): array
-    {
-        $operations = Operation::values();
-        $associations = [
-            '' => 'All',
-        ];
-
-        if (method_exists($table, '_getCapabilityAssociations')) {
-            $associations = array_merge($associations, $table->_getCapabilityAssociations());
-        }
-
-        return [
-            'operations' => $operations,
-            'associations' => $associations,
-        ];
-    }
-
     public static function getModelStaticCapabities(Table $table): array
     {
         $tableCapabilities = [];
 
-        if (method_exists($table, '_getCaps')) {
-            $tableCapabilities = $table->_getCaps();
+        if ($table->hasBehavior('Authorized')) {
+            $behavior = $table->getBehavior('Authorized');
+            Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
+
+            return $behavior->getCapabilities();
         }
 
         return $tableCapabilities;
@@ -87,17 +71,25 @@ class CapabilitiesUtil
     {
         $locator = TableRegistry::getTableLocator();
         $resources = self::getTables();
-        $skipTables = Configure::read('RolesCapabilities.skipTables', [
-            'App',
-        ]);
 
         $capabilities = [];
         foreach ($resources as $tableAlias) {
-            if (in_array($tableAlias, $skipTables, true)) {
+            try {
+                $table = $locator->get($tableAlias);
+            } catch (MissingModuleException $e) {
                 continue;
             }
-            $table = $locator->get($tableAlias);
-            $capabilities[$table->getRegistryAlias()] = self::getModelCapabilities($table);
+
+            if (!$table->hasBehavior('Authorized')) {
+                continue;
+            }
+            $behavior = $table->getBehavior('Authorized');
+            Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
+
+            $capabilities[$table->getRegistryAlias()] = [
+                'associations' => $behavior->getAssociations(),
+                'operations' => $behavior->getOperations(),
+            ];
         }
 
         return $capabilities;

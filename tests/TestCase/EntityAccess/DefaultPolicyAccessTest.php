@@ -60,7 +60,6 @@ class DefaultPolicyAccessTest extends TestCase
         $this->Groups = TableRegistry::getTableLocator()->get('Groups.Groups');
         $this->GroupsUsers = TableRegistry::getTableLocator()->get('Groups.GroupsUsers');
 
-        $this->Roles->addBehavior('RolesCapabilities.Authorized');
         $this->Users->addBehavior('RolesCapabilities.Authorized');
         $this->Groups->addBehavior('RolesCapabilities.Authorized');
         $this->GroupsUsers->addBehavior('RolesCapabilities.Authorized');
