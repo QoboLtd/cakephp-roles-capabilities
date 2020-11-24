@@ -199,4 +199,25 @@ class DefaultPolicyAccessTest extends TestCase
         }
         $this->assertEquals(1, $count);
     }
+
+    public function testSuperuserViewRoles(): void
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            $user = $this->Users->find()->where([
+                'is_superuser' => true,
+            ])->first()->toArray();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $q = $this->Users->find();
+            $count = $q->count();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertGreaterThan(1, $count);
+    }
 }
