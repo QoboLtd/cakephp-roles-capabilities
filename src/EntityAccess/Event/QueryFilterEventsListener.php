@@ -19,7 +19,6 @@ use Cake\Event\EventListenerInterface;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
-use Qobo\Utils\Utility\User;
 use RolesCapabilities\EntityAccess\AllowRule;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;

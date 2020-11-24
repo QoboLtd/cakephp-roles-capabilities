@@ -26,16 +26,32 @@ class AuthorizedBehavior extends Behavior
         '' => 'All',
     ];
 
+    /**
+     * Gets the associations involved in access control
+     * for this table.
+     *
+     * @return mixed[]
+     */
     public function getAssociations(): array
     {
         return array_merge(self::$ASSOCIATIONS, $this->getConfig('associations', []));
     }
 
+    /**
+     * Gets the operations for capability access
+     * for this table.
+     *
+     * @return mixed[]
+     */
     public function getOperations(): array
     {
         return array_merge(Operation::values(), $this->getConfig('operations', []));
     }
 
+    /**
+     * Gets capabilities granted for everyone.
+     * @return mixed
+     */
     public function getCapabilities(): array
     {
         return $this->getConfig('capabilities', []);

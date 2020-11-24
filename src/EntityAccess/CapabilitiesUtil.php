@@ -13,6 +13,10 @@ use Webmozart\Assert\Assert;
 class CapabilitiesUtil
 {
     /**
+     * Returns a list of all tables.
+     *
+     * It works by scanning composer's autoload classmap
+     *
      * @return string[]
      */
     public static function getTables(): array
@@ -53,6 +57,11 @@ class CapabilitiesUtil
         return $tables;
     }
 
+    /**
+     * Gets all capabilities defined in the model
+     *
+     * @return mixed[]
+     */
     public static function getModelStaticCapabities(Table $table): array
     {
         $tableCapabilities = [];
@@ -67,6 +76,13 @@ class CapabilitiesUtil
         return $tableCapabilities;
     }
 
+    /**
+     * Gets all capability metadata from all tables
+     * For each table it contains the associations and
+     * operations involved in capabilities.
+     *
+     * @return mixed[]
+     */
     public static function getAllCapabilities(): array
     {
         $locator = TableRegistry::getTableLocator();
