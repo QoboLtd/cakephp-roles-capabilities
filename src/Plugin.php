@@ -5,9 +5,9 @@ namespace RolesCapabilities;
 
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
-use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventManager;
 use Cake\Routing\RouteBuilder;
+use RolesCapabilities\EntityAccess\Event\ModelInitializeListener;
 use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
 use RolesCapabilities\Middleware\AuthorizationContextMiddleware;
 
@@ -28,12 +28,12 @@ class Plugin extends BasePlugin
     /**
      * {@inheritdoc}
      */
-    public function bootstrap(PluginApplicationInterface $app)
+    public function initialize()
     {
-        $qf = (bool)Configure::read('RolesCapabilities.queryFilter', false);
+        $events = EventManager::instance();
+        $events->on(new ModelInitializeListener());
 
-        if ($qf) {
-            $events = EventManager::instance();
+        if ((bool)Configure::read('RolesCapabilities.queryFilter', false)) {
             $events->on(new QueryFilterEventsListener());
         }
     }
