@@ -45,7 +45,7 @@ class RolesTable extends Table
                 'Group.Users' => 'Assigned Roles',
             ],
             'capabilities' => [
-                ['operation' => Operation::VIEW, 'association' => 'Groups.Users', 'name' => 'User Roles'],
+                ['operation' => Operation::VIEW, 'association' => 'Groups.Users'],
             ],
         ]);
 
