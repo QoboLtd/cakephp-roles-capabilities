@@ -76,7 +76,7 @@ class CapabilitiesUtil
         return $tableCapabilities;
     }
 
-     /**
+    /**
      * Gets all capabilities defined in the model
      *
      * @return mixed[]
