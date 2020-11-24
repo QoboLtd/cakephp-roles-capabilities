@@ -32,10 +32,6 @@ class Plugin extends BasePlugin
     {
         $events = EventManager::instance();
         $events->on(new ModelInitializeListener());
-
-        if ((bool)Configure::read('RolesCapabilities.queryFilter', false)) {
-            $events->on(new QueryFilterEventsListener());
-        }
     }
 
     /**
