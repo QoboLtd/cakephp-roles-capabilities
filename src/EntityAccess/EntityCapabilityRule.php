@@ -92,7 +92,7 @@ class EntityCapabilityRule implements AuthorizationRule
     {
         $resource = $this->table->getRegistryAlias();
 
-        $tableCapabilities = CapabilitiesUtil::getModelStaticCapabities();
+        $tableCapabilities = CapabilitiesUtil::getModelStaticCapabities($this->table);
 
         $staticCapabilities = array_merge(
             $this->getStaticCapabilities($resource, $this->operation),
@@ -128,7 +128,7 @@ class EntityCapabilityRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if ($this->subject === null || $this->entityId === null) {
+        if ($this->subject === null) {
             return false;
         }
 
@@ -137,8 +137,7 @@ class EntityCapabilityRule implements AuthorizationRule
 
         $query = $this->table->query()
             ->applyOptions(['filterQuery' => true])
-            ->select([$this->table->aliasField($primaryKey)])
-            ->where([$this->table->aliasField($primaryKey) => $this->entityId]);
+            ->select([$this->table->aliasField($primaryKey)]);
 
         $exp = $this->expression($query);
 
@@ -209,8 +208,13 @@ class EntityCapabilityRule implements AuthorizationRule
             $innerQuery = $this->table->query()
             ->applyOptions(['filterQuery' => true ])
             ->select([$this->table->aliasField($sourcePrimaryKey) ])
-            ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey))
-            ->matching($associationName, function ($q) use ($association, $primaryKey, $quotedSubject) {
+            ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
+
+            if ($this->entityId !== null) {
+                $innerQuery->where([$this->table->aliasField($sourcePrimaryKey) => $this->entityId]);
+            }
+
+            $innerQuery->matching($associationName, function ($q) use ($association, $primaryKey, $quotedSubject) {
                 return $q->where($association->getTarget()->aliasField($primaryKey) . ' = ' . $quotedSubject);
             });
 
