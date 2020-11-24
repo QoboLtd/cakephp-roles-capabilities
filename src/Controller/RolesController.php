@@ -91,7 +91,7 @@ class RolesController extends AppController
             foreach ($capabilities as $cap) {
                 $fields = explode('@', $cap);
 
-                $tableName = $fields[0];
+                $tableName = str_replace('_', '.', $fields[0]);
                 $operation = $fields[1];
                 $associationName = $fields[2];
 

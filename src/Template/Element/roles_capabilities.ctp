@@ -68,7 +68,7 @@ function in_cap_array(array $capArray, string $resource, string $operation, stri
             <tr>
                 <td><?= Inflector::humanize(Inflector::underscore($operation))?></td>
                 <?php foreach ($tableCaps['associations'] as $name => $association) : 
-                    $inputId = $tableName .'@' . $operation . '@'. $name;
+                    $inputId = str_replace('.', '_', $tableName) .'@' . $operation . '@'. $name;
                     $implied = in_cap_array($tableCaps['capabilities'], $tableName, $operation, $name);
                     $checked = $implied || in_cap_array($roleCaps, $tableName, $operation, $name);
                 ?>
