@@ -5,6 +5,22 @@ use Cake\Utility\Inflector;
 $count = 0;
 $tabs = '';
 ksort($capabilities);
+
+function in_cap_array(array $capArray, string $resource, string $operation, string $association): bool
+{
+    foreach ($capArray as $cap) {
+        if (isset($cap['resource']) && $cap['resource'] !== $resource) {
+            continue;
+        }
+
+        if ($cap['operation'] === $operation
+           && $cap['association'] === $association
+        ) {
+               return true;
+        }
+    }
+    return false;
+}
 ?>
 <div class="row">
     <div class="col-md-2">
@@ -53,13 +69,13 @@ ksort($capabilities);
                 <td><?= Inflector::humanize(Inflector::underscore($operation))?></td>
                 <?php foreach ($tableCaps['associations'] as $name => $association) : 
                     $inputId = $tableName .'@' . $operation . '@'. $name;
-                    $disabled = false;
-                    $checked = false;
+                    $implied = in_cap_array($tableCaps['capabilities'], $tableName, $operation, $name);
+                    $checked = $implied || in_cap_array($roleCaps, $tableName, $operation, $name);
                 ?>
                 <td>
                      <?= $this->Form->checkbox($inputId, [
                         'class' => 'checkbox-capability',
-                        'disabled' => $disabled,
+                        'disabled' => $implied,
                         'checked' => $checked
                     ])
                     ?>

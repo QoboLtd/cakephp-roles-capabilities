@@ -86,8 +86,6 @@ class RolesController extends AppController
                 $capabilities = [];
             }
 
-            $locator = TableRegistry::getTableLocator();
-
             $data['extended_capabilities'] = [];
 
             foreach ($capabilities as $cap) {
@@ -97,18 +95,11 @@ class RolesController extends AppController
                 $operation = $fields[1];
                 $associationName = $fields[2];
 
-                $table = $locator->get($tableName);
-
-                $behavior = $table->getBehavior('Authorized');
-                $associations = $behavior->getAssociations();
-
-                $capability = array_merge(
-                    [
-                        'resource' => $table->getRegistryAlias(),
-                        'operation' => $operation,
-                    ],
-                    $associations[$associationName],
-                );
+                $capability = [
+                    'resource' => $tableName,
+                    'operation' => $operation,
+                    'association' => $associationName,
+                ];
 
                 $data['extended_capabilities'][] = $capability;
             }
@@ -179,8 +170,9 @@ class RolesController extends AppController
             }
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
+
         // fetch role capabilities
-        $roleCaps = $this->ExtendedCapabilities->find('list')->where(['role_id' => $id])->toArray();
+        $roleCaps = $this->ExtendedCapabilities->find()->where(['role_id' => $id])->toArray();
 
         $capabilities = CapabilitiesUtil::getAllCapabilities();
 

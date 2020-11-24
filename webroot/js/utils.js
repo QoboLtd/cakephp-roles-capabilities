@@ -25,7 +25,9 @@
     $('#capabilities-submit').click(function () {
         var capabilities = [];
         $('.checkbox-capability:checked').each(function () {
-            capabilities.push($(this).attr('name'));
+            if (!$(this).is(':disabled')) {
+                capabilities.push($(this).attr('name'));
+            }
         });
 
         $('#capabilities-input').val(JSON.stringify(capabilities));
