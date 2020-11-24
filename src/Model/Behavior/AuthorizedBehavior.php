@@ -50,7 +50,7 @@ class AuthorizedBehavior extends Behavior
 
     /**
      * Gets capabilities granted for everyone.
-     * @return mixed
+     * @return mixed[]
      */
     public function getCapabilities(): array
     {

@@ -12,7 +12,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
-use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
 use RolesCapabilities\EntityAccess\Operation;
 use RolesCapabilities\EntityAccess\UserWrapper;
 
@@ -43,11 +42,6 @@ class DefaultPolicyAccessTest extends TestCase
     private $Groups;
 
     private $GroupsUsers;
-
-    /**
-     * @var QueryFilterEventsListener
-     */
-    private $listener;
 
     public function setUp(): void
     {
