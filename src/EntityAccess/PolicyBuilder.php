@@ -62,7 +62,6 @@ class PolicyBuilder
         }
 
         $userRules = [
-            new SelfAccessRule($this->subject, $this->table, $this->operation, $this->entityId),
             new PermittedOperationRule($this->subject, $this->table, $this->operation, $this->entityId),
             new GroupPermittedOperationRule($this->subject, $this->table, $this->operation, $this->entityId),
             new EntityCapabilityRule($this->subject, $this->table, $this->operation, $this->entityId),

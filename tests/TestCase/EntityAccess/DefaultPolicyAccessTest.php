@@ -10,10 +10,10 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Access\NoAuthAccess;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
+use RolesCapabilities\EntityAccess\Operation;
 use RolesCapabilities\EntityAccess\UserWrapper;
 
 class DefaultPolicyAccessTest extends TestCase
@@ -60,7 +60,11 @@ class DefaultPolicyAccessTest extends TestCase
         $this->Groups = TableRegistry::getTableLocator()->get('Groups.Groups');
         $this->GroupsUsers = TableRegistry::getTableLocator()->get('Groups.GroupsUsers');
 
-        $this->Users->addBehavior('RolesCapabilities.Authorized');
+        $this->Users->addBehavior('RolesCapabilities.Authorized', [
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'field', 'field' => 'id'],
+            ],
+        ]);
         $this->Groups->addBehavior('RolesCapabilities.Authorized');
         $this->GroupsUsers->addBehavior('RolesCapabilities.Authorized');
     }
