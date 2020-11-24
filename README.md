@@ -41,7 +41,7 @@ bin/cake migrations migrate -p Groups
 ## Setup
 Load plugin
 ```
-bin/cake plugin load --routes --bootstrap RolesCapabilities
+bin/cake plugin load RolesCapabilities
 ```
 
 Load required plugin(s)
@@ -50,47 +50,53 @@ bin/cake plugin load Muffin/Trash
 bin/cake plugin load --routes --bootstrap CakeDC/Users
 ```
 
-Load the Capability component in your src/Controller/AppController.php file using the `initialize()` method. Additionally use the CapabilityTrait in AppController. See details below:
+### Middleware
+The AuthorizationContextMiddleware is registered your middleware queue
+and if you are using an Authentication middleware it will be configured automatically.
+If not see below:
+
+### 
+If you are using AuthComponent you need to call the following code
+in your controller initialize method or the isAuthorized if you are using
+Controller authorization:
 
 ```
-use RolesCapabilities\CapabilityTrait;
-
-class AppController extends Controller
-{
-    use CapabilityTrait;
-
-    public function initialize()
-    {
-        parent::initialize();
-        $this->loadComponent('Flash');
-        $this->loadComponent('RolesCapabilities.Capability', [
-            'currentRequest' => $this->request->params
-        ]);
-    }
+$user = $this->Auth->user();
+if (!empty($user)) {
+    AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
+} else {
+    AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
+}
 ```
 
-## AuthorizationContext (EXPERIMENTAL)
+### Controller authorization
 
-### Setup
-Add the AuthorizationContextMiddleware in your middleware queue.
+If you are using AuthComponent you can use the 'RolesCapabilities.EntityAccess'
+authorization adapter. The authorization adapter will authorize access to the
+controller depending on the access on the undelying model.
 
-In your controller:
+By default the id of the entity is obtained from the 'id' request parameter.
+You can change it with the idParam config option.
+
+### Model authorization
+Model (table) authorization works using the RolesCapabilities.Authorized behavior.
+You can either add it manually or through RolesCapabilities.tables configuration.
+
+For each table you can create one entry or add an * entry to match all tables.
+
+### Options
 
 ```
-use RolesCapabilities\EntityAccess\AuthorizationContext;
-use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
-
-class AppController extends Controller
-{
-    public function initialize()
-    {
-        parent::initialize();
-        ...
-        $user = $this->Auth->user();
-        if (!empty($user)) {
-            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
-        } else {
-            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
-        }
-        ...
+[
+    'associations' => [
+        'AssignedRoles' => [ 'association' => 'Groups.Users' ],
+    ],
+    'capabilities' => [
+        ['operation' => Operation::VIEW, 'association' => 'AssignedRoles' ],
+    ],
+    // Additional operations (only used for controller authorization)
+    'operations' => [
+        'export'
+    ],
+]
 ```
