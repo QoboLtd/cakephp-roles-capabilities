@@ -23,7 +23,7 @@ use Webmozart\Assert\Assert;
 class AuthorizedBehavior extends Behavior
 {
     private static $ASSOCIATIONS = [
-        '' => 'All',
+        'All' => [ 'association' => '' ],
     ];
 
     /**

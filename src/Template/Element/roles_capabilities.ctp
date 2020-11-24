@@ -20,7 +20,7 @@ ksort($capabilities);
                 $active = ++$count == 1 ? 'active' : '';
                 $tabId = Inflector::underscore(preg_replace('/[^a-zA-Z0-9]+/', '_', $tableName));
             ?>
-            <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= $this->cell('RolesCapabilities.Capability::groupName', [$tableName]) ?></a></li>
+            <li class="<?= $active ?>"><a href="#<?= $tabId ?>" data-toggle="tab"><?= Inflector::humanize(Inflector::underscore($tableName)) ?></a></li>
         <?php endforeach; ?>
         </ul>
         </div>
@@ -42,17 +42,18 @@ ksort($capabilities);
             <thead>
                 <tr>
                     <th>&nbsp;</th>
-                    <?php foreach ($tableCaps['associations'] as $association) : ?>
-                        <th><?= Inflector::humanize($association) ?></th>
+                    <?php foreach ($tableCaps['associations'] as $name => $value) : ?>
+                        <th><?= Inflector::humanize(Inflector::underscore($name)) ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
 
             <?php foreach ($tableCaps['operations'] as $operation) : ?>
             <tr>
-                <td><?= Inflector::humanize($operation)?></td>
-                <?php foreach ($tableCaps['associations'] as $association => $desc) : 
-                    $inputId = $operation . '@'. $association;
+                <td><?= Inflector::humanize(Inflector::underscore($operation))?></td>
+                <?php foreach ($tableCaps['associations'] as $name => $association) : 
+                    $inputId = $tableName .'@' . $operation . '@'. $name;
+                    $disabled = false;
                     $checked = false;
                 ?>
                 <td>

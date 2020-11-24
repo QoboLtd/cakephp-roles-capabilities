@@ -13,13 +13,16 @@ declare(strict_types=1);
  */
 namespace RolesCapabilities\Controller;
 
+use Cake\ORM\TableRegistry;
 use RolesCapabilities\EntityAccess\CapabilitiesUtil;
+use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * Roles Controller
  *
  * @property \RolesCapabilities\Model\Table\RolesTable $Roles
- * @property \RolesCapabilities\Model\Table\ExtendedCapabilitiesTable $ExtendedCapabilities
+ * @property ExtendedCapabilitiesTable $ExtendedCapabilities
  */
 class RolesController extends AppController
 {
@@ -29,15 +32,10 @@ class RolesController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        $this->ExtendedCapabilities = $this->loadModel('RolesCapabilities.ExtendedCapabilities');
-    }
+        $extendedCapabilities = $this->loadModel('RolesCapabilities.ExtendedCapabilities');
+        Assert::isInstanceOf($extendedCapabilities, ExtendedCapabilitiesTable::class);
 
-    /**
-     * Gets all capabilities
-     */
-    private function getAllCapabilities(): array
-    {
-        return CapabilitiesUtil::getAllCapabilities();
+        $this->ExtendedCapabilities = $extendedCapabilities;
     }
 
     /**
@@ -64,12 +62,9 @@ class RolesController extends AppController
         ]);
 
         $roleCaps = $this->ExtendedCapabilities->find('all')->where(['role_id' => $id])->toArray();
+        $capabilities = CapabilitiesUtil::getAllCapabilities();
 
-        $capabilities = $this->getAllCapabilities();
-
-        $this->set('capabilities', $capabilities);
-        $this->set('roleCaps', $roleCaps);
-        $this->set('role', $role);
+        $this->set(compact('role', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);
     }
 
@@ -82,7 +77,7 @@ class RolesController extends AppController
     {
         $role = $this->Roles->newEntity();
         if ($this->request->is('post')) {
-            $data = (array)$this->request->getData();
+            $data = $this->getRequestData();
             /**
              * @var \RolesCapabilities\Model\Entity\Role $role
              */
@@ -90,7 +85,7 @@ class RolesController extends AppController
 
             if (!empty($data['capabilities'])) {
                 $role->capabilities = $this->ExtendedCapabilities->newEntities(
-                    json_decode($data['capabilities'], true)
+                    $data['capabilities']
                 );
             }
 
@@ -104,10 +99,52 @@ class RolesController extends AppController
         }
         $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
 
-        $capabilities = $this->getAllCapabilities();
+        $capabilities = CapabilitiesUtil::getAllCapabilities();
 
         $this->set(compact('role', 'groups', 'capabilities'));
         $this->set('_serialize', ['role']);
+    }
+
+    private function getRequestData(): array
+    {
+        $data = (array)$this->request->getData();
+
+        // Convert capabilities from json
+        if (!empty($data['capabilities'])) {
+            $capabilities = json_decode($data['capabilities'], true);
+            if ($capabilities === false) {
+                $capabilities = [];
+            }
+
+            $locator = TableRegistry::getTableLocator();
+
+            $data['extended_capabilities'] = [];
+
+            foreach ($capabilities as $cap) {
+                $fields = explode('@', $cap);
+
+                $tableName = $fields[0];
+                $operation = $fields[1];
+                $associationName = $fields[2];
+
+                $table = $locator->get($tableName);
+
+                $behavior = $table->getBehavior('Authorized');
+                $associations = $behavior->getAssociations();
+
+                $capability = array_merge(
+                    [
+                        'resource' => $table->getRegistryAlias(),
+                        'operation' => $operation,
+                    ],
+                    $associations[$associationName],
+                );
+
+                $data['extended_capabilities'][] = $capability;
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -122,19 +159,15 @@ class RolesController extends AppController
             'contain' => ['Groups'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $data = (array)$this->request->getData();
+            $data = $this->getRequestData();
+
+            // delete existing role capabilities
+            $this->ExtendedCapabilities->deleteAll(['role_id' => $id]);
+
             /**
              * @var \RolesCapabilities\Model\Entity\Role
              */
             $role = $this->Roles->patchEntity($role, $data);
-
-            // delete existing role capabilities
-            $this->ExtendedCapabilities->deleteAll(['role_id' => $id]);
-            if (!empty($data['capabilities'])) {
-                $role->capabilities = $this->ExtendedCapabilities->newEntities(
-                    json_decode($data['capabilities'], true)
-                );
-            }
 
             if ($this->Roles->save($role)) {
                 $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
@@ -148,7 +181,7 @@ class RolesController extends AppController
         // fetch role capabilities
         $roleCaps = $this->ExtendedCapabilities->find('list')->where(['role_id' => $id])->toArray();
 
-        $capabilities = $this->getAllCapabilities();
+        $capabilities = CapabilitiesUtil::getAllCapabilities();
 
         $this->set(compact('role', 'groups', 'capabilities', 'roleCaps'));
         $this->set('_serialize', ['role']);

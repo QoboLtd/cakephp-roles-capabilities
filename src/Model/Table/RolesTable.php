@@ -42,10 +42,10 @@ class RolesTable extends Table
         $this->addBehavior('Muffin/Trash.Trash');
         $this->addBehavior('RolesCapabilities.Authorized', [
             'associations' => [
-                'Group.Users' => 'Assigned Roles',
+                'AssignedRoles' => [ 'association' => 'Group.Users' ],
             ],
             'capabilities' => [
-                ['operation' => Operation::VIEW, 'association' => 'Groups.Users'],
+                ['operation' => Operation::VIEW, 'association' => 'Groups.Users' ],
             ],
         ]);
 
