@@ -55,36 +55,6 @@ class EntityCapabilityRule implements AuthorizationRule
         $this->aliasCounter = 0;
     }
 
-    private const CAPS = [
-        'Groups.Groups' => [
-            ['operation' => Operation::VIEW, 'association' => 'Users', 'name' => 'Member Of'],
-        ],
-        'Groups.GroupsUsers' => [
-            ['operation' => Operation::VIEW, 'association' => 'field', 'field' => 'user_id', 'name' => 'Group Memberships'],
-        ],
-    ];
-
-    /**
-     * @param string $resource The resource
-     * @param string $operation The operation
-     * @return mixed[]
-     */
-    protected function getStaticCapabilities(string $resource, string $operation): array
-    {
-        if (!isset(self::CAPS[$resource])) {
-            return [];
-        }
-
-        $caps = [];
-        foreach (self::CAPS[$resource] as $cap) {
-            if ($cap['operation'] === $operation) {
-                $caps[] = $cap;
-            }
-        }
-
-        return $caps;
-    }
-
     /**
      * @return mixed[]
      */
@@ -94,14 +64,9 @@ class EntityCapabilityRule implements AuthorizationRule
 
         $tableCapabilities = CapabilitiesUtil::getModelStaticCapabities($this->table);
 
-        $staticCapabilities = array_merge(
-            $this->getStaticCapabilities($resource, $this->operation),
-            $tableCapabilities,
-        );
-
         $roles = $this->subject->getRoles();
         if (count($roles) === 0) {
-            return $staticCapabilities;
+            return $tableCapabilities;
         }
 
         $table = TableRegistry::getTableLocator()->get('RolesCapabilities.ExtendedCapabilities');
@@ -120,7 +85,7 @@ class EntityCapabilityRule implements AuthorizationRule
         ->applyOptions(['filterQuery' => false])
         ->order(['association'])->toArray();
 
-        return array_merge($staticCapabilities, $dynamicCapabilities);
+        return array_merge($tableCapabilities, $dynamicCapabilities);
     }
 
     /**
@@ -169,8 +134,16 @@ class EntityCapabilityRule implements AuthorizationRule
 
         $isEmpty = true;
 
+        $associations = CapabilitiesUtil::getModelCapabilityAssociations($this->table);
+
         foreach ($capabilities as $capability) {
-            $associationName = $capability['association'];
+            if (!isset($associations[$capability['association']])) {
+                continue;
+            }
+
+            $association = $associations[$capability['association']];
+
+            $associationName = $association['association'];
             if ($associationName === '') {
                 return $query->newExpr("'EXTENDED_CAPS'='EXTENDED_CAPS'");
             }
@@ -180,7 +153,7 @@ class EntityCapabilityRule implements AuthorizationRule
              */
             if ($associationName === 'field') {
                 $isEmpty = false;
-                $exp->eq($this->table->aliasField($capability['field']), $this->subject->getId());
+                $exp->eq($this->table->aliasField($association['field']), $this->subject->getId());
                 continue;
             }
 

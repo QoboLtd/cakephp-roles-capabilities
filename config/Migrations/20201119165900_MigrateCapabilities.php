@@ -1,4 +1,6 @@
 <?php
+
+use Cake\Utility\Inflector;
 use Migrations\AbstractMigration;
 
 class MigrateCapabilities extends AbstractMigration
@@ -27,11 +29,9 @@ class MigrateCapabilities extends AbstractMigration
 
         if (count($opParts) === 2) {
             $operation = $opParts[0];
-            $field = $opParts[1];
-            $association = 'field';
+            $association = Inflector::camelize($opParts[1]);
         } else {
-            $association = '';
-            $field = '';
+            $association = 'All';
         }
 
         return [

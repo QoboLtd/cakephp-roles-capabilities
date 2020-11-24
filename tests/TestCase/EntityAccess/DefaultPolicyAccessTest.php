@@ -55,12 +55,29 @@ class DefaultPolicyAccessTest extends TestCase
         $this->GroupsUsers = TableRegistry::getTableLocator()->get('Groups.GroupsUsers');
 
         $this->Users->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'Self' => [ 'association' => 'field', 'field' => 'id'],
+            ],
             'capabilities' => [
-                ['operation' => Operation::VIEW, 'association' => 'field', 'field' => 'id'],
+                ['operation' => Operation::VIEW, 'association' => 'Self'],
             ],
         ]);
-        $this->Groups->addBehavior('RolesCapabilities.Authorized');
-        $this->GroupsUsers->addBehavior('RolesCapabilities.Authorized');
+        $this->Groups->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'MemberOf' => [ 'association' => 'Users' ],
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'MemberOf' ],
+            ],
+        ]);
+        $this->GroupsUsers->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'Membership' => [ 'association' => 'field', 'field' => 'user_id' ],
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'Membership' ],
+            ],
+        ]);
     }
 
     public function tearDown(): void

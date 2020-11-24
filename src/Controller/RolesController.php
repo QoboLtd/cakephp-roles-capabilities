@@ -69,42 +69,12 @@ class RolesController extends AppController
     }
 
     /**
-     * Add method
+     * Gets request data.
+     * This is necessary because capabilities are json encoded
+     * to avoid php max_input_vars limit.
      *
-     * @return \Cake\Http\Response|void|null Redirects on successful add, renders view otherwise.
+     * See webroot/js/utils.js
      */
-    public function add()
-    {
-        $role = $this->Roles->newEntity();
-        if ($this->request->is('post')) {
-            $data = $this->getRequestData();
-            /**
-             * @var \RolesCapabilities\Model\Entity\Role $role
-             */
-            $role = $this->Roles->patchEntity($role, $data);
-
-            if (!empty($data['capabilities'])) {
-                $role->capabilities = $this->ExtendedCapabilities->newEntities(
-                    $data['capabilities']
-                );
-            }
-
-            if ($this->Roles->save($role)) {
-                $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The role could not be saved. Please, try again.'));
-            }
-        }
-        $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
-
-        $capabilities = CapabilitiesUtil::getAllCapabilities();
-
-        $this->set(compact('role', 'groups', 'capabilities'));
-        $this->set('_serialize', ['role']);
-    }
-
     private function getRequestData(): array
     {
         $data = (array)$this->request->getData();
@@ -145,6 +115,37 @@ class RolesController extends AppController
         }
 
         return $data;
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|void|null Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $role = $this->Roles->newEntity();
+        if ($this->request->is('post')) {
+            $data = $this->getRequestData();
+            /**
+             * @var \RolesCapabilities\Model\Entity\Role $role
+             */
+            $role = $this->Roles->patchEntity($role, $data);
+
+            if ($this->Roles->save($role)) {
+                $this->Flash->success((string)__d('Qobo/RolesCapabilities', 'The role has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error((string)__d('Qobo/RolesCapabilities', 'The role could not be saved. Please, try again.'));
+            }
+        }
+        $groups = $this->Roles->Groups->find('list', ['limit' => 200]);
+
+        $capabilities = CapabilitiesUtil::getAllCapabilities();
+
+        $this->set(compact('role', 'groups', 'capabilities'));
+        $this->set('_serialize', ['role']);
     }
 
     /**

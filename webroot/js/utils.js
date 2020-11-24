@@ -23,12 +23,12 @@
 
     // json encode selected capabilities to avoid hitting PHP's max_input_vars limit (task #4031)
     $('#capabilities-submit').click(function () {
-        var checkboxes = {};
+        var capabilities = [];
         $('.checkbox-capability:checked').each(function () {
-            checkboxes[$(this).attr('name')] = true;
+            capabilities.push($(this).attr('name'));
         });
 
-        $('#capabilities-input').val(JSON.stringify(checkboxes));
+        $('#capabilities-input').val(JSON.stringify(capabilities));
 
         $('#capabilities-form').submit();
     });

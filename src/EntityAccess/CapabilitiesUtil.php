@@ -76,6 +76,25 @@ class CapabilitiesUtil
         return $tableCapabilities;
     }
 
+     /**
+     * Gets all capabilities defined in the model
+     *
+     * @return mixed[]
+     */
+    public static function getModelCapabilityAssociations(Table $table): array
+    {
+        $tableCapabilities = [];
+
+        if ($table->hasBehavior('Authorized')) {
+            $behavior = $table->getBehavior('Authorized');
+            Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
+
+            return $behavior->getAssociations();
+        }
+
+        return $tableCapabilities;
+    }
+
     /**
      * Gets all capability metadata from all tables
      * For each table it contains the associations and
@@ -105,6 +124,7 @@ class CapabilitiesUtil
             $capabilities[$table->getRegistryAlias()] = [
                 'associations' => $behavior->getAssociations(),
                 'operations' => $behavior->getOperations(),
+                'capabilities' => $behavior->getCapabilities(),
             ];
         }
 
