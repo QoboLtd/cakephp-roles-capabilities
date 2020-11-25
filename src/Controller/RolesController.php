@@ -74,6 +74,8 @@ class RolesController extends AppController
      * to avoid php max_input_vars limit.
      *
      * See webroot/js/utils.js
+     *
+     * @return mixed[]
      */
     private function getRequestData(): array
     {
