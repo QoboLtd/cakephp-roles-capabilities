@@ -111,7 +111,10 @@ class EntityCapabilityRule implements AuthorizationRule
         return $entity !== null;
     }
 
-    /** Create unique alias for the table
+    /**
+     * Create unique alias for the table. Each call returns a new alias.
+     * This is to allow us to include the table in multiple subqueries
+     * without ambiguity.
      *
      * @return string unique alias for this table
      */
@@ -179,9 +182,9 @@ class EntityCapabilityRule implements AuthorizationRule
              * an sql string.
              */
             $innerQuery = $this->table->query()
-            ->applyOptions(['filterQuery' => true ])
-            ->select([$this->table->aliasField($sourcePrimaryKey) ])
-            ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
+                ->applyOptions(['filterQuery' => true ])
+                ->select([$this->table->aliasField($sourcePrimaryKey) ])
+                ->where($quotedAlias . '.' . $sourcePrimaryKey . '=' . $this->table->aliasField($sourcePrimaryKey));
 
             if ($this->entityId !== null) {
                 $innerQuery->where([$this->table->aliasField($sourcePrimaryKey) => $this->entityId]);
