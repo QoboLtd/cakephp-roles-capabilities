@@ -8,12 +8,12 @@ use Cake\Http\ServerRequest;
 class AuthorizationContext
 {
     /**
-     * @var ?ServerRequest
+     * @var ?\Cake\Http\ServerRequest
      */
     private $request;
 
     /**
-     * @var ?SubjectInterface
+     * @var ?\RolesCapabilities\EntityAccess\SubjectInterface
      */
     private $subject;
 
@@ -25,9 +25,9 @@ class AuthorizationContext
     /**
      * Private constructor. Use one of the asXXX functions.
      *
-     * @param ?SubjectInterface $subject The subject (ie user)
+     * @param ?\RolesCapabilities\EntityAccess\SubjectInterface $subject The subject (ie user)
      * @param bool $system Whether this is a system operation
-     * @param ?ServerRequest $request The request (if applicable)
+     * @param ?\Cake\Http\ServerRequest $request The request (if applicable)
      */
     private function __construct(?SubjectInterface $subject, bool $system, ?ServerRequest $request)
     {
@@ -39,8 +39,8 @@ class AuthorizationContext
     /**
      * Creates a new context for the system.
      *
-     * @param ?ServerRequest $request The request
-     * @return AuthorizationContext
+     * @param ?\Cake\Http\ServerRequest $request The request
+     * @return \RolesCapabilities\EntityAccess\AuthorizationContext
      */
     public static function asSystem(?ServerRequest $request): AuthorizationContext
     {
@@ -50,9 +50,9 @@ class AuthorizationContext
     /**
      * Creates a new context for the given subject.
      *
-     * @param SubjectInterface $subject The user
-     * @param ?ServerRequest $request The request
-     * @return AuthorizationContext
+     * @param \RolesCapabilities\EntityAccess\SubjectInterface $subject The user
+     * @param ?\Cake\Http\ServerRequest $request The request
+     * @return \RolesCapabilities\EntityAccess\AuthorizationContext
      */
     public static function asUser(SubjectInterface $subject, ?ServerRequest $request): AuthorizationContext
     {
@@ -62,8 +62,8 @@ class AuthorizationContext
     /**
      * Creates a new context for anonymous requests
      *
-     * @param ?ServerRequest $request The request
-     * @return AuthorizationContext
+     * @param ?\Cake\Http\ServerRequest $request The request
+     * @return \RolesCapabilities\EntityAccess\AuthorizationContext
      */
     public static function asAnonymous(?ServerRequest $request): AuthorizationContext
     {
@@ -73,7 +73,7 @@ class AuthorizationContext
     /**
      * The subject for this context.
      *
-     * @return ?SubjectInterface The subject or null
+     * @return ?\RolesCapabilities\EntityAccess\SubjectInterface The subject or null
      */
     public function subject(): ?SubjectInterface
     {
@@ -82,6 +82,7 @@ class AuthorizationContext
 
     /**
      * Whether this is a system operation.
+     *
      * @return bool
      */
     public function system(): bool
@@ -90,7 +91,7 @@ class AuthorizationContext
     }
 
     /**
-     * @return ?ServerRequest The request (if any)
+     * @return ?\Cake\Http\ServerRequest The request (if any)
      */
     public function request(): ?ServerRequest
     {

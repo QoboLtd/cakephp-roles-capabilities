@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -13,7 +15,6 @@ namespace RolesCapabilities\EntityAccess;
 
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 
 /**
  *  Always allow. Used to implement simple authorization.
@@ -21,7 +22,7 @@ use Cake\ORM\Table;
 class AllowRule implements AuthorizationRule
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function allow(): bool
     {
@@ -29,7 +30,7 @@ class AllowRule implements AuthorizationRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function expression(Query $query): QueryExpression
     {
