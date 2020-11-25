@@ -38,7 +38,6 @@ class MigrateCapabilities extends AbstractMigration
             'resource' => $resource,
             'operation' => $operation,
             'association' => $association,
-            'field' => $field,
         ];
     }
 
