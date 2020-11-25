@@ -89,7 +89,7 @@ class ExtendedCapabilitiesTableTest extends TestCase
 
         $saved = $this->ExtendedCapabilities->save($entity);
 
-        $this->assertFalse($saved, 'Invalid role id accepted');
+        $this->assertEquals($saved, false, 'Invalid role id accepted');
     }
 
     /**
