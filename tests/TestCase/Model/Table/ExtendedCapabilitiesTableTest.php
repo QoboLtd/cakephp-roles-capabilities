@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace RolesCapabilities\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
@@ -79,6 +81,35 @@ class ExtendedCapabilitiesTableTest extends TestCase
      */
     public function testBuildRules(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $entity = $this->ExtendedCapabilities->newEntity(
+            [
+                'role_id' => 'INVALID-ROLE-ID',
+            ]
+        );
+
+        $saved = $this->ExtendedCapabilities->save($entity);
+
+        $this->assertFalse($saved, 'Invalid role id accepted');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testSave(): void
+    {
+        $entity = $this->ExtendedCapabilities->newEntity(
+            [
+                'role_id' => '00000000-0000-0000-0000-000000000002',
+                'resource' => 'TestResource',
+                'association' => 'All',
+                'operation' => 'view',
+            ]
+        );
+
+        $capability = $this->ExtendedCapabilities->save($entity);
+
+        $this->assertNotEmpty($capability, 'Capability not saved');
     }
 }
