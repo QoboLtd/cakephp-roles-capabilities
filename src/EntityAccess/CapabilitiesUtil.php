@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -40,18 +41,7 @@ class CapabilitiesUtil
                 continue;
             }
 
-            list($plugin, $table) = explode('\\Model\\Table\\', $class, 2);
-
-            $table = basename($table, 'Table');
-
-            if ($plugin === 'App') {
-                $fullName = $table;
-            } else {
-                $plugin = str_replace('\\', '/', $plugin);
-                $fullName = $plugin . '.' . $table;
-            }
-
-            $tables[] = $fullName;
+            $tables[] = App::shortName($class, 'Model/Table', 'Table');
         }
 
         return $tables;
