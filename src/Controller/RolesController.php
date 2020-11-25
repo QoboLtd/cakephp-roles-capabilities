@@ -82,29 +82,31 @@ class RolesController extends AppController
         $data = (array)$this->request->getData();
 
         // Convert capabilities from json
-        if (!empty($data['capabilities'])) {
-            $capabilities = json_decode($data['capabilities'], true);
-            if ($capabilities === false) {
-                $capabilities = [];
-            }
+        if (empty($data['capabilities'])) {
+            return $data;
+        }
 
-            $data['extended_capabilities'] = [];
+        $capabilities = json_decode($data['capabilities'], true);
+        if ($capabilities === false) {
+            return $data;
+        }
 
-            foreach ($capabilities as $cap) {
-                $fields = explode('@', $cap);
+        $data['extended_capabilities'] = [];
 
-                $tableName = str_replace('_', '.', $fields[0]);
-                $operation = $fields[1];
-                $associationName = $fields[2];
+        foreach ($capabilities as $cap) {
+            $fields = explode('@', $cap);
 
-                $capability = [
-                    'resource' => $tableName,
-                    'operation' => $operation,
-                    'association' => $associationName,
-                ];
+            $tableName = str_replace('_', '.', $fields[0]);
+            $operation = $fields[1];
+            $associationName = $fields[2];
 
-                $data['extended_capabilities'][] = $capability;
-            }
+            $capability = [
+                'resource' => $tableName,
+                'operation' => $operation,
+                'association' => $associationName,
+            ];
+
+            $data['extended_capabilities'][] = $capability;
         }
 
         return $data;
