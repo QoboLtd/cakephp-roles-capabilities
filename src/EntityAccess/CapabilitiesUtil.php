@@ -60,39 +60,39 @@ class CapabilitiesUtil
     /**
      * Gets all capabilities defined in the model
      *
+     * @param \Cake\ORM\Table $table The table to get the capabilities
+     *
      * @return mixed[]
      */
     public static function getModelStaticCapabities(Table $table): array
     {
-        $tableCapabilities = [];
-
-        if ($table->hasBehavior('Authorized')) {
-            $behavior = $table->getBehavior('Authorized');
-            Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
-
-            return $behavior->getCapabilities();
+        if (!$table->hasBehavior('Authorized')) {
+            return [];
         }
 
-        return $tableCapabilities;
+        $behavior = $table->getBehavior('Authorized');
+        Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
+
+        return $behavior->getCapabilities();
     }
 
     /**
      * Gets all capabilities defined in the model
      *
+     * @param \Cake\ORM\Table $table The table to get the associations
+     *
      * @return mixed[]
      */
     public static function getModelCapabilityAssociations(Table $table): array
     {
-        $tableCapabilities = [];
-
-        if ($table->hasBehavior('Authorized')) {
-            $behavior = $table->getBehavior('Authorized');
-            Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
-
-            return $behavior->getAssociations();
+        if (!$table->hasBehavior('Authorized')) {
+            return [];
         }
 
-        return $tableCapabilities;
+        $behavior = $table->getBehavior('Authorized');
+        Assert::isInstanceOf($behavior, AuthorizedBehavior::class);
+
+        return $behavior->getAssociations();
     }
 
     /**
