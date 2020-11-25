@@ -19,7 +19,7 @@ trait AccessControlTrait
      *
      * @return bool
      */
-    public function isActionAuthorized(Controller $controller, string $action, ?string $entityId, ?SubjectInterface $user = null): bool
+    public function isControllerActionAuthorized(Controller $controller, string $action, ?string $entityId, ?SubjectInterface $user = null): bool
     {
         $table = $controller->loadModel();
         if (!($table instanceof Table)) {
