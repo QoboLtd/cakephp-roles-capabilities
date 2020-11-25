@@ -9,7 +9,7 @@ use RolesCapabilities\EntityAccess\CapabilitiesUtil;
 
 class CapabilityUtilTest extends TestCase
 {
-     /**
+    /**
      * Fixtures
      *
      * @var array
