@@ -42,13 +42,14 @@ class ModelInitializeListener implements EventListenerInterface
         $config = Configure::read('RolesCapabilities.tables.' . $key);
         if ($config === null) {
             $config = Configure::read('RolesCapabilities.tables.*');
+            if ($config !== null) {
+                return;
+            }
         }
 
-        if ($config !== null) {
-            if (!isset($config['enabled']) || $config['enabled'] === true) {
-                unset($config['enabled']);
-                $table->addBehavior('RolesCapabilities.Authorized', $config);
-            }
+        if (!isset($config['enabled']) || $config['enabled'] === true) {
+            unset($config['enabled']);
+            $table->addBehavior('RolesCapabilities.Authorized', $config);
         }
     }
 }
