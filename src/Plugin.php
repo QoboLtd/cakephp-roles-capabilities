@@ -43,7 +43,7 @@ class Plugin extends BasePlugin
         $routes->plugin(
             'RolesCapabilities',
             ['path' => '/roles-capabilities'],
-            function ($routes) {
+            function (RouteBuilder $routes) {
                 $routes->fallbacks('DashedRoute');
             }
         );
