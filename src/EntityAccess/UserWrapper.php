@@ -93,7 +93,7 @@ class UserWrapper implements SubjectInterface
      */
     private static function getReportToUsers(string $userId): array
     {
-        $table = TableRegistry::get(Configure::read('Users.table'));
+        $table = TableRegistry::get(Configure::read('RolesCapabilities.Users.table', 'Users'));
         $users = $table->find()
             ->applyOptions(['filterQuery' => true])
             ->where([
