@@ -32,8 +32,6 @@ class Application extends BaseApplication
 {
     public function bootstrap()
     {
-        parent::bootstrap();
-
         $this->addPlugin('CakeDC/Users');
         $this->addPlugin(RolesCapabilitiesPlugin::class);
     }
