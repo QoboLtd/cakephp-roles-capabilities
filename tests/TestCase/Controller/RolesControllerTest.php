@@ -160,8 +160,6 @@ class RolesControllerTest extends TestCase
 
         $this->post('/roles-capabilities/roles/add', $role);
 
-        //error_log(print_r($this->_response, true));
-
         $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
     }
 
@@ -197,8 +195,6 @@ class RolesControllerTest extends TestCase
         ]);
 
         $this->delete('/roles-capabilities/roles/delete/00000000-0000-0000-0000-000000000002');
-
-        //error_log(print_r($this->_response, true));
 
         $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
     }
