@@ -12,6 +12,10 @@ class AppController extends Controller
         parent::initialize();
         $this->loadComponent('Auth', [
             'authenticate' => ['Form'],
+            'authorize' => [
+                'RolesCapabilities.EntityAccess',
+            ],
+            'unauthorizedRedirect' => false,
         ]);
 
         $this->loadComponent('Flash');
