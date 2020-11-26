@@ -67,7 +67,7 @@ class AuthorizedBehavior extends Behavior
     }
 
     /**
-     * Filters query.
+     * {@inheritDoc}
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options, bool $primary): void
     {
@@ -104,6 +104,7 @@ class AuthorizedBehavior extends Behavior
      *
      * @param Event $event Event trigger for afterSave by CakePHP Behaviors framework.
      * @param EntityInterface $entity The entity saved.
+     * @param ArrayObject $options Options.
      * @return void
      */
     public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): void
@@ -120,7 +121,7 @@ class AuthorizedBehavior extends Behavior
     }
 
     /**
-     * @return void
+     * {@inheritDoc}
      */
     public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -177,6 +178,11 @@ class AuthorizedBehavior extends Behavior
 
     /**
      * Creates authorization policy
+     *
+     * @param AuthorizationContext $ctx The authorization context.
+     * @param Event $event The model event
+     * @param ?EntityInterface $entity The entity (if applicable)
+     * @param string $operation The operation for the event.
      *
      * @return AuthorizationRule
      */

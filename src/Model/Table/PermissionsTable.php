@@ -139,9 +139,11 @@ class PermissionsTable extends Table
      * @param string $modelName Model name
      * @param string $foreignKey Foreign key
      * @param string $userId User ID
+     * @param string $operation The operation
+     *
      * @return \RolesCapabilities\Model\Entity\Permission|null
      */
-    public function fetchUserPermission(string $modelName, string $foreignKey, string $userId, string $type): ?Permission
+    public function fetchUserPermission(string $modelName, string $foreignKey, string $userId, string $operation): ?Permission
     {
         Assert::stringNotEmpty($modelName);
         Assert::uuid($foreignKey);
@@ -153,7 +155,7 @@ class PermissionsTable extends Table
                 'model' => $modelName,
                 'owner_foreign_key' => $userId,
                 'foreign_key' => $foreignKey,
-                'type' => $type,
+                'type' => $operation,
             ])
             ->first();
 
