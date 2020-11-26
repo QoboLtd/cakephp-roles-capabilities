@@ -42,6 +42,7 @@ class EntityCapabilityRule implements AuthorizationRule
      * @param SubjectInterface $subject The subject (ie userId)
      * @param Table $table The resource for this operation
      * @param string $operation The operation
+     * @param ?string $entityId The entityId (if applicable)
      */
     public function __construct(SubjectInterface $subject, Table $table, string $operation, ?string $entityId)
     {
@@ -133,8 +134,6 @@ class EntityCapabilityRule implements AuthorizationRule
         $exp = $query->newExpr();
         $exp->setConjunction('OR');
 
-        $isEmpty = true;
-
         $associations = CapabilitiesUtil::getModelCapabilityAssociations($this->table);
 
         foreach ($capabilities as $capability) {
@@ -153,7 +152,6 @@ class EntityCapabilityRule implements AuthorizationRule
              * Fake field association. Simply match field value.
              */
             if ($associationName === 'field') {
-                $isEmpty = false;
                 $exp->eq($this->table->aliasField($association['field']), $this->subject->getId());
                 continue;
             }
@@ -162,7 +160,6 @@ class EntityCapabilityRule implements AuthorizationRule
                 error_log('Unknown association ' . $associationName . ' for Table ' . $this->table->getTable());
                 continue;
             }
-            $isEmpty = false;
 
             $association = $this->table->getAssociation($associationName);
             $primaryKey = $association->getTarget()->getPrimaryKey();
@@ -205,7 +202,7 @@ class EntityCapabilityRule implements AuthorizationRule
             $exp->exists($query->newExpr($sql));
         }
 
-        if ($isEmpty) {
+        if ($exp->count() === 0) {
             return $query->newExpr("'EXTENDED_CAPS'='NONE'");
         }
 
