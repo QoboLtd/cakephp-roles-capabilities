@@ -147,7 +147,58 @@ class PermissionsControllerTest extends TestCase
      */
     public function testAdd(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->configRequest([
+            'environment' => [
+                'HTTP_REFERER' => '/roles-capabilities/permissions',
+            ],
+        ]);
+
+        $role = [
+            'model' => 'Leads',
+            'foreign_key' => 'c4bd0658-f0d8-482b-bf02-4ffe45f18bdf',
+            'user_id' => '00000000-0000-0000-0000-000000000003',
+            'type' => 'view',
+        ];
+
+        $this->post('/roles-capabilities/permissions/add', $role);
+
+        $this->assertRedirect(['controller' => 'Permissions', 'action' => 'index']);
+    }
+
+    public function testAddNonAdmin(): void
+    {
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000002');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->configRequest([
+            'environment' => [
+                'HTTP_REFERER' => '/roles-capabilities/permissions',
+            ],
+        ]);
+
+        $role = [
+            'model' => 'Leads',
+            'foreign_key' => 'c4bd0658-f0d8-482b-bf02-4ffe45f18bdf',
+            'user_id' => '00000000-0000-0000-0000-000000000002',
+            'type' => 'view',
+        ];
+
+        $this->post('/roles-capabilities/permissions/add', $role);
+
+        $this->assertResponseCode(403, 'Added permission as non-admin');
     }
 
     /**
@@ -182,8 +233,6 @@ class PermissionsControllerTest extends TestCase
         ]);
 
         $this->delete('/roles-capabilities/permissions/delete/00000000-0000-0000-0000-000000000001');
-
-        //error_log(print_r($this->_response, true));
 
         $this->assertRedirect(['controller' => 'Permissions', 'action' => 'index']);
     }
