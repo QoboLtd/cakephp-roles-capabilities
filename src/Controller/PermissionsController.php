@@ -32,7 +32,8 @@ class PermissionsController extends AppController
     public function index()
     {
         $conditions = [];
-        $params = (array)$this->request->query();
+
+        $params = (array)$this->request->getQuery();
         if (!empty($params['model'])) {
             $conditions['model'] = $params['model'];
         }
