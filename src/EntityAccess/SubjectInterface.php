@@ -7,6 +7,7 @@ interface SubjectInterface
 {
     /**
      * Gets the id
+     *
      * @return string
      */
     public function getId(): string;

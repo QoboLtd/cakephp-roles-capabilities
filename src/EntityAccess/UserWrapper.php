@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
-use ArrayAccess;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Groups\Model\Table\GroupsTable;
@@ -14,7 +13,7 @@ class UserWrapper implements SubjectInterface
     /**
      * Wraps a user
      *
-     * @param ArrayAccess|array $user The user to wrap
+     * @param array|\ArrayAccess $user The user to wrap
      * @return SubjectInterface
      */
     public static function forUser($user): SubjectInterface
@@ -23,12 +22,12 @@ class UserWrapper implements SubjectInterface
     }
 
     /**
-     * @var array|ArrayAccess
+     * @var array|\ArrayAccess
      */
     private $user;
 
     /**
-     * @param array|ArrayAccess $user The user to wrap
+     * @param array|\ArrayAccess $user The user to wrap
      */
     private function __construct($user)
     {
@@ -177,7 +176,7 @@ class UserWrapper implements SubjectInterface
     /**
      * Unwraps the user
      *
-     * @return array|ArrayAccess The original user
+     * @return array|\ArrayAccess The original user
      */
     public function unwrap()
     {

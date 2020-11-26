@@ -7,10 +7,10 @@ use ReflectionClass;
 
 abstract class Operation
 {
-    const CREATE = 'create';
-    const VIEW = 'view';
-    const EDIT = 'edit';
-    const DELETE = 'delete';
+    public const CREATE = 'create';
+    public const VIEW = 'view';
+    public const EDIT = 'edit';
+    public const DELETE = 'delete';
 
     /**
      * @var array

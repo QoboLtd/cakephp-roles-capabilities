@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -17,7 +18,6 @@ use Cake\ORM\Query;
 use RuntimeException;
 
 /**
- *
  * Multiple rule authorization.
  *
  * @author Nicos Panayides <n.panayides@qobogroup.com>
