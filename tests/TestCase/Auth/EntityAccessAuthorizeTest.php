@@ -30,16 +30,6 @@ class EntityAccessAuthorizeTest extends TestCase
     ];
 
     /**
-     * @var \RolesCapabilities\Auth\EntityAccessAuthorize
-     */
-    private $auth;
-
-    /**
-     * @var \Cake\Controller\Controller
-     */
-    private $controller;
-
-    /**
      * @var \Cake\ORM\Table
      */
     private $Users;
