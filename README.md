@@ -96,7 +96,11 @@ For each table you can create one entry or add an * entry to match all tables.
     ],
     // Additional operations (only used for controller authorization)
     'operations' => [
-        'export'
+        'export',
+    ],
+    // Users table etc.
+    'users' => [
+        'table' => 'Users',
     ],
 ]
 ```
