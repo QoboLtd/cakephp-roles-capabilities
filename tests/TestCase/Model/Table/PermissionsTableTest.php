@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace RolesCapabilities\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Model\Table\PermissionsTable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -37,11 +38,11 @@ class PermissionsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Permissions') ? [] : ['className' => 'RolesCapabilities\Model\Table\PermissionsTable'];
+
         /**
          * @var \RolesCapabilities\Model\Table\PermissionsTable $table
          */
-        $table = TableRegistry::get('Permissions', $config);
+        $table = TableRegistry::get('RolesCapabilities.Permissions');
         $this->Permissions = $table;
     }
 

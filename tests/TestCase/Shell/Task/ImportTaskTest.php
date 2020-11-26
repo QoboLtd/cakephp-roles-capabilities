@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace RolesCapabilities\Test\TestCase\Shell\Task;
 
 use Cake\Core\Configure;
@@ -15,7 +17,14 @@ class ImportTaskTest extends TestCase
         'plugin.RolesCapabilities.Roles',
     ];
 
+    /**
+     * @var \RolesCapabilities\Shell\Task\ImportTask
+     */
     private $task;
+
+    /**
+     * @var \Cake\ORM\Table
+     */
     private $table;
 
     public function setUp()

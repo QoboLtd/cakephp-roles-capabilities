@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\CapabilitiesUtil;
 

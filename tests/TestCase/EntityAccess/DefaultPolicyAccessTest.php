@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
-use Cake\Core\Configure;
-use Cake\Core\Plugin;
-use Cake\Event\EventManager;
-use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -33,14 +29,23 @@ class DefaultPolicyAccessTest extends TestCase
     ];
 
     /**
-     * @var Table
+     * @var \Cake\ORM\Table
      */
     private $Roles;
 
+    /**
+     * @var \Cake\ORM\Table
+     */
     private $Users;
 
+    /**
+     * @var \Cake\ORM\Table
+     */
     private $Groups;
 
+    /**
+     * @var \Cake\ORM\Table
+     */
     private $GroupsUsers;
 
     public function setUp(): void

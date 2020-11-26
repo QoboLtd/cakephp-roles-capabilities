@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace RolesCapabilities\EntityAccess;
 
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 
 /**
  *  AuthorizationRule

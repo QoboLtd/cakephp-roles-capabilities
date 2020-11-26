@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -96,6 +98,8 @@ class ImportTask extends Shell
         }
 
         $this->success('System roles imported successfully');
+
+        return true;
     }
 
     /**

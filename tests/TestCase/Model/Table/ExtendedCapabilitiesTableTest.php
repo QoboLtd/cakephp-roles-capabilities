@@ -5,17 +5,16 @@ namespace RolesCapabilities\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Capability;
 use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * RolesCapabilities\Model\Table\CapabilitiesTable Test Case
  *
- * @property ExtendedCapabilitiesTable $ExtendedCapabilities
+ * @property \RolesCapabilities\Model\Table\ExtendedCapabilitiesTable $ExtendedCapabilities
  */
 class ExtendedCapabilitiesTableTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -34,11 +33,9 @@ class ExtendedCapabilitiesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('ExtendedCapabilities') ? [] : ['className' => 'RolesCapabilities\Model\Table\ExtendedCapabilitiesTable'];
-        /**
-         * @var \RolesCapabilities\Model\Table\ExtendedCapabilitiesTable $table
-         */
-        $table = TableRegistry::get('ExtendedCapabilities', $config);
+        $table = TableRegistry::get('RolesCapabilities.ExtendedCapabilities');
+        Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
+
         $this->ExtendedCapabilities = $table;
     }
 

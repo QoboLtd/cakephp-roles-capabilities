@@ -12,7 +12,6 @@ declare(strict_types=1);
  */
 namespace RolesCapabilities\EntityAccess;
 
-use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use RuntimeException;

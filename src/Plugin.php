@@ -4,11 +4,9 @@ declare(strict_types=1);
 namespace RolesCapabilities;
 
 use Cake\Core\BasePlugin;
-use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\Routing\RouteBuilder;
 use RolesCapabilities\EntityAccess\Event\ModelInitializeListener;
-use RolesCapabilities\EntityAccess\Event\QueryFilterEventsListener;
 use RolesCapabilities\Middleware\AuthorizationContextMiddleware;
 
 class Plugin extends BasePlugin
@@ -27,6 +25,8 @@ class Plugin extends BasePlugin
 
     /**
      * {@inheritdoc}
+     *
+     * @return void
      */
     public function initialize()
     {

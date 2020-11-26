@@ -8,6 +8,9 @@
     -->
     <description>PHP CodeSniffer Configuration</description>
 
+    <!-- Path to third-party rules -->
+    <config name="installed_paths" value="../../slevomat/coding-standard"/>
+
     <!-- Coding standard to use -->
     <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP">
         <exclude name="Generic.Commenting.Todo" />
@@ -15,6 +18,15 @@
     <rule ref="Generic.PHP.ForbiddenFunctions">
         <properties>
             <property name="forbiddenFunctions" type="array" value="debug=>null,dd=>null,var_dump=>null,sizeof=>count,delete=>unset"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.PHP.RequireStrictTypes">
+        <exclude-pattern>./config/</exclude-pattern>
+    </rule>
+
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true"/>
         </properties>
     </rule>
 

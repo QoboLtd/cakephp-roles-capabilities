@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
-use InvalidArgumentException;
 use ReflectionClass;
 
 abstract class Operation
@@ -13,6 +12,9 @@ abstract class Operation
     const EDIT = 'edit';
     const DELETE = 'delete';
 
+    /**
+     * @var array
+     */
     private static $aliases = [
         'list' => Operation::VIEW,
         'index' => Operation::VIEW,

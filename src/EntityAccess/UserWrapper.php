@@ -7,9 +7,6 @@ use ArrayAccess;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Groups\Model\Table\GroupsTable;
-use InvalidArgumentException;
-use RolesCapabilities\Access\Utils;
-use RolesCapabilities\Model\Table\RolesTable;
 use Webmozart\Assert\Assert;
 
 class UserWrapper implements SubjectInterface

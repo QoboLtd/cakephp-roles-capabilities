@@ -5,6 +5,7 @@ vendor/
 tmp/
 cghooks.lock
 
+/bin/composer
 composer.lock
 config/Migrations/schema-dump-default.lock
 config/Migrations/schema-dump-test.lock

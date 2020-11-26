@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace RolesCapabilities\EntityAccess;
 
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;

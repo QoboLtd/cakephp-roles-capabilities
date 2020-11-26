@@ -13,7 +13,6 @@ declare(strict_types=1);
  */
 namespace RolesCapabilities\Controller;
 
-use Cake\ORM\TableRegistry;
 use RolesCapabilities\EntityAccess\CapabilitiesUtil;
 use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
 use Webmozart\Assert\Assert;

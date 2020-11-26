@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  *
@@ -13,7 +15,6 @@ namespace RolesCapabilities\EntityAccess;
 
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 
 /**
  *  Always deny.

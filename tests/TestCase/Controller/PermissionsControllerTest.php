@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace RolesCapabilities\Test\TestCase\Controller;
 
 use Cake\TestSuite\IntegrationTestCase;
-use RolesCapabilities\Controller\PermissionsController;
 
 /**
  * RolesCapabilities\Controller\PermissionsController Test Case

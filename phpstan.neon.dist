@@ -4,12 +4,14 @@ parameters:
         - src
         - tests
         - webroot
-    autoload_files:
+    bootstrapFiles:
         - tests/bootstrap.php
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
     inferPrivatePropertyTypeFromConstructor: true
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon

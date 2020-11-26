@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
-use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
-use RolesCapabilities\Model\Table\PermissionsTable;
 
 class PolicyBuilder
 {

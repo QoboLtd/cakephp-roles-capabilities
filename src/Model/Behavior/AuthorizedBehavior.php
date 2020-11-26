@@ -7,12 +7,10 @@ use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
-use RolesCapabilities\EntityAccess\AllowRule;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\AuthorizationRule;
@@ -22,6 +20,9 @@ use Webmozart\Assert\Assert;
 
 class AuthorizedBehavior extends Behavior
 {
+    /**
+     * @var array
+     */
     private static $ASSOCIATIONS = [
         'All' => [ 'association' => '' ],
     ];
