@@ -43,14 +43,14 @@ class UsersFixture extends TestFixture
     public $records = [
         [
             'id' => '00000000-0000-0000-0000-000000000001',
-            'name' => 'user1',
+            'name' => 'superuser',
             'is_superuser' => true,
             'is_supervisor' => false,
             'reports_to' => null,
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000002',
-            'name' => 'user2',
+            'name' => 'supervisor',
             'is_superuser' => false,
             'is_supervisor' => true,
             'reports_to' => null,
@@ -64,10 +64,16 @@ class UsersFixture extends TestFixture
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000004',
-            'name' => 'user3',
+            'name' => 'user4',
             'is_superuser' => false,
             'is_supervisor' => false,
             'reports_to' => '00000000-0000-0000-0000-000000000002',
+        ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000005',
+            'name' => 'no_roles_user',
+            'is_superuser' => false,
+            'is_supervisor' => false,
         ],
     ];
 }
