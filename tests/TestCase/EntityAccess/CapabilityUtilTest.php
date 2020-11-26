@@ -59,4 +59,11 @@ class CapabilityUtilTest extends TestCase
 
         $this->assertArrayHasKey('Self', $associations);
     }
+
+    public function testGetAllCapabilities(): void
+    {
+        $all = CapabilitiesUtil::getAllCapabilities();
+
+        $this->assertArrayHasKey('RolesCapabilities.Roles', $all, 'All capabilities');
+    }
 }

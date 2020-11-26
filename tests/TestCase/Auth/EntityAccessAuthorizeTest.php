@@ -3,19 +3,12 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\Auth;
 
-use Cake\Controller\ComponentRegistry;
-use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Auth\EntityAccessAuthorize;
-use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\Operation;
-use Webmozart\Assert\Assert;
 
 class EntityAccessAuthorizeTest extends TestCase
 {
@@ -55,23 +48,6 @@ class EntityAccessAuthorizeTest extends TestCase
     {
         parent::setUp();
 
-        $request = new ServerRequest();
-
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
-        Assert::isInstanceOf($response, Response::class);
-
-        AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($request));
-
-        /* @phpstan-ignore-next-line */
-        $this->controller = $this->getMockBuilder('Cake\Controller\Controller')
-            ->setMethods(null)
-            ->setConstructorArgs([$request, $response])
-            ->getMock();
-        Assert::isInstanceOf($this->controller, Controller::class);
-        $registry = new ComponentRegistry($this->controller);
-
-        $this->auth = new EntityAccessAuthorize($registry);
-
         $locator = TableRegistry::getTableLocator();
 
         $this->Users = $locator->get('RolesCapabilities.Users');
@@ -105,7 +81,6 @@ class EntityAccessAuthorizeTest extends TestCase
     public function tearDown(): void
     {
         TableRegistry::clear();
-        AuthorizationContextHolder::pop();
         parent::tearDown();
     }
 

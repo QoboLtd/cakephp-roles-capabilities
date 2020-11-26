@@ -31,10 +31,6 @@ class RolesFixture extends TestFixture
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'UNIQUE_NAME' => ['type' => 'unique', 'columns' => ['name'], 'length' => []],
         ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
-        ],
     ];
     // @codingStandardsIgnoreEnd
 

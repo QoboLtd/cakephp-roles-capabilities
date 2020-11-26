@@ -19,18 +19,13 @@ class UsersFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'is_superuser' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => 0, 'comment' => '', 'precision' => null],
-        'is_supervisor' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => 0, 'comment' => '', 'precision' => null],
-        'reports_to' => ['type' => 'string', 'length' => 36, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
-        'primary_key' => ['type' => 'uuid', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'id' => ['type' => 'uuid', 'null' => false ],
+        'name' => ['type' => 'string', 'length' => 255, 'null' => false ],
+        'is_superuser' => ['type' => 'boolean', 'null' => false, 'default' => 0 ],
+        'is_supervisor' => ['type' => 'boolean', 'null' => false, 'default' => 0 ],
+        'reports_to' => ['type' => 'string', 'length' => 36, 'null' => true ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -72,6 +67,18 @@ class UsersFixture extends TestFixture
         [
             'id' => '00000000-0000-0000-0000-000000000005',
             'name' => 'no_roles_user',
+            'is_superuser' => false,
+            'is_supervisor' => false,
+        ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000006',
+            'name' => 'sales_user',
+            'is_superuser' => false,
+            'is_supervisor' => false,
+        ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000007',
+            'name' => 'sales_user_2',
             'is_superuser' => false,
             'is_supervisor' => false,
         ],

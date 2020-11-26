@@ -37,5 +37,12 @@ class ExtendedCapabilitiesFixture extends TestFixture
      * @var array
      */
     public $records = [
+        [
+            'id' => 'b48036a7-0b7f-4989-bd73-ecad4c20bc81',
+            'role_id' => '79628943-0016-4677-869a-e37728ff6564',
+            'resource' => 'RolesCapabilities.Users',
+            'operation' => 'view',
+            'association' => 'SameGroup',
+        ],
     ];
 }

@@ -20,15 +20,11 @@ class GroupsUsersFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'group_id' => ['type' => 'string', 'length' => 36, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'user_id' => ['type' => 'string', 'length' => 36, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'id' => ['type' => 'uuid', 'null' => false ],
+        'group_id' => ['type' => 'string', 'length' => 36, 'null' => false ],
+        'user_id' => ['type' => 'string', 'length' => 36, 'null' => false ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -48,6 +44,16 @@ class GroupsUsersFixture extends TestFixture
             'id' => '00000000-0000-0000-0000-000000000003',
             'group_id' => '969b9de4-07c7-4032-a9a0-0d075ca2c633',
             'user_id' => '00000000-0000-0000-0000-000000000003',
+        ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000004',
+            'group_id' => '79628943-0016-4677-869a-e37728ff6564',
+            'user_id' => '00000000-0000-0000-0000-000000000006',
+        ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000005',
+            'group_id' => '79628943-0016-4677-869a-e37728ff6564',
+            'user_id' => '00000000-0000-0000-0000-000000000007',
         ],
     ];
 }

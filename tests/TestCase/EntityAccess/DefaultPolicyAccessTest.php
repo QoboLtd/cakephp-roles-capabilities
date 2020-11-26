@@ -191,7 +191,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         AuthorizationContextHolder::asSystem();
         try {
-            $user = $this->Users->find('all', [])->where([
+            $user = $this->Users->find('all')->where([
                 'is_superuser' => true,
             ])->first();
         } finally {
@@ -206,5 +206,19 @@ class DefaultPolicyAccessTest extends TestCase
             AuthorizationContextHolder::pop();
         }
         $this->assertGreaterThan(1, $count);
+    }
+
+    public function testUserAsSupervisor(): void
+    {
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000002');
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $q = $this->Users->find();
+            $count = $q->count();
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertEquals(3, $count);
     }
 }

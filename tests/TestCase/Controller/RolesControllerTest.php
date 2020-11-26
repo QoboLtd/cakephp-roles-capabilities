@@ -3,13 +3,19 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\Controller;
 
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
+use RolesCapabilities\EntityAccess\Operation;
 
 /**
  * RolesCapabilities\Controller\RolesController Test Case
  */
-class RolesControllerTest extends IntegrationTestCase
+class RolesControllerTest extends TestCase
 {
+    use IntegrationTestTrait;
 
     /**
      * Fixtures
@@ -17,17 +23,91 @@ class RolesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.RolesCapabilities.ExtendedCapabilities',
+        'plugin.RolesCapabilities.Groups',
+        'plugin.RolesCapabilities.GroupsRoles',
+        'plugin.RolesCapabilities.GroupsUsers',
+        'plugin.RolesCapabilities.Permissions',
         'plugin.RolesCapabilities.Roles',
+        'plugin.RolesCapabilities.Users',
     ];
+
+    /**
+     * @var \Cake\ORM\Table
+     */
+    private $Users;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $locator = TableRegistry::getTableLocator();
+
+        $this->Users = $locator->get('RolesCapabilities.Users');
+
+        $this->Users->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'Self' => [ 'association' => 'field', 'field' => 'id'],
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'Self'],
+            ],
+        ]);
+    }
+
+    public function tearDown(): void
+    {
+        AuthorizationContextHolder::pop();
+        TableRegistry::clear();
+        parent::tearDown();
+    }
+
+    private function fetchUser(string $id): EntityInterface
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            return $this->Users->get($id);
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+    }
 
     /**
      * Test index method
      *
      * @return void
      */
-    public function testIndex(): void
+    public function testIndexUser(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000005');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->get('/roles-capabilities/roles/index');
+        $this->assertResponseCode(403);
+    }
+
+    /**
+     * Test index method
+     *
+     * @return void
+     */
+    public function testIndexAdmin(): void
+    {
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->get('/roles-capabilities/roles/index');
+        $this->assertResponseCode(200);
     }
 
     /**
@@ -37,7 +117,16 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public function testView(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->get('/roles-capabilities/roles/view/00000000-0000-0000-0000-000000000001');
+        $this->assertResponseCode(200);
     }
 
     /**
@@ -47,7 +136,33 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public function testAdd(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->configRequest([
+            'environment' => [
+                'HTTP_REFERER' => '/roles-capabilities/roles',
+            ],
+        ]);
+
+        $role = [
+            'id' => '34adbb61-caf9-4cf3-97e7-b063fa0cd130',
+            'name' => 'Test Role',
+            'description' => 'Test Role Description',
+            'deny_edit' => 0,
+            'deny_delete' => 0,
+        ];
+
+        $this->post('/roles-capabilities/roles/add', $role);
+
+        //error_log(print_r($this->_response, true));
+
+        $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
     }
 
     /**
@@ -67,6 +182,24 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public function testDelete(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->configRequest([
+            'environment' => [
+                'HTTP_REFERER' => '/roles-capabilities/roles',
+            ],
+        ]);
+
+        $this->delete('/roles-capabilities/roles/delete/00000000-0000-0000-0000-000000000002');
+
+        //error_log(print_r($this->_response, true));
+
+        $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
     }
 }

@@ -29,10 +29,6 @@ class GroupsFixture extends TestFixture
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
-        ],
     ];
     // @codingStandardsIgnoreEnd
 
@@ -57,6 +53,16 @@ class GroupsFixture extends TestFixture
             'created' => '2016-02-04 11:12:29',
             'modified' => '2016-02-04 11:12:29',
             'trashed' => null,
+        ],
+        [
+            'id' => '79628943-0016-4677-869a-e37728ff6564',
+            'name' => 'Sales Group',
+            'created' => '2016-02-09 13:35:11',
+            'modified' => '2016-02-09 13:35:11',
+            'trashed' => null,
+            'description' => 'Sales group',
+            'deny_edit' => 0,
+            'deny_delete' => 0,
         ],
     ];
 }
