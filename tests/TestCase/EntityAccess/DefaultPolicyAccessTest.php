@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
-use Cake\ORM\Table;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
@@ -92,6 +92,16 @@ class DefaultPolicyAccessTest extends TestCase
         parent::tearDown();
     }
 
+    private function fetchUser(string $id): EntityInterface
+    {
+        AuthorizationContextHolder::asSystem();
+        try {
+            return $this->Users->get($id);
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+    }
+
     public function testAnonymousQuery(): void
     {
         $count = $this->Roles->find()->count();
@@ -112,14 +122,7 @@ class DefaultPolicyAccessTest extends TestCase
 
     public function testViewSelf(): void
     {
-        AuthorizationContextHolder::asSystem();
-        try {
-            $user = $this->Users->find()->where([
-                'name' => 'user3',
-            ])->first()->toArray();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
@@ -144,14 +147,7 @@ class DefaultPolicyAccessTest extends TestCase
 
     public function testViewGroupMembership(): void
     {
-        AuthorizationContextHolder::asSystem();
-        try {
-            $user = $this->Users->find()->where([
-                'id' => '00000000-0000-0000-0000-000000000003',
-            ])->first()->toArray();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
@@ -165,14 +161,7 @@ class DefaultPolicyAccessTest extends TestCase
 
     public function testViewOwnGroup(): void
     {
-        AuthorizationContextHolder::asSystem();
-        try {
-            $user = $this->Users->find()->where([
-                'id' => '00000000-0000-0000-0000-000000000003',
-            ])->first()->toArray();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
@@ -186,14 +175,7 @@ class DefaultPolicyAccessTest extends TestCase
 
     public function testViewOwnRole(): void
     {
-        AuthorizationContextHolder::asSystem();
-        try {
-            $user = $this->Users->find()->where([
-                'id' => '00000000-0000-0000-0000-000000000003',
-            ])->first()->toArray();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {
@@ -209,9 +191,9 @@ class DefaultPolicyAccessTest extends TestCase
     {
         AuthorizationContextHolder::asSystem();
         try {
-            $user = $this->Users->find()->where([
+            $user = $this->Users->find('all', [])->where([
                 'is_superuser' => true,
-            ])->first()->toArray();
+            ])->first();
         } finally {
             AuthorizationContextHolder::pop();
         }
