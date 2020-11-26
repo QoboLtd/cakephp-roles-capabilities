@@ -58,7 +58,9 @@ class ExtendedCapabilitiesTableTest extends TestCase
      */
     public function testInitialize(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertEquals($this->ExtendedCapabilities->getTable(), 'qobo_extended_capabilities', 'Table name');
+        $this->assertEquals($this->ExtendedCapabilities->getDisplayField(), 'id', 'Display field');
+        $this->assertEquals($this->ExtendedCapabilities->getPrimaryKey(), 'id', 'Primary key');
     }
 
     /**
