@@ -42,7 +42,7 @@ class ModelInitializeListener implements EventListenerInterface
         $config = Configure::read('RolesCapabilities.tables.' . $key);
         if ($config === null) {
             $config = Configure::read('RolesCapabilities.tables.*');
-            if ($config !== null) {
+            if ($config === null) {
                 return;
             }
         }
