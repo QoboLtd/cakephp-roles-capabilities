@@ -88,7 +88,8 @@ class RolesControllerTest extends TestCase
     {
         AuthorizationContextHolder::asSystem();
         try {
-            return $this->Roles->find('all')->where(['name' => '__Test_Role__'])->first();
+            // @phpstan-ignore-next-line
+            return $this->Roles->find('all')->where(['name' => $name])->first();
         } finally {
             AuthorizationContextHolder::pop();
         }

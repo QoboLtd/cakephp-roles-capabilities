@@ -39,6 +39,8 @@ class AppController extends Controller
         } else {
             AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
         }
+
+        return null;
     }
 
     public function afterFilter(Event $event)
@@ -46,5 +48,7 @@ class AppController extends Controller
         AuthorizationContextHolder::pop();
 
         parent::afterFilter($event);
+
+        return null;
     }
 }
