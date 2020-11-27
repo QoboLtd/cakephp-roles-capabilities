@@ -26,7 +26,17 @@
         var capabilities = [];
         $('.checkbox-capability:checked').each(function () {
             if (!$(this).is(':disabled')) {
-                capabilities.push($(this).attr('name'));
+                var capString = $(this).attr('name');
+
+                var parts = capString.split('@');
+
+                var cap = {
+                    resource: parts[0].replace('_', '.'),
+                    operation: parts[1],
+                    association: parts[2]
+                };
+
+                capabilities.push(cap);
             }
         });
 

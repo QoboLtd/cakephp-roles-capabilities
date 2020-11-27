@@ -110,19 +110,7 @@ class RolesController extends AppController
         $data['extended_capabilities'] = [];
 
         foreach ($capabilities as $cap) {
-            $fields = explode('@', $cap);
-
-            $tableName = str_replace('_', '.', $fields[0]);
-            $operation = $fields[1];
-            $associationName = $fields[2];
-
-            $capability = [
-                'resource' => $tableName,
-                'operation' => $operation,
-                'association' => $associationName,
-            ];
-
-            $data['extended_capabilities'][] = $capability;
+            $data['extended_capabilities'][] = $cap;
         }
 
         return $data;
