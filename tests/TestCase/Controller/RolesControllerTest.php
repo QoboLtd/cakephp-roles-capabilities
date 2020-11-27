@@ -42,6 +42,11 @@ class RolesControllerTest extends TestCase
      */
     private $Roles;
 
+    /**
+     * @var \Cake\ORM\Table
+     */
+    private $ExtendedCapabilities;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -60,6 +65,7 @@ class RolesControllerTest extends TestCase
         ]);
 
         $this->Roles = $locator->get('RolesCapabilities.Roles');
+        $this->ExtendedCapabilities = $locator->get('RolesCapabilities.ExtendedCapabilities');
     }
 
     public function tearDown(): void
@@ -232,6 +238,58 @@ class RolesControllerTest extends TestCase
         ]);
         $this->post('/roles-capabilities/roles/edit/' . $roleId, $roleData);
         $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
+    }
+
+    /**
+     * Test edit method
+     *
+     * @return void
+     */
+    public function testEditWithCapabilities(): void
+    {
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
+
+        $this->session([
+            'Auth' => [
+                'User' => $user->toArray(),
+            ],
+        ]);
+
+        $this->configRequest([
+            'environment' => [
+                'HTTP_REFERER' => '/roles-capabilities/roles',
+            ],
+        ]);
+
+        $roleData = [
+            'name' => '__Test_Role__',
+            'description' => 'Test Role Description',
+            'deny_edit' => 0,
+            'deny_delete' => 0,
+            'capabilities' => json_encode(
+                [
+                    [ 'resource' => 'MY_TEST_RESOURCE', 'operation' => 'view', 'association' => 'All' ],
+                ],
+            ),
+        ];
+
+        $this->post('/roles-capabilities/roles/add', $roleData);
+        $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
+        AuthorizationContextHolder::clear();
+
+        $role = $this->fetchRole('__Test_Role__');
+        $this->assertNotNull($role, 'Role not found in database');
+        $roleId = $role['id'];
+
+        if ($roleId === null) {
+            return;
+        }
+
+        $cap = $this->ExtendedCapabilities->find()->where(['role_id' => $roleId ])->first();
+
+        $this->assertEquals($cap['resource'], 'MY_TEST_RESOURCE');
+        $this->assertEquals($cap['operation'], 'view');
+        $this->assertEquals($cap['association'], 'All');
     }
 
     /**
