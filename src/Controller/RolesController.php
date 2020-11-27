@@ -13,6 +13,8 @@ declare(strict_types=1);
  */
 namespace RolesCapabilities\Controller;
 
+use Cake\Event\Event;
+use Cake\Http\Exception\NotFoundException;
 use RolesCapabilities\EntityAccess\CapabilitiesUtil;
 use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
 use Webmozart\Assert\Assert;
@@ -35,6 +37,21 @@ class RolesController extends AppController
         Assert::isInstanceOf($extendedCapabilities, ExtendedCapabilitiesTable::class);
 
         $this->ExtendedCapabilities = $extendedCapabilities;
+    }
+
+    /**
+     * Handles before render event
+     *
+     * @param Event $event The event
+     *
+     * @return ?\Cake\Http\Response
+     */
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setHelpers(['RolesCapabilities.Capabilities']);
+
+        return null;
     }
 
     /**
@@ -150,6 +167,10 @@ class RolesController extends AppController
      */
     public function edit(string $id = null)
     {
+        if ($id === null) {
+            throw new NotFoundException();
+        }
+
         $role = $this->Roles->get($id, [
             'contain' => ['Groups'],
         ]);
