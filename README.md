@@ -61,12 +61,32 @@ in your controller initialize method or the isAuthorized if you are using
 Controller authorization:
 
 ```
-$user = $this->Auth->user();
-if (!empty($user)) {
-    AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
-} else {
-    AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
-}
+use RolesCapabilities\EntityAccess\AuthorizationContext;
+use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
+use RolesCapabilities\EntityAccess\UserWrapper;
+
+class MyController extends BaseController
+...
+
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+
+        $user = $this->Auth->user();
+
+        if (!empty($user)) {
+            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
+        } else {
+            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
+        }
+    }
+
+    public function afterFilter(Event $event)
+    {
+        AuthorizationContextHolder::pop();
+
+        parent::afterFilter($event);
+    }
 ```
 
 ### Controller authorization
