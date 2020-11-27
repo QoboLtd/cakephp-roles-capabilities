@@ -70,6 +70,7 @@ class EntityAccessAuthorizeTest extends TestCase
 
     public function tearDown(): void
     {
+        AuthorizationContextHolder::clear();
         TableRegistry::clear();
         parent::tearDown();
     }
@@ -82,6 +83,19 @@ class EntityAccessAuthorizeTest extends TestCase
         } finally {
             AuthorizationContextHolder::pop();
         }
+    }
+
+    public function testInitialContext(): void
+    {
+        $this->assertNull(AuthorizationContextHolder::context(), 'Initial context is not clear');
+    }
+
+    public function testContextAnonymous(): void
+    {
+        $this->get('/users/login');
+        $this->assertResponseCode(200);
+
+        $this->assertNull(AuthorizationContextHolder::context(), 'Context is not clear after request');
     }
 
     public function testAnonymous(): void
