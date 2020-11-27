@@ -223,7 +223,7 @@ class RolesControllerTest extends TestCase
 
         $this->get('/roles-capabilities/roles/view/' . $roleId);
         $this->assertResponseCode(200);
-        AuthorizationContextHolder::pop();
+        AuthorizationContextHolder::clear();
 
         $this->configRequest([
             'environment' => [
@@ -262,7 +262,7 @@ class RolesControllerTest extends TestCase
             'deny_delete' => 0,
         ]);
         $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
-        AuthorizationContextHolder::pop();
+        AuthorizationContextHolder::clear();
 
         $role = $this->fetchRole('__Test_Role__');
 
