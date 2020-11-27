@@ -11,16 +11,6 @@ class AuthorizationContextHolder
     private static $ctx = [];
 
     /**
-     * Clears the authorization context
-     *
-     * @return void
-     */
-    public static function clear(): void
-    {
-        self::$ctx = [];
-    }
-
-    /**
      * Pushes a new authorization context.
      *
      * @param AuthorizationContext $ctx The new authorization context

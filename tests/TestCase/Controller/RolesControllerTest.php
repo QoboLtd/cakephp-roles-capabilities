@@ -70,7 +70,6 @@ class RolesControllerTest extends TestCase
 
     public function tearDown(): void
     {
-        AuthorizationContextHolder::clear();
         TableRegistry::clear();
         parent::tearDown();
     }
@@ -229,7 +228,7 @@ class RolesControllerTest extends TestCase
 
         $this->get('/roles-capabilities/roles/view/' . $roleId);
         $this->assertResponseCode(200);
-        AuthorizationContextHolder::clear();
+        AuthorizationContextHolder::pop();
 
         $this->configRequest([
             'environment' => [
@@ -275,7 +274,6 @@ class RolesControllerTest extends TestCase
 
         $this->post('/roles-capabilities/roles/add', $roleData);
         $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
-        AuthorizationContextHolder::clear();
 
         $role = $this->fetchRole('__Test_Role__');
         $this->assertNotNull($role, 'Role not found in database');
@@ -320,7 +318,7 @@ class RolesControllerTest extends TestCase
             'deny_delete' => 0,
         ]);
         $this->assertRedirect(['controller' => 'Roles', 'action' => 'index']);
-        AuthorizationContextHolder::clear();
+        AuthorizationContextHolder::pop();
 
         $role = $this->fetchRole('__Test_Role__');
 
