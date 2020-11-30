@@ -266,11 +266,9 @@ class RolesControllerTest extends TestCase
             'description' => 'Test Role Description',
             'deny_edit' => 0,
             'deny_delete' => 0,
-            'capabilities' => json_encode(
-                [
-                    [ 'resource' => 'MY_TEST_RESOURCE', 'operation' => 'view', 'association' => 'All' ],
-                ],
-            ),
+            'capabilities' => json_encode([
+                [ 'resource' => 'MY_TEST_RESOURCE', 'operation' => 'view', 'association' => 'All' ],
+            ]),
         ];
 
         $this->post('/roles-capabilities/roles/add', $roleData);
