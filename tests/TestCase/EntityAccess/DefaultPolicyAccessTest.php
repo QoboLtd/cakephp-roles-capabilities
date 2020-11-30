@@ -143,7 +143,7 @@ class DefaultPolicyAccessTest extends TestCase
         } finally {
             AuthorizationContextHolder::pop();
         }
-        $this->assertNotNull(1, $entity);
+        $this->assertNotNull($entity, 'Entity access not allowed');
     }
 
     public function testTest(): void
