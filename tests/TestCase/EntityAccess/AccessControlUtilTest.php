@@ -68,4 +68,22 @@ class AccessControlUtilTest extends TestCase
 
         $this->assertTrue($val, 'User access failed');
     }
+
+    public function testViewAllowSelfById(): void
+    {
+        $accessControl = new AccessControlUtil(UserWrapper::forUser(['id' => '00000000-0000-0000-0000-000000000003']));
+
+        $val = $accessControl->isAllowed($this->Users, 'view', '00000000-0000-0000-0000-000000000003');
+
+        $this->assertTrue($val, 'User access failed');
+    }
+
+    public function testAnonymousWithId(): void
+    {
+        $accessControl = new AccessControlUtil(null);
+
+        $val = $accessControl->isAllowed($this->Users, 'view', '00000000-0000-0000-0000-000000000003');
+
+        $this->assertFalse($val, 'Anonymous access succeeded');
+    }
 }

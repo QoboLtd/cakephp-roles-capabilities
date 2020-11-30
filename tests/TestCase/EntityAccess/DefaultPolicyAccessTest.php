@@ -133,6 +133,19 @@ class DefaultPolicyAccessTest extends TestCase
         $this->assertEquals(1, $count);
     }
 
+    public function testViewSelfById(): void
+    {
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
+
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        try {
+            $entity = $this->Users->get('00000000-0000-0000-0000-000000000003');
+        } finally {
+            AuthorizationContextHolder::pop();
+        }
+        $this->assertNotNull(1, $entity);
+    }
+
     public function testTest(): void
     {
         AuthorizationContextHolder::asSystem();
