@@ -11,12 +11,14 @@ declare(strict_types=1);
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace RolesCapabilities\Shell\Task;
+namespace RolesCapabilities\Command;
 
-use Cake\Console\Shell;
+use Cake\Console\Arguments;
+use Cake\Console\Command;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
 use Webmozart\Assert\Assert;
 
 /**
@@ -24,29 +26,40 @@ use Webmozart\Assert\Assert;
  *
  * Import system roles.
  */
-class ImportTask extends Shell
+class RolesImportCommand extends Command
 {
+    /**
+     * {@inheritDoc}
+     */
+    protected function buildOptionParser(ConsoleOptionParser $parser)
+    {
+        $parser
+            ->setDescription('Imports roles from configuration to the database.');
+
+        return $parser;
+    }
+
     /**
      * Main task method
      *
      * @return bool True on success, false otherwise
      */
-    public function main()
+    public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->info('Task: import system roles');
-        $this->hr();
+        $io->info('Import system roles');
+        $io->hr();
 
         $roles = Configure::read('RolesCapabilities.Roles');
         if (empty($roles)) {
             $this->warn("No roles configured for importing.  Nothing to do.");
 
-            return true;
+            return 1;
         }
 
         /**
          * @var \RolesCapabilities\Model\Table\RolesTable $table
          */
-        $table = TableRegistry::get('RolesCapabilities.Roles');
+        $table = $this->getTableLocator()->get('RolesCapabilities.Roles');
 
         foreach ($roles as $role) {
             if (empty($role['name'])) {
@@ -69,20 +82,20 @@ class ImportTask extends Shell
             }, $entity->get('groups'));
 
             if (null !== $entity && $entity->get('deny_edit')) {
-                $this->warn(sprintf('Roles "%s" already exists and is not allowed to be modified.', $role['name']));
+                $io->warning(sprintf('Roles "%s" already exists and is not allowed to be modified.', $role['name']));
                 continue;
             }
 
             null === $entity ?
-                $this->info(sprintf('Creating role "%s".', $role['name'])) :
-                $this->info(sprintf('Updating role "%s".', $role['name']));
+                $io->info(sprintf('Creating role "%s".', $role['name'])) :
+                $io->info(sprintf('Updating role "%s".', $role['name']));
 
             $entity = null === $entity ? $table->newEntity() : $entity;
             $entity = $table->patchEntity($entity, $role);
 
             if (! $table->save($entity)) {
-                $this->err("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
-                $this->abort("Failed to create role [" . $entity->get('name') . "]");
+                $io->error("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
+                $io->abort("Failed to create role [" . $entity->get('name') . "]");
             }
 
             $group = $this->getGroupByRoleName($entity->get('name'));
@@ -93,13 +106,13 @@ class ImportTask extends Shell
 
             // associate imported role with matching group
             if ($table->Groups->link($entity, [$group])) {
-                $this->info(sprintf('Role "%s" linked with group "%s"', $entity->get('name'), $group->get('name')));
+                $io->info(sprintf('Role "%s" linked with group "%s"', $entity->get('name'), $group->get('name')));
             }
         }
 
-        $this->success('System roles imported successfully');
+        $io->success('System roles imported successfully');
 
-        return true;
+        return 0;
     }
 
     /**
@@ -110,7 +123,7 @@ class ImportTask extends Shell
      */
     protected function getGroupByRoleName(string $name): ?EntityInterface
     {
-        $result = TableRegistry::get('Groups.Groups')->find()
+        $result = $this->getTableLocator()->get('Groups.Groups')->find()
             ->enableHydration(true)
             ->where(['name' => $name])
             ->first();

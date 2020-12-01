@@ -1,12 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace RolesCapabilities\Test\TestCase\Shell\Task;
+namespace RolesCapabilities\Test\TestCase\Command;
 
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use RolesCapabilities\Shell\Task\ImportTask;
+use RolesCapabilities\Command\RolesImportCommand;
 use Webmozart\Assert\Assert;
 
 class ImportTaskTest extends TestCase
@@ -18,25 +17,19 @@ class ImportTaskTest extends TestCase
     ];
 
     /**
-     * @var \RolesCapabilities\Shell\Task\ImportTask
+     * @var \Cake\Console\ConsoleIo
      */
-    private $task;
-
-    /**
-     * @var \Cake\ORM\Table
-     */
-    private $table;
+    private $io;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->table = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
+        $this->table = $this->getTableLocator()->get('RolesCapabilities.Roles');
 
         /** @var \Cake\Console\ConsoleIo */
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
-        $this->task = new ImportTask($io);
     }
 
     public function tearDown()
@@ -55,7 +48,8 @@ class ImportTaskTest extends TestCase
     {
         $this->table->deleteAll([]);
 
-        $this->task->main();
+        $command = new RolesImportCommand();
+        $command->run([], $this->io);
 
         $query = $this->table->find()->where(['name' => $data['name']]);
         $this->assertSame(1, $query->count());
@@ -72,7 +66,7 @@ class ImportTaskTest extends TestCase
         // sleeping so we can capture the modified time diff.
         sleep(1);
 
-        $this->task->main();
+        $command->run([], $this->io);
 
         $entity = $this->table->find()->where(['name' => $data['name']])->firstOrFail();
         Assert::isInstanceOf($entity, \Cake\Datasource\EntityInterface::class);
