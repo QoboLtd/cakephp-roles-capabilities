@@ -96,16 +96,11 @@ class EntityCapabilityRule implements AuthorizationRule
             return false;
         }
 
-        $primaryKey = $this->table->getPrimaryKey();
-        Assert::string($primaryKey);
-
-        $query = $this->table->query()
-            ->applyOptions(['filterQuery' => true])
-            ->select([$this->table->aliasField($primaryKey)]);
-
+        $query = $this->table->query();
         $exp = $this->expression($query);
+        $query = $query->where($exp);
 
-        $entity = $query->where($exp)->first();
+        $entity = $query->first();
 
         return $entity !== null;
     }
