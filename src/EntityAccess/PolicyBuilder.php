@@ -69,6 +69,16 @@ class PolicyBuilder
             $userRules[] = $builder->build();
         }
 
-        return MultiRule::any(...$userRules);
+        $userPolicy = MultiRule::any(...$userRules);
+
+        /** All operations except create imply view */
+        if ($this->operation !== Operation::CREATE && $this->operation !== Operation::VIEW) {
+            $viewBuilder = new PolicyBuilder($this->subject, $this->table, Operation::VIEW, $this->entityId);
+            $viewPolicy = $viewBuilder->build();
+
+            return MultiRule::all($viewPolicy, $userPolicy);
+        }
+
+        return $userPolicy;
     }
 }
