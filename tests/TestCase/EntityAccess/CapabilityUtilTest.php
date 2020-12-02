@@ -27,6 +27,14 @@ class CapabilityUtilTest extends TestCase
                 ['operation' => Operation::VIEW, 'association' => 'Self'],
             ],
         ]);
+        $this->getTableLocator()->get('RolesCapabilities.Roles')->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'AssignedRoles' => [ 'association' => 'Groups.Users' ],
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'AssignedRoles' ],
+            ],
+        ]);
     }
 
     public function tearDown(): void

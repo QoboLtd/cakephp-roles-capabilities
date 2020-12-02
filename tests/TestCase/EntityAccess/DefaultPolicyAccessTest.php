@@ -82,6 +82,15 @@ class DefaultPolicyAccessTest extends TestCase
                 ['operation' => Operation::VIEW, 'association' => 'Membership' ],
             ],
         ]);
+
+        $this->Roles->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'AssignedRoles' => [ 'association' => 'Groups.Users' ],
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'AssignedRoles' ],
+            ],
+        ]);
     }
 
     public function tearDown(): void

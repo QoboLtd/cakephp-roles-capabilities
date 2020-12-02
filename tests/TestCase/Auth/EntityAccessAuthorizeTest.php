@@ -38,7 +38,7 @@ class EntityAccessAuthorizeTest extends TestCase
     {
         parent::setUp();
 
-        $locator = TableRegistry::getTableLocator();
+        $locator = $this->getTableLocator();
 
         $this->Users = $locator->get('RolesCapabilities.Users');
 
@@ -64,6 +64,15 @@ class EntityAccessAuthorizeTest extends TestCase
             ],
             'capabilities' => [
                 ['operation' => Operation::VIEW, 'association' => 'Membership' ],
+            ],
+        ]);
+
+        $locator->get('RolesCapabilities.Roles')->addBehavior('RolesCapabilities.Authorized', [
+            'associations' => [
+                'AssignedRoles' => [ 'association' => 'Groups.Users' ],
+            ],
+            'capabilities' => [
+                ['operation' => Operation::VIEW, 'association' => 'AssignedRoles' ],
             ],
         ]);
     }

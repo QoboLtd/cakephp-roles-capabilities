@@ -16,7 +16,6 @@ namespace RolesCapabilities\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use RolesCapabilities\EntityAccess\Operation;
 
 /**
  * Roles Model
@@ -42,14 +41,6 @@ class RolesTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('Muffin/Trash.Trash');
-        $this->addBehavior('RolesCapabilities.Authorized', [
-            'associations' => [
-                'AssignedRoles' => [ 'association' => 'Groups.Users' ],
-            ],
-            'capabilities' => [
-                ['operation' => Operation::VIEW, 'association' => 'AssignedRoles' ],
-            ],
-        ]);
 
         $this->hasMany('ExtendedCapabilities', [
             'foreignKey' => 'role_id',
