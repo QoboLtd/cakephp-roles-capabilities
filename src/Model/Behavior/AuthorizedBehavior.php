@@ -105,9 +105,9 @@ class AuthorizedBehavior extends Behavior
      * @param Event $event Event trigger for afterSave by CakePHP Behaviors framework.
      * @param EntityInterface $entity The entity saved.
      * @param ArrayObject $options Options.
-     * @return void
+     * @return bool
      */
-    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): void
+    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): bool
     {
         if ($entity->isNew()) {
             $operation = Operation::CREATE;
@@ -115,19 +115,15 @@ class AuthorizedBehavior extends Behavior
             $operation = Operation::EDIT;
         }
 
-        if (!$this->allow($event, $entity, $operation)) {
-            throw new \RuntimeException('Denied');
-        }
+        return $this->allow($event, $entity, $operation);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): void
+    public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): bool
     {
-        if (!$this->allow($event, $entity, Operation::DELETE)) {
-            throw new \RuntimeException('Denied');
-        }
+        return $this->allow($event, $entity, Operation::DELETE);
     }
 
     /**
