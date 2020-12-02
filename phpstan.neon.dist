@@ -12,6 +12,8 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
+    ignoreErrors:
+        - '#does not accept PHPUnit\\Framework\\MockObject\\MockObject\.$#'
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon

@@ -40,9 +40,7 @@ class RolesImportCommand extends Command
     }
 
     /**
-     * Main task method
-     *
-     * @return bool True on success, false otherwise
+     * @inheritdoc
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
@@ -51,7 +49,7 @@ class RolesImportCommand extends Command
 
         $roles = Configure::read('RolesCapabilities.Roles');
         if (empty($roles)) {
-            $this->warn("No roles configured for importing.  Nothing to do.");
+            $io->warning("No roles configured for importing.  Nothing to do.");
 
             return 1;
         }
@@ -63,7 +61,7 @@ class RolesImportCommand extends Command
 
         foreach ($roles as $role) {
             if (empty($role['name'])) {
-                $this->warn("Skipping role without a name.");
+                $io->warning("Skipping role without a name.");
                 continue;
             }
 

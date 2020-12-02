@@ -21,6 +21,11 @@ class ImportTaskTest extends TestCase
      */
     private $io;
 
+    /**
+     * @var \Cake\ORM\Table
+     */
+    private $table;
+
     public function setUp()
     {
         parent::setUp();
@@ -29,7 +34,6 @@ class ImportTaskTest extends TestCase
 
         /** @var \Cake\Console\ConsoleIo */
         $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-
     }
 
     public function tearDown()
