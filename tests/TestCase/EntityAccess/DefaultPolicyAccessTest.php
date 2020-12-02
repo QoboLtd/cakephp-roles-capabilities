@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
@@ -54,10 +53,10 @@ class DefaultPolicyAccessTest extends TestCase
 
         AuthorizationContextHolder::push(AuthorizationContext::asAnonymous(null));
 
-        $this->Roles = TableRegistry::getTableLocator()->get('RolesCapabilities.Roles');
-        $this->Users = TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
-        $this->Groups = TableRegistry::getTableLocator()->get('Groups.Groups');
-        $this->GroupsUsers = TableRegistry::getTableLocator()->get('Groups.GroupsUsers');
+        $this->Roles = $this->getTableLocator()->get('RolesCapabilities.Roles');
+        $this->Users = $this->getTableLocator()->get('RolesCapabilities.Users');
+        $this->Groups = $this->getTableLocator()->get('Groups.Groups');
+        $this->GroupsUsers = $this->getTableLocator()->get('Groups.GroupsUsers');
 
         $this->Users->addBehavior('RolesCapabilities.Authorized', [
             'associations' => [
@@ -87,7 +86,7 @@ class DefaultPolicyAccessTest extends TestCase
 
     public function tearDown(): void
     {
-        TableRegistry::clear();
+        $this->getTableLocator()->clear();
         AuthorizationContextHolder::pop();
         parent::tearDown();
     }
@@ -202,14 +201,7 @@ class DefaultPolicyAccessTest extends TestCase
 
     public function testSuperuserViewRoles(): void
     {
-        AuthorizationContextHolder::asSystem();
-        try {
-            $user = $this->Users->find('all')->where([
-                'is_superuser' => true,
-            ])->first();
-        } finally {
-            AuthorizationContextHolder::pop();
-        }
+        $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
 
         AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
         try {

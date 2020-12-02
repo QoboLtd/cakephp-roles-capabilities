@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\CapabilitiesUtil;
 use RolesCapabilities\EntityAccess\Operation;
@@ -11,7 +10,7 @@ use RolesCapabilities\EntityAccess\Operation;
 class CapabilityUtilTest extends TestCase
 {
     /**
-     * @var ?\Cake\ORM\Table
+     * @var \Cake\ORM\Table
      */
     private $Users;
 
@@ -19,7 +18,7 @@ class CapabilityUtilTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::getTableLocator()->get('RolesCapabilities.Users');
+        $this->Users = $this->getTableLocator()->get('RolesCapabilities.Users');
         $this->Users->addBehavior('RolesCapabilities.Authorized', [
             'associations' => [
                 'Self' => [ 'association' => 'field', 'field' => 'id'],
@@ -32,8 +31,7 @@ class CapabilityUtilTest extends TestCase
 
     public function tearDown(): void
     {
-        TableRegistry::clear();
-        $this->Users = null;
+        $this->getTableLocator()->clear();
         parent::tearDown();
     }
 

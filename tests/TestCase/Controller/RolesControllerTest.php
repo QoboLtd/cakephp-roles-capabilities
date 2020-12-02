@@ -9,6 +9,7 @@ use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\Operation;
+use Webmozart\Assert\Assert;
 
 /**
  * RolesCapabilities\Controller\RolesController Test Case
@@ -221,6 +222,8 @@ class RolesControllerTest extends TestCase
 
         $role = $this->fetchRole('__Test_Role__');
         $this->assertNotNull($role, 'Role not found in database');
+        Assert::notNull($role);
+
         $roleId = $role['id'];
 
         if ($roleId === null) {
@@ -276,6 +279,8 @@ class RolesControllerTest extends TestCase
 
         $role = $this->fetchRole('__Test_Role__');
         $this->assertNotNull($role, 'Role not found in database');
+        Assert::notNull($role);
+
         $roleId = $role['id'];
 
         if ($roleId === null) {
@@ -283,6 +288,8 @@ class RolesControllerTest extends TestCase
         }
 
         $cap = $this->ExtendedCapabilities->find()->where(['role_id' => $roleId ])->first();
+        $this->assertNotNull($cap);
+        Assert::notNull($cap);
 
         $this->assertEquals($cap['resource'], 'MY_TEST_RESOURCE');
         $this->assertEquals($cap['operation'], 'view');
@@ -320,6 +327,8 @@ class RolesControllerTest extends TestCase
         AuthorizationContextHolder::pop();
 
         $role = $this->fetchRole('__Test_Role__');
+        $this->assertNotNull($role);
+        Assert::notNull($role);
 
         $this->configRequest([
             'environment' => [
