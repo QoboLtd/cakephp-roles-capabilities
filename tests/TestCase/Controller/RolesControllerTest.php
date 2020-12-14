@@ -270,7 +270,7 @@ class RolesControllerTest extends TestCase
             'deny_edit' => 0,
             'deny_delete' => 0,
             'capabilities' => json_encode([
-                [ 'resource' => 'MY_TEST_RESOURCE', 'operation' => 'view', 'association' => 'All' ],
+                [ 'resource' => 'RolesCapabilities.Users', 'operation' => 'view', 'association' => 'All' ],
             ]),
         ];
 
@@ -291,7 +291,7 @@ class RolesControllerTest extends TestCase
         $this->assertNotNull($cap);
         Assert::notNull($cap);
 
-        $this->assertEquals($cap['resource'], 'MY_TEST_RESOURCE');
+        $this->assertEquals($cap['resource'], 'RolesCapabilities.Users');
         $this->assertEquals($cap['operation'], 'view');
         $this->assertEquals($cap['association'], 'All');
     }

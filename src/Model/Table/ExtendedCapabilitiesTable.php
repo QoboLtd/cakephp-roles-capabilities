@@ -13,8 +13,10 @@ declare(strict_types=1);
  */
 namespace RolesCapabilities\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -70,6 +72,43 @@ class ExtendedCapabilitiesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
+
+        $rules->add(function (EntityInterface $entity, array $options) {
+            $resource = $entity->get('resource');
+
+            $table = TableRegistry::getTableLocator()->get($resource);
+
+            return true;
+        }, 'ValidResource', [
+            'errorField' => 'resource',
+            'message' => 'Resource does not exist',
+        ]);
+
+        $rules->add(function (EntityInterface $entity, array $options) {
+            $resource = $entity->get('resource');
+
+            $table = TableRegistry::getTableLocator()->get($resource);
+
+            if (!$table->hasBehavior('Authorized')) {
+                return false;
+            }
+
+            /**
+             * @var \RolesCapabilities\Model\Behavior\AuthorizedBehavior
+             */
+            $authorizedBehavior = $table->getBehavior('Authorized');
+
+            $associations = array_keys($authorizedBehavior->getAssociations());
+
+            if (!in_array($entity->get('association'), $associations)) {
+                return false;
+            }
+
+            return true;
+        }, 'ValidResource', [
+            'errorField' => 'association',
+            'message' => 'Association does not exist',
+        ]);
 
         return $rules;
     }

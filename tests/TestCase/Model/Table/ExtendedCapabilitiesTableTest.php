@@ -6,6 +6,7 @@ namespace RolesCapabilities\Test\TestCase\Model\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\Model\Table\ExtendedCapabilitiesTable;
+use RolesCapabilities\Model\Table\RolesTable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -37,6 +38,12 @@ class ExtendedCapabilitiesTableTest extends TestCase
         Assert::isInstanceOf($table, ExtendedCapabilitiesTable::class);
 
         $this->ExtendedCapabilities = $table;
+
+        $table = TableRegistry::get('RolesCapabilities.Roles');
+        Assert::isInstanceOf($table, RolesTable::class);
+
+        $this->Roles = $table;
+        $this->Roles->addBehavior('RolesCapabilities.Authorized');
     }
 
     /**
@@ -101,7 +108,7 @@ class ExtendedCapabilitiesTableTest extends TestCase
         $entity = $this->ExtendedCapabilities->newEntity(
             [
                 'role_id' => '00000000-0000-0000-0000-000000000002',
-                'resource' => 'TestResource',
+                'resource' => 'RolesCapabilities.Roles',
                 'association' => 'All',
                 'operation' => 'view',
             ]
@@ -110,5 +117,47 @@ class ExtendedCapabilitiesTableTest extends TestCase
         $capability = $this->ExtendedCapabilities->save($entity);
 
         $this->assertNotEmpty($capability, 'Capability not saved');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testSaveInvalidResource(): void
+    {
+        $entity = $this->ExtendedCapabilities->newEntity(
+            [
+                'role_id' => '00000000-0000-0000-0000-000000000002',
+                'resource' => 'RESOURCE_WHICH_DOES_NOT_EXIST',
+                'association' => 'All',
+                'operation' => 'view',
+            ]
+        );
+
+        $capability = $this->ExtendedCapabilities->save($entity);
+
+        $this->assertEmpty($capability, 'Capability with invalid resource saved');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testSaveInvalidAssociation(): void
+    {
+        $entity = $this->ExtendedCapabilities->newEntity(
+            [
+                'role_id' => '00000000-0000-0000-0000-000000000002',
+                'resource' => 'RolesCapabilities.Roles',
+                'association' => 'INVALID_ASSOCIATION',
+                'operation' => 'view',
+            ]
+        );
+
+        $capability = $this->ExtendedCapabilities->save($entity);
+
+        $this->assertEmpty($capability, 'Capability with invalid association saved');
     }
 }
