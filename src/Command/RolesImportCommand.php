@@ -132,6 +132,28 @@ class RolesImportCommand extends Command
     }
 
     /**
+     * Gets all values from array recursively
+     *
+     * @param array $arr The array
+     *
+     * @return mixed[] All values in the array at all levels
+     */
+    private function arrayValuesRecursive(array $arr): array
+    {
+        $values = [];
+
+        foreach ($arr as $key => $value) {
+            if (is_array($value)) {
+                $values = array_merge($values, $this->arrayValuesRecursive($value));
+            } else {
+                $values[] = $value;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
      * Get import errors from entity object.
      *
      * @param  \Cake\Datasource\EntityInterface $entity Entity instance
@@ -141,13 +163,14 @@ class RolesImportCommand extends Command
     {
         $result = [];
 
-        if (empty($entity->getErrors())) {
+        if (!$entity->hasErrors()) {
             return $result;
         }
 
         foreach ($entity->getErrors() as $field => $error) {
             if (is_array($error)) {
-                $msg = implode(', ', $error);
+                $errors = $this->arrayValuesRecursive($error);
+                $msg = implode(', ', $errors);
             } else {
                 $msg = $error;
             }

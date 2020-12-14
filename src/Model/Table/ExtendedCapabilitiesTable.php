@@ -100,12 +100,8 @@ class ExtendedCapabilitiesTable extends Table
 
             $associations = array_keys($authorizedBehavior->getAssociations());
 
-            if (!in_array($entity->get('association'), $associations)) {
-                return false;
-            }
-
-            return true;
-        }, 'ValidResource', [
+            return in_array($entity->get('association'), $associations);
+        }, 'ValidAssociation', [
             'errorField' => 'association',
             'message' => 'Association does not exist',
         ]);
