@@ -5,6 +5,8 @@ namespace RolesCapabilities\Test\TestCase\EntityAccess;
 
 use Cake\TestSuite\TestCase;
 use RolesCapabilities\EntityAccess\AccessControlUtil;
+use RolesCapabilities\EntityAccess\AuthorizationContext;
+use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\Operation;
 use RolesCapabilities\EntityAccess\UserWrapper;
 
@@ -46,6 +48,7 @@ class AccessControlUtilTest extends TestCase
     public function tearDown(): void
     {
         $this->getTableLocator()->clear();
+        AuthorizationContextHolder::clear();
         parent::tearDown();
     }
 
@@ -83,5 +86,18 @@ class AccessControlUtilTest extends TestCase
         $val = $accessControl->isAllowed($this->Users, 'view', '00000000-0000-0000-0000-000000000003');
 
         $this->assertFalse($val, 'Anonymous access succeeded');
+    }
+
+    public function testContext(): void
+    {
+        $user = UserWrapper::forUser(['id' => '00000000-0000-0000-0000-000000000003']);
+        AuthorizationContextHolder::push(AuthorizationContext::asUser($user, null));
+
+        $accessControl = AccessControlUtil::fromContext();
+
+        $this->assertTrue($accessControl->getSubject() === $user, 'Subject does not equal context subject');
+
+        $val = $accessControl->isAllowed($this->Users, 'view', '00000000-0000-0000-0000-000000000003');
+        $this->assertTrue($val, 'User access failed');
     }
 }
