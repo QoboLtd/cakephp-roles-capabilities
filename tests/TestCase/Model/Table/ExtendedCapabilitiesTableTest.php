@@ -13,6 +13,7 @@ use Webmozart\Assert\Assert;
  * RolesCapabilities\Model\Table\CapabilitiesTable Test Case
  *
  * @property \RolesCapabilities\Model\Table\ExtendedCapabilitiesTable $ExtendedCapabilities
+ * @property \RolesCapabilities\Model\Table\RolesTable $Roles
  */
 class ExtendedCapabilitiesTableTest extends TestCase
 {
