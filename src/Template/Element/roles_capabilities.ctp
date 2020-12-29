@@ -14,7 +14,7 @@ ksort($capabilities);
         <?php // List tables  
             foreach ($capabilities as $tableName => $tableCaps) : ?>
             <?php
-                if (empty($tableCaps)) {
+                if (empty($tableCaps) || !empty($tableCaps['hidden'])) {
                     continue;
                 }
 
@@ -32,11 +32,11 @@ ksort($capabilities);
         <?php 
         foreach ($capabilities as $tableName => $tableCaps) : ?>
             <?php
-            if (empty($tableCaps)) {
+            if (empty($tableCaps) || !empty($tableCaps['hidden'])) {
                 continue;
             }
-                $active = ++$count == 1 ? 'active' : '';
-                $tabId = Inflector::underscore(preg_replace('/[^a-zA-Z0-9]+/', '_', $tableName));
+            $active = ++$count == 1 ? 'active' : '';
+            $tabId = Inflector::underscore(preg_replace('/[^a-zA-Z0-9]+/', '_', $tableName));
             ?>
             <div id="<?= $tabId ?>" class="tab-pane <?= $active ?>">
             <table class="table table-hover table-condensed table-vertical-align table-datatable">
