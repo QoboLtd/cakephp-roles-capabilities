@@ -8,7 +8,7 @@ use Cake\TestSuite\TestCase;
 use RolesCapabilities\Command\RolesImportCommand;
 use Webmozart\Assert\Assert;
 
-class ImportTaskTest extends TestCase
+class RolesImportCommandTest extends TestCase
 {
     public $fixtures = [
         'plugin.Groups.Groups',
