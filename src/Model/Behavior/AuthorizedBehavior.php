@@ -59,6 +59,17 @@ class AuthorizedBehavior extends Behavior
     }
 
     /**
+     * Gets whether the table should be hidden
+     * from capabilities assignment
+     *
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        return $this->getConfig('hidden', false);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function initialize(array $config)

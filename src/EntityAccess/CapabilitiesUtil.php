@@ -114,6 +114,7 @@ class CapabilitiesUtil
                 'associations' => $behavior->getAssociations(),
                 'operations' => $behavior->getOperations(),
                 'capabilities' => $behavior->getCapabilities(),
+                'hidden' => $behavior->isHidden(),
             ];
         }
 
