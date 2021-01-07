@@ -92,10 +92,6 @@ class EntityCapabilityRule implements AuthorizationRule
      */
     public function allow(): bool
     {
-        if ($this->subject === null) {
-            return false;
-        }
-
         $query = $this->table->query();
         $exp = $this->expression($query);
         $query = $query->where($exp);
