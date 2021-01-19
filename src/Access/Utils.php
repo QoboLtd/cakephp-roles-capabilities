@@ -948,17 +948,21 @@ class Utils
             ->all()
             ->toArray();
 
-        $userMap = [];
+        if (empty($users)) {
+            return $users;
+        }
 
-        $filteredUsers = array_filter($users, function ($user) use ($userMap, $userId) {
+        $userMap = [];
+        $filteredUsers = [];
+
+        foreach ($users as $user) {
             if ($user->get('id') === $userId || isset($userMap[$user->get('id')])) {
-                return false;
+                continue;
             }
 
             $userMap[$user->get('id')] = $user;
-
-            return true;
-        });
+            $filteredUsers[] = $user;
+        }
 
         return $filteredUsers;
     }
