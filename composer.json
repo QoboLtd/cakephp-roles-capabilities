@@ -48,8 +48,7 @@
         "test-coverage": [
             "phpcs",
             "phpunit"
-        ],
-        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
+        ]
     },
     "scripts-descriptions": {
         "test": "Runs phpcs and phpunit without coverage",
