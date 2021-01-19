@@ -944,10 +944,22 @@ class Utils
         $users = $table->find()
             ->where([
                 'reports_to' => $userId,
-            ])
+                ])
             ->all()
             ->toArray();
 
-        return $users;
+        $userMap = [];
+
+        $filteredUsers = array_filter($users, function ($user) use ($userMap, $userId) {
+            if ($user->get('id') === $userId || isset($userMap[$user->get('id')])) {
+                return false;
+            }
+
+            $userMap[$user->get('id')] = $user;
+
+            return true;
+        });
+
+        return $filteredUsers;
     }
 }
