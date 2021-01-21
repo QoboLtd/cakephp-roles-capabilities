@@ -93,15 +93,32 @@ class UserWrapper implements SubjectInterface
     private static function getReportToUsers(string $userId): array
     {
         $table = TableRegistry::get(Configure::read('RolesCapabilities.users.table', 'Users'));
+
         $users = $table->find()
             ->applyOptions(['filterQuery' => true])
             ->where([
                 'reports_to' => $userId,
-            ])
+                ])
             ->all()
             ->toArray();
 
-        return $users;
+        if (empty($users)) {
+            return $users;
+        }
+
+        $userMap = [];
+        $filteredUsers = [];
+
+        foreach ($users as $user) {
+            if ($user->get('id') === $userId || isset($userMap[$user->get('id')])) {
+                continue;
+            }
+
+            $userMap[$user->get('id')] = $user;
+            $filteredUsers[] = $user;
+        }
+
+        return $filteredUsers;
     }
 
     /**
