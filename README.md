@@ -52,28 +52,25 @@ bin/cake plugin load --routes --bootstrap CakeDC/Users
 
 ### Middleware
 The AuthorizationContextMiddleware is registered your middleware queue
-and if you are using an Authentication middleware or the AuthComponent it will be configured automatically.
+and if you are using an Authentication middleware or the AuthComponent with stateless sessions it should be configured automatically.
 If not see the next section:
 
 ### Manual Context 
-You need to call the following code
-in your controller initialize method or the isAuthorized if you are using
-Controller authorization:
+You need to call the following code in your controller code to configure the AuthorizationContext.
 
 ```
 use RolesCapabilities\EntityAccess\AuthorizationContext;
 use RolesCapabilities\EntityAccess\AuthorizationContextHolder;
 use RolesCapabilities\EntityAccess\UserWrapper;
 
-class MyController extends BaseController
 ...
 
-    public function setUser($user)
+    public function setUser($user, $request)
     {
         if (!empty($user)) {
-            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
+            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $request);
         } else {
-            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
+            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($request);
         }
     }
 ```
