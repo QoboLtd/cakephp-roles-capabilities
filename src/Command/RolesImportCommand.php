@@ -72,29 +72,27 @@ class RolesImportCommand extends Command
             Assert::isInstanceOf($query, \Cake\ORM\Query::class);
 
             $entity = $query->first();
-
             Assert::nullOrIsInstanceOf($entity, EntityInterface::class);
-
-            $linkedGroups = null === $entity ? [] : array_map(function ($item) {
-                return $item->get('id');
-            }, $entity->get('groups'));
-
-            if (null !== $entity && $entity->get('deny_edit')) {
-                $io->warning(sprintf('Roles "%s" already exists and is not allowed to be modified.', $role['name']));
-                continue;
-            }
 
             if (null === $entity) {
                 $io->info(sprintf('Creating role "%s".', $role['name']));
                 $entity = $table->newEntity();
+                $linkedGroups = [];
             } else {
+                if ($entity->get('deny_edit')) {
+                    $io->warning(sprintf('Role "%s" already exists and is not allowed to be modified.', $role['name']));
+                    continue;
+                }
+
                 $io->info(sprintf('Updating role "%s".', $role['name']));
+                $linkedGroups = array_map(function ($item) {
+                    return $item->get('id');
+                }, $entity->get('groups'));
             }
             $table->patchEntity($entity, $role);
 
             if (! $table->save($entity)) {
-                $io->error("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
-                $io->abort("Failed to create role [" . $entity->get('name') . "]");
+                $io->abort('Failed to create role [' . $entity->get('name') . ']: ' . "\n" . implode("\n", $this->getImportErrors($entity)));
             }
 
             $group = $this->getGroupByRoleName($entity->get('name'));
