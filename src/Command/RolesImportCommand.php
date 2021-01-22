@@ -84,12 +84,13 @@ class RolesImportCommand extends Command
                 continue;
             }
 
-            null === $entity ?
-                $io->info(sprintf('Creating role "%s".', $role['name'])) :
+            if (null === $entity) {
+                $io->info(sprintf('Creating role "%s".', $role['name']));
+                $entity = $table->newEntity();
+            } else {
                 $io->info(sprintf('Updating role "%s".', $role['name']));
-
-            $entity = null === $entity ? $table->newEntity() : $entity;
-            $entity = $table->patchEntity($entity, $role);
+            }
+            $table->patchEntity($entity, $role);
 
             if (! $table->save($entity)) {
                 $io->error("Errors: \n" . implode("\n", $this->getImportErrors($entity)));
