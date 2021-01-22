@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\Middleware;
 
+use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use RolesCapabilities\EntityAccess\AuthorizationContext;
@@ -50,11 +51,21 @@ class AuthorizationContextMiddleware
             $ctx = AuthorizationContext::asAnonymous($request);
         }
 
+        EventManager::instance()->on('Auth.afterIdentify', [], function ($event, $user) use ($request) {
+            if (!empty($user)) {
+                AuthorizationContextHolder::push(AuthorizationContext::asUser($this->wrapIdentity($user), $request));
+            } else {
+                AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($request));
+            }
+        });
+
+        $state = AuthorizationContextHolder::getState();
+        AuthorizationContextHolder::clear();
         AuthorizationContextHolder::push($ctx);
         try {
             return $next($request, $response);
         } finally {
-            AuthorizationContextHolder::pop();
+            AuthorizationContextHolder::setState($state);
         }
     }
 }

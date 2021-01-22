@@ -3,12 +3,35 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
+use RolesCapabilities\EntityAccess\AuthorizationContext;
+
 class AuthorizationContextHolder
 {
     /**
      * @var AuthorizationContext[]
      */
     private static $ctx = [];
+
+    /**
+     * Gets the current state.
+     *
+     * @return AuthorizationContext[]
+     */
+    public static function getState(): array
+    {
+        return self::$ctx;
+    }
+
+    /**
+     * Sets the current state.
+     *
+     * @param AuthorizationContext[] $state The state
+     * @return void
+     */
+    public static function setState(array $state): void
+    {
+        self::$ctx = $state;
+    }
 
     /**
      * Clears the authorization context.
