@@ -89,6 +89,17 @@ class ExtendedCapabilitiesTable extends Table
 
             $table = TableRegistry::getTableLocator()->get($resource);
 
+            return $table->hasBehavior('Authorized');
+        }, 'ValidResource', [
+            'errorField' => 'resource',
+            'message' => 'Resource does not have the Authorized behavior enabled',
+        ]);
+
+        $rules->add(function (EntityInterface $entity, array $options) {
+            $resource = $entity->get('resource');
+
+            $table = TableRegistry::getTableLocator()->get($resource);
+
             if (!$table->hasBehavior('Authorized')) {
                 return false;
             }
@@ -103,7 +114,7 @@ class ExtendedCapabilitiesTable extends Table
             return in_array($entity->get('association'), $associations);
         }, 'ValidAssociation', [
             'errorField' => 'association',
-            'message' => 'Association does not exist',
+            'message' => 'Capabilities association does not exist',
         ]);
 
         return $rules;
