@@ -34,7 +34,7 @@ class EntityAccessAuthorize extends BaseAuthorize
     /**
      * Checks user authorization.
      *
-     * @param array|\ArrayAccess $user Active user data
+     * @param array|\ArrayAccess<string,mixed> $user Active user data
      * @param \Cake\Http\ServerRequest $request Request instance.
      * @return bool
      */

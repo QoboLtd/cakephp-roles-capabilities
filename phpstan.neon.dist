@@ -10,7 +10,6 @@ parameters:
         Cake\Console\Shell:
             - abort
     inferPrivatePropertyTypeFromConstructor: true
-    checkGenericClassInNonGenericObjectType: false
     checkMissingIterableValueType: false
 includes:
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon

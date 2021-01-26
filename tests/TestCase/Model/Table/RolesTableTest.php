@@ -18,7 +18,7 @@ class RolesTableTest extends TestCase
     /**
      * Fixtures
      *
-     * @var array
+     * @var array<string>
      */
     public $fixtures = [
         'plugin.RolesCapabilities.Roles',

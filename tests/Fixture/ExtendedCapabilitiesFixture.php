@@ -15,7 +15,7 @@ class ExtendedCapabilitiesFixture extends TestFixture
     /**
      * Fields
      *
-     * @var array
+     * @var mixed[]
      */
     // @codingStandardsIgnoreStart
     public $fields = [
@@ -34,7 +34,7 @@ class ExtendedCapabilitiesFixture extends TestFixture
     /**
      * Records
      *
-     * @var array
+     * @var mixed[]
      */
     public $records = [
         [

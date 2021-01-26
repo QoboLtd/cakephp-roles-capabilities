@@ -20,7 +20,7 @@ class PermissionsControllerTest extends TestCase
     /**
      * Fixtures
      *
-     * @var array
+     * @var array<string>
      */
     public $fixtures = [
         'plugin.RolesCapabilities.ExtendedCapabilities',

@@ -15,7 +15,7 @@ class UsersFixture extends TestFixture
     /**
      * Fields
      *
-     * @var array
+     * @var array<string,mixed>
      */
     // @codingStandardsIgnoreStart
     public $fields = [
@@ -33,7 +33,7 @@ class UsersFixture extends TestFixture
     /**
      * Records
      *
-     * @var array
+     * @var array<mixed>
      */
     public $records = [
         [

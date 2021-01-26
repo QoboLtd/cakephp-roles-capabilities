@@ -15,7 +15,7 @@ class GroupsRolesFixture extends TestFixture
     /**
      * Fields
      *
-     * @var array
+     * @var mixed[]
      */
     // @codingStandardsIgnoreStart
     public $fields = [
@@ -31,7 +31,7 @@ class GroupsRolesFixture extends TestFixture
     /**
      * Records
      *
-     * @var array
+     * @var mixed[]
      */
     public $records = [
         [

@@ -13,7 +13,7 @@ class UserWrapper implements SubjectInterface
     /**
      * Wraps a user
      *
-     * @param array|\ArrayAccess $user The user to wrap
+     * @param array|\ArrayAccess<string,mixed> $user The user to wrap
      * @return SubjectInterface
      */
     public static function forUser($user): SubjectInterface
@@ -22,12 +22,12 @@ class UserWrapper implements SubjectInterface
     }
 
     /**
-     * @var array|\ArrayAccess
+     * @var array|\ArrayAccess<string,mixed>
      */
     private $user;
 
     /**
-     * @param array|\ArrayAccess $user The user to wrap
+     * @param array|\ArrayAccess<string,mixed> $user The user to wrap
      */
     private function __construct($user)
     {
@@ -193,7 +193,7 @@ class UserWrapper implements SubjectInterface
     /**
      * Unwraps the user
      *
-     * @return array|\ArrayAccess The original user
+     * @return array|\ArrayAccess<string,mixed> The original user
      */
     public function unwrap()
     {

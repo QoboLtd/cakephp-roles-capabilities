@@ -15,7 +15,7 @@ class PermissionsFixture extends TestFixture
     /**
      * Fields
      *
-     * @var array
+     * @var mixed[]
      */
     // @codingStandardsIgnoreStart
     public $fields = [
@@ -38,7 +38,7 @@ class PermissionsFixture extends TestFixture
     /**
      * Records
      *
-     * @var array
+     * @var mixed[]
      */
     public $records = [
         [

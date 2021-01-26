@@ -10,7 +10,7 @@ class CapabilitiesHelper extends Helper
     /**
      * Checks whether the given capability array contains the capability.
      *
-     * @param array $capArray The array to check
+     * @param array<string,mixed> $capArray The array to check
      * @param string $resource The resource to check
      * @param string $operation The operation to check
      * @param string $association The association to check

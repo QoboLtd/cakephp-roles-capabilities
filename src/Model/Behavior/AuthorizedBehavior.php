@@ -79,6 +79,8 @@ class AuthorizedBehavior extends Behavior
 
     /**
      * {@inheritDoc}
+     *
+     * @param ArrayObject<string,mixed> $options Options
      */
     public function beforeFind(Event $event, Query $query, ArrayObject $options, bool $primary): void
     {
@@ -115,7 +117,7 @@ class AuthorizedBehavior extends Behavior
      *
      * @param Event $event Event trigger for afterSave by CakePHP Behaviors framework.
      * @param EntityInterface $entity The entity saved.
-     * @param ArrayObject $options Options.
+     * @param ArrayObject<string,mixed> $options Options
      * @return bool
      */
     public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options): bool
@@ -131,6 +133,8 @@ class AuthorizedBehavior extends Behavior
 
     /**
      * {@inheritDoc}
+     *
+     * @param ArrayObject<string,mixed> $options Options
      */
     public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): bool
     {
