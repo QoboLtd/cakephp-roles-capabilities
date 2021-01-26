@@ -16,9 +16,7 @@ class RolesImportCommandTest extends TestCase
         'plugin.RolesCapabilities.Roles',
     ];
 
-    /**
-     * @var \Cake\Console\ConsoleIo
-     */
+    /** @var \Cake\Console\ConsoleIo&\PHPUnit\Framework\MockObject\MockObject */
     private $io;
 
     /**
@@ -32,8 +30,10 @@ class RolesImportCommandTest extends TestCase
 
         $this->table = $this->getTableLocator()->get('RolesCapabilities.Roles');
 
-        /** @var \Cake\Console\ConsoleIo */
-        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        /** @var \Cake\Console\ConsoleIo&\PHPUnit\Framework\MockObject\MockObject */
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+
+        $this->io = $io;
     }
 
     public function tearDown()
