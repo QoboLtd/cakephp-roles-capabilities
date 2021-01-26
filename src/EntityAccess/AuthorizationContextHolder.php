@@ -82,14 +82,7 @@ class AuthorizationContextHolder
      */
     public static function asSystem(): void
     {
-        $ctx = self::context();
-        $request = null;
-
-        if ($ctx !== null) {
-            $request = $ctx->request();
-        }
-
-        self::push(AuthorizationContext::asSystem($request));
+        self::push(AuthorizationContext::asSystem());
     }
 
     /**

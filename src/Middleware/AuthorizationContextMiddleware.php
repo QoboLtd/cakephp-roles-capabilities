@@ -46,16 +46,16 @@ class AuthorizationContextMiddleware
     {
         $user = $request->getAttribute('identity');
         if (!empty($user)) {
-            $ctx = AuthorizationContext::asUser($this->wrapIdentity($user), $request);
+            $ctx = AuthorizationContext::asUser($this->wrapIdentity($user));
         } else {
-            $ctx = AuthorizationContext::asAnonymous($request);
+            $ctx = AuthorizationContext::asAnonymous();
         }
 
-        EventManager::instance()->on('Auth.afterIdentify', [], function ($event, $user) use ($request) {
+        EventManager::instance()->on('Auth.afterIdentify', [], function ($event, $user) {
             if (!empty($user)) {
-                AuthorizationContextHolder::push(AuthorizationContext::asUser($this->wrapIdentity($user), $request));
+                AuthorizationContextHolder::push(AuthorizationContext::asUser($this->wrapIdentity($user)));
             } else {
-                AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($request));
+                AuthorizationContextHolder::push(AuthorizationContext::asAnonymous());
             }
         });
 

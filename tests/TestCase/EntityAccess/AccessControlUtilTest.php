@@ -91,7 +91,7 @@ class AccessControlUtilTest extends TestCase
     public function testContext(): void
     {
         $user = UserWrapper::forUser(['id' => '00000000-0000-0000-0000-000000000003']);
-        AuthorizationContextHolder::push(AuthorizationContext::asUser($user, null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser($user));
 
         $accessControl = AccessControlUtil::fromContext();
 

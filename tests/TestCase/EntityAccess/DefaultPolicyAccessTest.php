@@ -51,7 +51,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         parent::setUp();
 
-        AuthorizationContextHolder::push(AuthorizationContext::asAnonymous(null));
+        AuthorizationContextHolder::push(AuthorizationContext::asAnonymous());
 
         $this->Roles = $this->getTableLocator()->get('RolesCapabilities.Roles');
         $this->Users = $this->getTableLocator()->get('RolesCapabilities.Users');
@@ -132,7 +132,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $count = $this->Users->find()->count();
         } finally {
@@ -145,7 +145,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $entity = $this->Users->get('00000000-0000-0000-0000-000000000003');
         } finally {
@@ -170,7 +170,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $q = $this->GroupsUsers->find();
             $count = $q->count();
@@ -184,7 +184,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $q = $this->Groups->find();
             $count = $q->count();
@@ -198,7 +198,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000003');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $q = $this->Roles->find();
             $count = $q->count();
@@ -212,7 +212,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000001');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $q = $this->Users->find();
             $count = $q->count();
@@ -226,7 +226,7 @@ class DefaultPolicyAccessTest extends TestCase
     {
         $user = $this->fetchUser('00000000-0000-0000-0000-000000000002');
 
-        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), null));
+        AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         try {
             $q = $this->Users->find();
             $count = $q->count();

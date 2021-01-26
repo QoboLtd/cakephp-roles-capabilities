@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace RolesCapabilities\Model\Behavior;
 
 use ArrayObject;
-use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Http\ServerRequest;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
@@ -93,11 +91,6 @@ class AuthorizedBehavior extends Behavior
             return;
         }
 
-        $req = $ctx->request();
-        if ($req != null && $this->isAuthenticationRequest($req)) {
-            return;
-        }
-
         AuthorizationContextHolder::asSystem();
         try {
             $policy = $this->policy($ctx, $event, null, Operation::VIEW);
@@ -139,52 +132,6 @@ class AuthorizedBehavior extends Behavior
     public function beforeDelete(Event $event, EntityInterface $entity, ArrayObject $options): bool
     {
         return $this->allow($event, $entity, Operation::DELETE);
-    }
-
-    /**
-     * Checks whether the plugin matches the action plugin.
-     *
-     * @param mixed[] $publicAction The action
-     * @param ?string $plugin The plugin
-     *
-     * @return bool
-     */
-    private function pluginMatch(array $publicAction, ?string $plugin): bool
-    {
-        return (
-                   (empty($publicAction['plugin']) && empty($plugin))
-                || (!empty($publicAction['plugin']) && $publicAction['plugin'] === $plugin)
-                );
-    }
-
-    /**
-     * Checks whether this is an authentication request.
-     * @param ServerRequest $request The request to check
-     *
-     * @return bool
-     */
-    public function isAuthenticationRequest(ServerRequest $request): bool
-    {
-        $publicActions = Configure::read('RolesCapabilities.authorizationActions');
-        if (empty($publicActions) || !is_array($publicActions)) {
-            return false;
-        }
-
-        $plugin = $request->getParam('plugin');
-        $controller = $request->getParam('controller');
-        $action = $request->getParam('action');
-
-        foreach ($publicActions as $publicAction) {
-            if (
-                $this->pluginMatch($publicAction, $plugin)
-                && $publicAction['controller'] === $controller
-                && $publicAction['action'] === $action
-            ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -231,11 +178,6 @@ class AuthorizedBehavior extends Behavior
     {
         $ctx = AuthorizationContextHolder::context();
         if ($ctx === null || $ctx->system()) {
-            return true;
-        }
-
-        $req = $ctx->request();
-        if ($req != null && $this->isAuthenticationRequest($req)) {
             return true;
         }
 

@@ -35,9 +35,9 @@ class AppController extends Controller
         $user = $this->Auth->user();
 
         if (!empty($user)) {
-            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user), $this->getRequest()));
+            AuthorizationContextHolder::push(AuthorizationContext::asUser(UserWrapper::forUser($user)));
         } else {
-            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous($this->getRequest()));
+            AuthorizationContextHolder::push(AuthorizationContext::asAnonymous());
         }
 
         return null;
