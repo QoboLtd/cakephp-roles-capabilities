@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace RolesCapabilities\EntityAccess;
 
-use Cake\Http\ServerRequest;
-
 class AuthorizationContext
 {
     /**
