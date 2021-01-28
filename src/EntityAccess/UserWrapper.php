@@ -61,11 +61,15 @@ class UserWrapper implements SubjectInterface
      */
     public function isSuperuser(): bool
     {
-        if (!isset($this->user['is_superuser'])) {
-            return false;
+        if (isset($this->user['is_admin'])) {
+            return (bool)$this->user['is_admin'];
         }
 
-        return (bool)$this->user['is_superuser'];
+        if (isset($this->user['is_superuser'])) {
+            return (bool)$this->user['is_superuser'];
+        }
+
+        return false;
     }
 
     /**
