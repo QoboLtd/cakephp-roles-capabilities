@@ -20,3 +20,5 @@ echo $this->Html->script(
         'block' => 'scriptBottom'
     ]
 );
+
+$this->Html->scriptBlock('$(document).ready(function(){ $(".custom-float-checkbox").removeClass() })', ['block' => true]);
