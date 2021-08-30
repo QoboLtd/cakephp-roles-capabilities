@@ -219,6 +219,8 @@ final class FilterQuery
             return $this->query;
         }
 
+        $this->attachParentJoins();
+
         $where = $this->getWhereClause();
         if (! empty($where)) {
             // apply all conditions using the OR operator
@@ -245,8 +247,14 @@ final class FilterQuery
      */
     private function getWhereClause(): array
     {
-        $result = array_merge($this->getOwnerFields(), $this->getBelongTo(), $this->getPermissions());
-        $result = array_merge($result, $this->getParentPermissions(), $this->getParentJoinsWhereClause());
+        $result = array_merge(
+            $this->getOwnerFields(),
+            $this->getBelongTo(),
+            $this->getPermissions(),
+            $this->getParentPermissions()
+        );
+	// $this->getParentWhereClauses()
+
         $result = array_merge_recursive($result, $this->getSupervisorWhereClause());
 
         return $result;
@@ -285,19 +293,24 @@ final class FilterQuery
     }
 
     /**
-     * Generates parent joins conditions for where clause.
+     * Attaches parent joins to query.
      *
-     * @return mixed[]
+     * @return void
      */
-    private function getParentJoinsWhereClause(): array
+    private function attachParentJoins(): void
+    {
+        foreach ($this->getParentJoins() as $name => $conditions) {
+            $this->query->leftJoinWith($name, function ($q) {
+                return $q->applyOptions(['accessCheck' => false]); // disable access check on joins
+            });
+        }
+    }
+
+    private function getParentWhereClauses(): array
     {
         $result = [];
         foreach ($this->getParentJoins() as $name => $conditions) {
             $result = array_merge($result, $conditions);
-
-            $this->query->leftJoinWith($name, function ($q) {
-                return $q->applyOptions(['accessCheck' => false]); // disable access check on joins
-            });
         }
 
         return $result;
